@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gravidade do Feed — simulador de recomendação</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0a0b0f;
+    --grid-line: rgba(255,255,255,0.035);
+    --surface: #14161d;
+    --surface-2: #1b1e27;
+    --edge: rgba(255,255,255,0.16);
+    --text-primary: #e9e7df;
+    --text-muted: #82869291;
+    --text-muted-solid: #83879a;
+    --node-cold: 79,209,232;   /* cyan */
+    --node-hot: 255,107,74;   /* ember */
+    --focus: #4fd1e8;
+    --danger: #ff6b4a;
+  }
+
+  *{ box-sizing: border-box; }
+
+  html, body{
+    margin:0; padding:0; height:100%;
+    background: var(--bg);
+    color: var(--text-primary);
+    font-family: 'Inter', system-ui, sans-serif;
+    overflow: hidden;
+  }
+
+  body{
+    background-image:
+      linear-gradient(var(--grid-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+    background-size: 42px 42px;
+  }
+
+  .mono{ font-family: 'IBM Plex Mono', monospace; }
+
+  /* ---------- top bar ---------- */
+  header.topbar{
+    position: fixed; top:0; left:0; right:0;
+    display:flex; align-items:center; justify-content:space-between;
+    padding: 22px 28px;
+    z-index: 20;
+    pointer-events:none;
+  }
+  .brand{
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    color: var(--text-muted-solid);
+    text-transform: uppercase;
+  }
+  .brand strong{ color: var(--text-primary); font-weight:600; }
+
+  .dominance{
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--text-muted-solid);
+    text-align:right;
+    letter-spacing: 0.02em;
+    opacity: 0;
+    transition: opacity .5s ease;
+    max-width: 280px;
+  }
+  .dominance.visible{ opacity: 1; }
+  .dominance b{ color: var(--focus); font-weight:600; }
+
+  /* ---------- canvas ---------- */
+  #canvas-wrap{
+    position: fixed; inset:0;
+  }
+  svg#graph{ width:100%; height:100%; display:block; }
+
+  .node-label{
+    font-family:'IBM Plex Mono', monospace;
+    fill: var(--text-primary);
+    font-size: 13px;
+    pointer-events: none;
+    user-select: none;
+  }
+  .node-circle{
+    cursor: pointer;
+    stroke: rgba(255,255,255,0.35);
+    stroke-width: 1;
+    transition: stroke .2s ease;
+  }
+  .node-circle:hover{ stroke: #fff; }
+  .node-circle.active-node{ stroke: #fff; stroke-width: 2; }
+
+  .edge-line{
+    stroke: var(--edge);
+    stroke-linecap: round;
+  }
+
+  /* ---------- input dock ---------- */
+  #input-dock{
+    position: fixed;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    top: 46%;
+    width: min(480px, 88vw);
+    z-index: 30;
+    transition: top .6s cubic-bezier(.2,.8,.2,1), transform .6s cubic-bezier(.2,.8,.2,1), width .5s ease;
+    text-align: center;
+  }
+  #input-dock.docked{
+    top: 40px;
+    transform: translate(-50%, 0);
+    width: min(360px, 80vw);
+  }
+
+  .intro-hint{
+    font-size: 13px;
+    color: var(--text-muted-solid);
+    margin: 0 0 18px 0;
+    line-height: 1.5;
+    font-style: italic;
+    transition: opacity .5s ease, height .5s ease;
+  }
+  .intro-hint.hidden{ opacity:0; height:0; margin:0; overflow:hidden; }
+
+  .input-row{
+    position: relative;
+  }
+
+  #interest-input{
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 999px;
+    padding: 15px 22px;
+    color: var(--text-primary);
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    outline: none;
+    transition: border-color .25s ease, box-shadow .25s ease, padding .4s ease, font-size .4s ease;
+  }
+  #input-dock.docked #interest-input{
+    padding: 10px 18px;
+    font-size: 13px;
+  }
+  #interest-input::placeholder{ color: var(--text-muted-solid); }
+  #interest-input:focus{
+    border-color: var(--focus);
+    box-shadow: 0 0 0 3px rgba(79,209,232,0.15);
+  }
+
+  .suggestions{
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0; right: 0;
+    background: var(--surface-2);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.45);
+    display: none;
+    text-align: left;
+    max-height: 220px;
+    overflow-y: auto;
+  }
+  .suggestions.visible{ display: block; }
+  .suggestion-item{
+    padding: 11px 18px;
+    font-size: 14px;
+    color: var(--text-primary);
+    cursor: pointer;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+  .suggestion-item:hover, .suggestion-item.highlighted{
+    background: rgba(79,209,232,0.1);
+    color: var(--focus);
+  }
+  .suggestion-item .hint-tag{
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--text-muted-solid);
+    letter-spacing: 0.05em;
+  }
+
+  /* ---------- empty state ---------- */
+  #empty-state{
+    position: fixed;
+    left:50%; top: 62%;
+    transform: translate(-50%,-50%);
+    text-align:center;
+    color: var(--text-muted-solid);
+    font-size: 12px;
+    letter-spacing: 0.05em;
+    pointer-events:none;
+    transition: opacity .5s ease;
+    max-width: 320px;
+    font-family:'IBM Plex Mono', monospace;
+    line-height: 1.6;
+  }
+  #empty-state.hidden{ opacity: 0; }
+
+  /* ---------- side panel ---------- */
+  #side-panel{
+    position: fixed;
+    top: 0; right: 0; bottom: 0;
+    width: 320px;
+    background: var(--surface);
+    border-left: 1px solid rgba(255,255,255,0.08);
+    z-index: 40;
+    padding: 28px 26px;
+    transform: translateX(100%);
+    transition: transform .4s cubic-bezier(.2,.8,.2,1);
+    display:flex;
+    flex-direction: column;
+  }
+  #side-panel.open{ transform: translateX(0); }
+
+  .panel-close{
+    align-self: flex-end;
+    background: none;
+    border: none;
+    color: var(--text-muted-solid);
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 13px;
+    cursor: pointer;
+    padding: 4px 8px;
+    margin-bottom: 18px;
+  }
+  .panel-close:hover{ color: var(--text-primary); }
+  .panel-close:focus-visible{ outline: 2px solid var(--focus); border-radius: 4px; }
+
+  .panel-eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: var(--text-muted-solid);
+    text-transform: uppercase;
+    margin: 0 0 6px 0;
+  }
+  .panel-title{
+    font-size: 26px;
+    font-weight: 600;
+    margin: 0 0 30px 0;
+    word-break: break-word;
+  }
+
+  .slider-row{ margin-bottom: 10px; }
+  .slider-label{
+    display:flex; justify-content: space-between; align-items:baseline;
+    margin-bottom: 12px;
+  }
+  .slider-label span:first-child{ font-size: 13px; color: var(--text-muted-solid); }
+  .slider-value{
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--focus);
+  }
+
+  input[type="range"]{
+    -webkit-appearance: none;
+    width: 100%;
+    height: 4px;
+    border-radius: 2px;
+    background: rgba(255,255,255,0.12);
+    outline: none;
+  }
+  input[type="range"]::-webkit-slider-thumb{
+    -webkit-appearance: none;
+    width: 18px; height:18px;
+    border-radius: 50%;
+    background: var(--focus);
+    cursor:pointer;
+    border: 3px solid #0a0b0f;
+    box-shadow: 0 0 0 2px var(--focus);
+  }
+  input[type="range"]::-moz-range-thumb{
+    width: 18px; height:18px;
+    border-radius: 50%;
+    background: var(--focus);
+    cursor:pointer;
+    border: 3px solid #0a0b0f;
+    box-shadow: 0 0 0 2px var(--focus);
+  }
+  input[type="range"]:focus-visible{ outline: 2px solid var(--focus); outline-offset: 4px; }
+
+  .panel-description{
+    margin-top: 24px;
+    font-size: 13.5px;
+    line-height: 1.6;
+    color: var(--text-muted-solid);
+    padding-top: 20px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .panel-footer{
+    margin-top: auto;
+    padding-top: 20px;
+  }
+  .remove-node{
+    background: none;
+    border: 1px solid rgba(255,107,74,0.35);
+    color: var(--danger);
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 12px;
+    padding: 9px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    width: 100%;
+    transition: background .2s ease;
+  }
+  .remove-node:hover{ background: rgba(255,107,74,0.1); }
+  .remove-node:focus-visible{ outline: 2px solid var(--danger); }
+
+  @media (max-width: 640px){
+    #side-panel{
+      width: 100%;
+      top: auto;
+      height: 68vh;
+      border-left:none;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      border-radius: 20px 20px 0 0;
+      transform: translateY(100%);
+    }
+    #side-panel.open{ transform: translateY(0); }
+    header.topbar{ padding: 16px 18px; }
+    .dominance{ max-width: 140px; font-size: 10.5px; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+  }
+
+  .sr-only{
+    position:absolute; width:1px; height:1px; padding:0; margin:-1px;
+    overflow:hidden; clip: rect(0,0,0,0); white-space:nowrap; border:0;
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">Gravidade <strong>do Feed</strong></div>
+  <div class="dominance mono" id="dominance-readout"></div>
+</header>
+
+<div id="canvas-wrap">
+  <svg id="graph" role="img" aria-label="Grafo de interesses"></svg>
+</div>
+
+<p id="empty-state">um algoritmo em branco.<br>o que você alimenta nele primeiro?</p>
+
+<div id="input-dock">
+  <p class="intro-hint" id="intro-hint">Cada interesse que você registra também é uma força — ela vai puxar tudo o que vem depois.</p>
+  <div class="input-row">
+    <label for="interest-input" class="sr-only">Digite um interesse</label>
+    <input type="text" id="interest-input" placeholder="Digite um interesse" autocomplete="off" />
+    <div class="suggestions" id="suggestions" role="listbox"></div>
+  </div>
+</div>
+
+<aside id="side-panel" aria-hidden="true">
+  <button class="panel-close" id="panel-close">FECHAR ✕</button>
+  <p class="panel-eyebrow">Nó selecionado</p>
+  <h2 class="panel-title" id="panel-title">—</h2>
+
+  <div class="slider-row">
+    <div class="slider-label">
+      <span>Intensidade de influência</span>
+      <span class="slider-value" id="slider-value">5</span>
+    </div>
+    <input type="range" id="intensity-slider" min="0" max="10" step="1" value="5" aria-label="Intensidade de influência, de 0 a 10">
+  </div>
+
+  <p class="panel-description" id="panel-description"></p>
+
+  <div class="panel-footer">
+    <button class="remove-node" id="remove-node">Remover este interesse</button>
+  </div>
+</aside>
+
+<script>
+(function(){
+  "use strict";
+
+  var SUGGESTIONS = ["música","política","anime","ficção científica","esportes","moda","tecnologia","culinária","games","notícias","viagem","humor"];
+
+  var svg = document.getElementById('graph');
+  var wrap = document.getElementById('canvas-wrap');
+  var input = document.getElementById('interest-input');
+  var dock = document.getElementById('input-dock');
+  var introHint = document.getElementById('intro-hint');
+  var suggestionsBox = document.getElementById('suggestions');
+  var emptyState = document.getElementById('empty-state');
+  var dominanceReadout = document.getElementById('dominance-readout');
+
+  var sidePanel = document.getElementById('side-panel');
+  var panelTitle = document.getElementById('panel-title');
+  var panelDescription = document.getElementById('panel-description');
+  var slider = document.getElementById('intensity-slider');
+  var sliderValue = document.getElementById('slider-value');
+  var panelClose = document.getElementById('panel-close');
+  var removeBtn = document.getElementById('remove-node');
+
+  var NS = "http://www.w3.org/2000/svg";
+  var W = window.innerWidth, H = window.innerHeight;
+
+  // ---- SVG defs (glow filter) ----
+  var defs = document.createElementNS(NS, 'defs');
+  var filter = document.createElementNS(NS, 'filter');
+  filter.setAttribute('id', 'glow');
+  filter.setAttribute('x', '-100%'); filter.setAttribute('y', '-100%');
+  filter.setAttribute('width', '300%'); filter.setAttribute('height', '300%');
+  var blur = document.createElementNS(NS, 'feGaussianBlur');
+  blur.setAttribute('stdDeviation', '6'); blur.setAttribute('result', 'blur');
+  var merge = document.createElementNS(NS, 'feMerge');
+  var m1 = document.createElementNS(NS, 'feMergeNode'); m1.setAttribute('in','blur');
+  var m2 = document.createElementNS(NS, 'feMergeNode'); m2.setAttribute('in','SourceGraphic');
+  merge.appendChild(m1); merge.appendChild(m2);
+  filter.appendChild(blur); filter.appendChild(merge);
+  defs.appendChild(filter);
+  svg.appendChild(defs);
+
+  var edgesLayer = document.createElementNS(NS, 'g'); edgesLayer.setAttribute('id','edges-layer');
+  var nodesLayer = document.createElementNS(NS, 'g'); nodesLayer.setAttribute('id','nodes-layer');
+  svg.appendChild(edgesLayer);
+  svg.appendChild(nodesLayer);
+
+  var nodes = [];      // {id,label,x,y,vx,vy,intensity,r,el,textEl}
+  var activeNode = null;
+  var nodeIdCounter = 0;
+
+  var BASE_DIST = 230;
+  var SPRING_K = 0.028;
+  var DAMPING = 0.86;
+  var CENTER_K = 0.0018;
+  var MIN_SEP_PAD = 14;
+
+  function baseColor(intensity){
+    var t = intensity/10;
+    var cold = [79,209,232];
+    var hot = [255,107,74];
+    var r = Math.round(cold[0] + (hot[0]-cold[0])*t);
+    var g = Math.round(cold[1] + (hot[1]-cold[1])*t);
+    var b = Math.round(cold[2] + (hot[2]-cold[2])*t);
+    return 'rgb(' + r + ',' + g + ',' + b + ')';
+  }
+
+  function radiusFor(intensity){
+    return 24 + intensity * 5.2;
+  }
+
+  function normalizeText(s){
+    return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim();
+  }
+
+  function updateDominance(){
+    if(nodes.length === 0){
+      dominanceReadout.classList.remove('visible');
+      return;
+    }
+    var sum = 0, max = null;
+    nodes.forEach(function(n){
+      sum += n.intensity;
+      if(!max || n.intensity > max.intensity) max = n;
+    });
+    if(sum === 0){
+      dominanceReadout.innerHTML = 'todos os interesses em equilíbrio — <b>0%</b> de dominância';
+    } else {
+      var pct = Math.round((max.intensity/sum)*100);
+      dominanceReadout.innerHTML = 'nó dominante: <b>' + max.label + '</b> — ' + pct + '% do peso do seu feed';
+    }
+    dominanceReadout.classList.add('visible');
+  }
+
+  function descriptionFor(intensity){
+    if(intensity === 0) return 'Este interesse está presente, mas não influencia nada — quase invisível para o algoritmo.';
+    if(intensity <= 3) return 'Presença discreta. Aparece pouco e é facilmente ofuscado por interesses mais fortes.';
+    if(intensity <= 6) return 'Presença moderada. Compete de igual para igual com os outros nós do seu grafo.';
+    if(intensity <= 8) return 'Presença forte. Este nó já começa a puxar os demais para perto de si.';
+    return 'Este interesse domina. Ele curva o grafo inteiro ao seu redor — é praticamente tudo o que resta no seu feed.';
+  }
+
+  // ---------- creating nodes ----------
+  function addNode(label){
+    label = label.trim();
+    if(!label) return;
+    var exists = nodes.some(function(n){ return normalizeText(n.label) === normalizeText(label); });
+    if(exists) return;
+
+    var angle = Math.random()*Math.PI*2;
+    var startDist = 40;
+    var cx = W/2, cy = H/2;
+
+    var node = {
+      id: 'n' + (nodeIdCounter++),
+      label: label,
+      x: cx + Math.cos(angle)*startDist,
+      y: cy + Math.sin(angle)*startDist,
+      vx: 0, vy: 0,
+      intensity: 5,
+      r: radiusFor(5)
+    };
+
+    var g = document.createElementNS(NS, 'g');
+    g.setAttribute('class', 'node-group');
+    g.style.cursor = 'pointer';
+
+    var circle = document.createElementNS(NS, 'circle');
+    circle.setAttribute('class', 'node-circle');
+    circle.setAttribute('r', 0);
+    circle.setAttribute('fill', baseColor(node.intensity));
+    circle.setAttribute('filter', 'url(#glow)');
+    circle.setAttribute('opacity', '0.92');
+
+    var text = document.createElementNS(NS, 'text');
+    text.setAttribute('class', 'node-label');
+    text.setAttribute('text-anchor', 'middle');
+    text.textContent = label;
+
+    g.appendChild(circle);
+    g.appendChild(text);
+    nodesLayer.appendChild(g);
+
+    node.el = circle;
+    node.groupEl = g;
+    node.textEl = text;
+
+    g.addEventListener('click', function(){ openPanel(node); });
+
+    nodes.push(node);
+
+    // animate radius in
+    requestAnimationFrame(function(){
+      circle.style.transition = 'r .5s cubic-bezier(.2,.8,.2,1)';
+      circle.setAttribute('r', node.r);
+    });
+
+    emptyState.classList.add('hidden');
+    if(!dock.classList.contains('docked')){
+      dock.classList.add('docked');
+      introHint.classList.add('hidden');
+    }
+    updateDominance();
+  }
+
+  function removeNode(node){
+    nodes = nodes.filter(function(n){ return n.id !== node.id; });
+    node.groupEl.remove();
+    closePanel();
+    updateDominance();
+    if(nodes.length === 0){
+      emptyState.classList.remove('hidden');
+    }
+  }
+
+  // ---------- side panel ----------
+  function openPanel(node){
+    activeNode = node;
+    nodes.forEach(function(n){ n.el.classList.remove('active-node'); });
+    node.el.classList.add('active-node');
+
+    panelTitle.textContent = node.label;
+    slider.value = node.intensity;
+    sliderValue.textContent = node.intensity;
+    panelDescription.textContent = descriptionFor(node.intensity);
+
+    sidePanel.classList.add('open');
+    sidePanel.setAttribute('aria-hidden', 'false');
+  }
+
+  function closePanel(){
+    if(activeNode){ activeNode.el.classList.remove('active-node'); }
+    activeNode = null;
+    sidePanel.classList.remove('open');
+    sidePanel.setAttribute('aria-hidden', 'true');
+  }
+
+  panelClose.addEventListener('click', closePanel);
+  removeBtn.addEventListener('click', function(){
+    if(activeNode) removeNode(activeNode);
+  });
+
+  slider.addEventListener('input', function(){
+    if(!activeNode) return;
+    var val = parseInt(slider.value, 10);
+    activeNode.intensity = val;
+    activeNode.r = radiusFor(val);
+    activeNode.el.style.transition = 'r .25s ease, fill .25s ease';
+    activeNode.el.setAttribute('r', activeNode.r);
+    activeNode.el.setAttribute('fill', baseColor(val));
+    sliderValue.textContent = val;
+    panelDescription.textContent = descriptionFor(val);
+    updateDominance();
+  });
+
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape') closePanel();
+  });
+
+  // ---------- suggestions / input ----------
+  var highlightedIndex = -1;
+  var filteredSuggestions = [];
+
+  function renderSuggestions(list){
+    suggestionsBox.innerHTML = '';
+    filteredSuggestions = list;
+    highlightedIndex = -1;
+    if(list.length === 0){
+      suggestionsBox.classList.remove('visible');
+      return;
+    }
+    list.forEach(function(word, i){
+      var item = document.createElement('div');
+      item.className = 'suggestion-item';
+      item.setAttribute('role', 'option');
+      var span = document.createElement('span');
+      span.textContent = word;
+      var tag = document.createElement('span');
+      tag.className = 'hint-tag';
+      tag.textContent = 'ENTER';
+      item.appendChild(span);
+      item.appendChild(tag);
+      item.addEventListener('click', function(){
+        addNode(word);
+        input.value = '';
+        renderSuggestions([]);
+        input.focus();
+      });
+      suggestionsBox.appendChild(item);
+    });
+    suggestionsBox.classList.add('visible');
+  }
+
+  input.addEventListener('input', function(){
+    var v = normalizeText(input.value);
+    if(!v){ renderSuggestions([]); return; }
+    var matches = SUGGESTIONS.filter(function(s){
+      return normalizeText(s).indexOf(v) === 0 &&
+             !nodes.some(function(n){ return normalizeText(n.label) === normalizeText(s); });
+    });
+    renderSuggestions(matches);
+  });
+
+  input.addEventListener('keydown', function(e){
+    if(e.key === 'ArrowDown' && filteredSuggestions.length){
+      e.preventDefault();
+      highlightedIndex = Math.min(highlightedIndex+1, filteredSuggestions.length-1);
+      updateHighlight();
+    } else if(e.key === 'ArrowUp' && filteredSuggestions.length){
+      e.preventDefault();
+      highlightedIndex = Math.max(highlightedIndex-1, 0);
+      updateHighlight();
+    } else if(e.key === 'Enter'){
+      e.preventDefault();
+      var word = highlightedIndex >= 0 ? filteredSuggestions[highlightedIndex] : input.value;
+      if(word && word.trim()){
+        addNode(word);
+        input.value = '';
+        renderSuggestions([]);
+      }
+    } else if(e.key === 'Escape'){
+      renderSuggestions([]);
+    }
+  });
+
+  function updateHighlight(){
+    var items = suggestionsBox.querySelectorAll('.suggestion-item');
+    items.forEach(function(el, i){
+      el.classList.toggle('highlighted', i === highlightedIndex);
+    });
+  }
+
+  document.addEventListener('click', function(e){
+    if(!suggestionsBox.contains(e.target) && e.target !== input){
+      renderSuggestions([]);
+    }
+  });
+
+  // ---------- physics loop ----------
+  function step(){
+    var cx = W/2, cy = H/2;
+
+    for(var i=0;i<nodes.length;i++){
+      var a = nodes[i];
+      var massA = 1 + a.intensity*0.6;
+      var fx = 0, fy = 0;
+
+      // gravity toward center (keeps cluster on screen)
+      fx += (cx - a.x) * CENTER_K;
+      fy += (cy - a.y) * CENTER_K;
+
+      for(var j=0;j<nodes.length;j++){
+        if(i===j) continue;
+        var b = nodes[j];
+        var dx = b.x - a.x, dy = b.y - a.y;
+        var dist = Math.sqrt(dx*dx+dy*dy) || 0.01;
+        var idealDist = Math.max(a.r+b.r+MIN_SEP_PAD, BASE_DIST - (a.intensity+b.intensity)*9);
+        var diff = dist - idealDist;
+        var force = diff * SPRING_K;
+        fx += (dx/dist) * force;
+        fy += (dy/dist) * force;
+      }
+
+      a.vx = (a.vx + fx/massA) * DAMPING;
+      a.vy = (a.vy + fy/massA) * DAMPING;
+    }
+
+    for(var k=0;k<nodes.length;k++){
+      var n = nodes[k];
+      n.x += n.vx;
+      n.y += n.vy;
+      n.x = Math.max(n.r+10, Math.min(W-n.r-10, n.x));
+      n.y = Math.max(n.r+70, Math.min(H-n.r-20, n.y));
+
+      n.groupEl.setAttribute('transform', 'translate(' + n.x + ',' + n.y + ')');
+      n.textEl.setAttribute('y', n.r + 18);
+    }
+
+    renderEdges();
+    requestAnimationFrame(step);
+  }
+
+  function renderEdges(){
+    // connect each node to its nearest neighbour(s) to avoid clutter
+    var lines = [];
+    for(var i=0;i<nodes.length;i++){
+      var distances = [];
+      for(var j=0;j<nodes.length;j++){
+        if(i===j) continue;
+        var dx = nodes[j].x-nodes[i].x, dy = nodes[j].y-nodes[i].y;
+        distances.push({j:j, d: Math.sqrt(dx*dx+dy*dy)});
+      }
+      distances.sort(function(p,q){ return p.d-q.d; });
+      var neighbours = distances.slice(0, Math.min(2, distances.length));
+      neighbours.forEach(function(nb){
+        var key = [i, nb.j].sort().join('-');
+        lines.push({key:key, a:nodes[i], b:nodes[nb.j]});
+      });
+    }
+    var seen = {};
+    var unique = lines.filter(function(l){
+      if(seen[l.key]) return false;
+      seen[l.key] = true;
+      return true;
+    });
+
+    while(edgesLayer.children.length < unique.length){
+      var line = document.createElementNS(NS, 'line');
+      line.setAttribute('class', 'edge-line');
+      edgesLayer.appendChild(line);
+    }
+    while(edgesLayer.children.length > unique.length){
+      edgesLayer.removeChild(edgesLayer.lastChild);
+    }
+    unique.forEach(function(l, idx){
+      var el = edgesLayer.children[idx];
+      el.setAttribute('x1', l.a.x); el.setAttribute('y1', l.a.y);
+      el.setAttribute('x2', l.b.x); el.setAttribute('y2', l.b.y);
+      var avgIntensity = (l.a.intensity+l.b.intensity)/2;
+      el.setAttribute('stroke-width', 1 + avgIntensity*0.35);
+      el.setAttribute('opacity', 0.12 + avgIntensity*0.045);
+    });
+  }
+
+  window.addEventListener('resize', function(){
+    W = window.innerWidth; H = window.innerHeight;
+  });
+
+  requestAnimationFrame(step);
+})();
+</script>
+</body>
+</html>
