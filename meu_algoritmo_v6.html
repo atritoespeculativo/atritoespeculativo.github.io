@@ -1,0 +1,1880 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bolhas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bitcount+Prop+Single:wght@100..900&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --blue: #1F33F2;
+    --blue-deep: #1526C9;
+    --surface: #4553F5;
+    --surface-2: #5C68F7;
+    --yellow: #E4F71C;
+    --white: #FFFFFF;
+    --soft: rgba(255,255,255,0.72);
+    --line: rgba(255,255,255,0.45);
+  }
+
+  *{ box-sizing: border-box; }
+
+  html, body{
+    margin:0; padding:0; height:100%;
+    background: var(--blue);
+    color: var(--white);
+    font-family: 'IBM Plex Mono', monospace;
+    overflow: hidden;
+  }
+
+  .mono{ font-family: 'IBM Plex Mono', monospace; }
+  .bit{ font-family: 'Bitcount Prop Single', 'IBM Plex Mono', monospace; }
+  button{ font-family: 'IBM Plex Mono', monospace; }
+
+  /* ---------- cabeçalho ---------- */
+  header.topbar{
+    position: fixed; top:0; left:0; right:0;
+    display:flex; align-items:flex-start; justify-content:space-between;
+    padding: 26px 30px;
+    z-index: 20;
+    pointer-events:none;
+  }
+  .header-left{ display:flex; flex-direction:column; gap:4px; }
+
+  .header-wordmark{
+    font-family: 'Bitcount Prop Single', 'IBM Plex Mono', monospace;
+    font-weight: 300;
+    font-size: 34px; line-height: 1;
+    color: var(--white);
+    margin: 0;
+    opacity: 0;
+    transition: opacity .5s ease;
+  }
+  body.has-nodes .header-wordmark{ opacity: 1; }
+
+  .config-as{
+    font-size: 12px; color: var(--soft);
+    opacity: 0; transition: opacity .5s ease;
+  }
+  body.has-nodes .config-as{ opacity: 1; }
+  .config-as b{ color: var(--white); font-weight: 600; }
+
+  .dominance{
+    font-size: 12px; color: var(--soft);
+    text-align:right; line-height: 1.6;
+    opacity: 0; transition: opacity .5s ease;
+    max-width: 320px;
+  }
+  .dominance.visible{ opacity: 1; }
+  .dominance b{ color: var(--white); font-weight: 600; }
+
+  /* ---------- tela do grafo ---------- */
+  #canvas-wrap{ position: fixed; inset:0; }
+  svg#graph{ width:100%; height:100%; display:block; }
+
+  .node-label{
+    fill: var(--white);
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 15px;
+    pointer-events: none; user-select: none;
+  }
+  .node-group{ touch-action: none; }
+  .node-shape{ cursor: grab; }
+  .edge-line{ stroke: rgba(255,255,255,0.5); stroke-width: 1; }
+
+  /* ---------- entrada ---------- */
+  #input-dock{
+    position: fixed;
+    left: 50%; top: 50%;
+    transform: translate(-50%, -50%);
+    width: min(960px, 92vw);
+    z-index: 30;
+    text-align: center;
+    transition: top .65s cubic-bezier(.2,.8,.2,1), transform .65s cubic-bezier(.2,.8,.2,1), width .5s ease;
+  }
+  body.has-nodes #input-dock{
+    top: 26px;
+    transform: translate(-50%, 0);
+    width: min(440px, 84vw);
+  }
+
+  .wordmark-big{
+    font-family: 'Bitcount Prop Single', 'IBM Plex Mono', monospace;
+    /* peso regular: é nele que os pontos da Bitcount se tocam e formam o traço */
+    font-weight: 400;
+    font-size: clamp(76px, 16vw, 190px);
+    line-height: 0.95;
+    color: var(--yellow);
+    margin: 0 0 12px 0;
+    letter-spacing: 0.01em;
+    transition: opacity .4s ease, font-size .5s ease, margin .5s ease;
+  }
+  body.has-nodes .wordmark-big{
+    opacity: 0; font-size: 0; margin: 0; overflow: hidden;
+  }
+
+  .input-row{ position: relative; max-width: 430px; margin: 0 auto; }
+  body.has-nodes .input-row{ max-width: none; }
+
+  #interest-input{
+    width: 100%;
+    background: var(--surface);
+    border: none;
+    border-radius: 999px;
+    padding: 17px 26px;
+    color: var(--white);
+    font-family: 'IBM Plex Sans', 'IBM Plex Mono', sans-serif;
+    font-size: 17px;
+    text-align: center;
+    outline: none;
+    transition: padding .45s ease, font-size .45s ease, background .2s ease;
+  }
+  body.has-nodes #interest-input{ padding: 13px 22px; font-size: 15px; }
+  #interest-input::placeholder{ color: rgba(255,255,255,0.72); }
+  #interest-input:focus{ background: var(--surface-2); }
+
+  .suggestions{
+    position: absolute; top: calc(100% + 8px);
+    left: 0; right: 0;
+    background: var(--surface);
+    border-radius: 18px;
+    overflow: hidden auto;
+    display: none; text-align: left;
+    max-height: 230px;
+    box-shadow: 0 14px 40px rgba(0,0,0,0.25);
+  }
+  .suggestions.visible{ display: block; }
+  .suggestion-item{
+    padding: 12px 22px; font-size: 14px;
+    color: var(--white); cursor: pointer;
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .suggestion-item:hover, .suggestion-item.highlighted{
+    background: var(--surface-2); color: var(--yellow);
+  }
+  .suggestion-item .hint-tag{ font-size: 10px; color: rgba(255,255,255,0.6); }
+
+  /* ---------- texto de abertura ---------- */
+  #hero-desc{
+    margin: 38px auto 0;
+    max-width: 900px;
+    font-size: 13px; line-height: 1.85;
+    color: var(--yellow);
+    text-align: center;
+    pointer-events: none;
+    transition: opacity .4s ease, max-height .5s ease, margin .5s ease;
+    max-height: 400px; overflow: hidden;
+  }
+  #hero-desc p{ margin: 0 0 18px 0; }
+  #hero-desc p:last-child{ margin-bottom: 0; }
+  body.has-nodes #hero-desc{ opacity: 0; max-height: 0; margin: 0; }
+
+  /* ---------- botões em pílula ---------- */
+  .pill{
+    font-family: 'Bitcount Prop Single', 'IBM Plex Mono', monospace;
+    font-weight: 350;
+    font-size: 17px;
+    background: none;
+    border: 2px solid var(--white);
+    color: var(--white);
+    padding: 11px 26px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: border-color .2s ease, color .2s ease, background .2s ease;
+  }
+  .pill:hover{ border-color: var(--yellow); color: var(--yellow); }
+  .pill.accent{ border-color: var(--yellow); color: var(--yellow); }
+  .pill.accent:hover{ background: rgba(228,247,28,0.14); }
+  .pill:disabled{ opacity: .45; cursor: default; }
+
+  .bottom-actions{
+    position: fixed;
+    left: 50%; bottom: 46px;
+    transform: translateX(-50%);
+    display: flex; gap: 14px;
+    z-index: 25;
+    opacity: 0; pointer-events: none;
+    transition: opacity .4s ease;
+  }
+  body.has-nodes .bottom-actions{ opacity: 1; pointer-events: auto; }
+
+  /* ---------- aba lateral ---------- */
+  .deck-toggle{
+    font-family: 'Bitcount Prop Single', 'IBM Plex Mono', monospace;
+    font-weight: 350;
+    position: fixed;
+    left: 0; top: 50%;
+    transform: translateY(-50%);
+    z-index: 50;
+    background: var(--surface);
+    border: none;
+    border-radius: 0 14px 14px 0;
+    color: var(--white);
+    font-size: 12px; letter-spacing: 0.22em;
+    padding: 34px 12px;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    transform-origin: center;
+    cursor: pointer;
+    transition: background .2s ease, opacity .25s ease;
+  }
+  .deck-toggle span{ transform: rotate(180deg); display: inline-block; }
+  .deck-toggle:hover{ background: var(--surface-2); }
+  .deck-toggle.hidden-toggle{ opacity: 0; pointer-events: none; }
+
+  .deck-backdrop{
+    position: fixed; inset:0;
+    background: rgba(10,20,150,0.28);
+    z-index: 54; opacity: 0; pointer-events: none;
+    transition: opacity .3s ease;
+  }
+  .deck-backdrop.visible{ opacity: 1; pointer-events: auto; }
+
+  #deck-drawer{
+    position: fixed; top:0; left:0; bottom:0;
+    width: 340px;
+    background: var(--surface);
+    z-index: 55; padding: 26px 30px;
+    display:flex; flex-direction: column;
+    transform: translateX(-100%);
+    transition: transform .45s cubic-bezier(.2,.8,.2,1);
+  }
+  #deck-drawer.open{ transform: translateX(0); }
+
+  .deck-drawer-header{
+    display:flex; align-items:flex-start; justify-content:space-between;
+    margin-bottom: 40px;
+  }
+  .deck-drawer-title{
+    font-family: 'Bitcount Prop Single', 'IBM Plex Mono', monospace;
+    font-weight: 300;
+    font-size: 20px; margin: 10px 0 0 0;
+  }
+  .drawer-close{
+    font-family: 'Bitcount Prop Single', 'IBM Plex Mono', monospace;
+    font-weight: 350;
+    background:none; border:none; color: var(--white);
+    font-size: 13px; letter-spacing: 0.06em; cursor: pointer; padding: 0;
+  }
+  .drawer-close:hover{ color: var(--yellow); }
+
+  .deck-list{
+    flex: 1; overflow-y: auto;
+    display: flex; flex-direction: column; gap: 20px;
+  }
+  .deck-empty{ font-size: 13px; line-height: 1.7; color: var(--soft); }
+
+  .deck-item{
+    background: var(--surface-2);
+    border: 2px solid transparent;
+    border-radius: 16px;
+    padding: 20px 20px 16px;
+    cursor: pointer; min-height: 132px;
+    display: flex; flex-direction: column;
+    transition: border-color .2s ease;
+  }
+  .deck-item:hover{ border-color: rgba(255,255,255,0.5); }
+  .deck-item.active-graph{ border-color: var(--yellow); }
+
+  .deck-item-name{
+    font-family: 'Bitcount Prop Single', 'IBM Plex Mono', monospace;
+    font-size: 18px; font-weight: 350; margin-bottom: 6px;
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+  }
+  .deck-item-meta{ font-size: 11px; color: var(--soft); margin-bottom: auto; }
+  .deck-item-actions{ display:flex; gap: 8px; margin-top: 16px; flex-wrap: wrap; }
+  .mini-btn{
+    font-family: 'Bitcount Prop Single', 'IBM Plex Mono', monospace;
+    font-weight: 350;
+    background:none; border: 1px solid rgba(255,255,255,0.6);
+    color: var(--white); font-size: 12px;
+    padding: 6px 12px; border-radius: 999px; cursor: pointer;
+    transition: border-color .2s ease, color .2s ease;
+  }
+  .mini-btn:hover{ border-color: var(--yellow); color: var(--yellow); }
+
+  /* ---------- painel do nó ---------- */
+  #side-panel{
+    position: fixed; top: 0; right: 0; bottom: 0;
+    width: 340px; background: var(--surface);
+    z-index: 40; padding: 26px 30px;
+    transform: translateX(100%);
+    transition: transform .45s cubic-bezier(.2,.8,.2,1);
+    display:flex; flex-direction: column;
+  }
+  #side-panel.open{ transform: translateX(0); }
+
+  .panel-close{
+    align-self: flex-end; background: none; border: none;
+    color: var(--white); font-size: 12px;
+    letter-spacing: 0.06em; cursor: pointer; padding: 0; margin-bottom: 34px;
+  }
+  .panel-close:hover{ color: var(--yellow); }
+
+  .panel-eyebrow{ font-size: 11px; color: var(--soft); margin: 0 0 8px 0; }
+  .panel-title{ font-size: 26px; font-weight: 600; margin: 0 0 34px 0; word-break: break-word; }
+
+  .slider-label{
+    display:flex; justify-content: space-between; align-items:baseline; margin-bottom: 14px;
+  }
+  .slider-label span:first-child{ font-size: 12px; color: var(--soft); }
+  .slider-value{ font-size: 24px; font-weight: 600; color: var(--yellow); }
+
+  input[type="range"]{
+    -webkit-appearance: none; width: 100%; height: 3px;
+    border-radius: 2px; background: rgba(255,255,255,0.35); outline: none;
+  }
+  input[type="range"]::-webkit-slider-thumb{
+    -webkit-appearance: none; width: 18px; height:18px; border-radius: 50%;
+    background: var(--yellow); cursor:pointer; border: none;
+  }
+  input[type="range"]::-moz-range-thumb{
+    width: 18px; height:18px; border-radius: 50%;
+    background: var(--yellow); cursor:pointer; border: none;
+  }
+
+  .panel-description{
+    margin-top: 30px; font-size: 13px; line-height: 1.7;
+    color: var(--soft); padding-top: 22px;
+    border-top: 1px solid rgba(255,255,255,0.3);
+  }
+  .panel-footer{ margin-top: auto; padding-top: 20px; }
+  .remove-node{
+    background:none; border: 1px solid rgba(255,255,255,0.6);
+    color: var(--white); font-size: 12px;
+    padding: 10px 16px; border-radius: 999px; cursor: pointer; width: 100%;
+    transition: border-color .2s ease, color .2s ease;
+  }
+  .remove-node:hover{ border-color: var(--yellow); color: var(--yellow); }
+
+  /* ---------- modal de nome ---------- */
+  #name-modal{
+    position: fixed; inset: 0;
+    background: rgba(10,20,150,0.55);
+    z-index: 95;
+    display: none; align-items: center; justify-content: center;
+    padding: 24px;
+  }
+  #name-modal.open{ display: flex; }
+  .name-card{
+    width: min(440px, 100%);
+    background: var(--surface);
+    border-radius: 20px;
+    padding: 34px 32px;
+  }
+  .name-card h2{
+    font-family: 'Bitcount Prop Single', 'IBM Plex Mono', monospace;
+    font-weight: 300;
+    font-size: 26px; margin: 0 0 6px 0;
+  }
+  .name-card p{ font-size: 12px; color: var(--soft); margin: 0 0 24px 0; line-height: 1.6; }
+  #name-input{
+    width: 100%;
+    background: var(--blue);
+    border: none; border-radius: 999px;
+    padding: 14px 22px;
+    color: var(--white);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 15px; outline: none;
+    margin-bottom: 22px;
+  }
+  #name-input::placeholder{ color: rgba(255,255,255,0.55); }
+  .name-actions{ display: flex; gap: 12px; justify-content: flex-end; }
+  .name-actions .pill{ font-size: 15px; padding: 9px 22px; }
+
+  /* ---------- aviso ---------- */
+  #toast{
+    position: fixed; left: 50%; bottom: 120px;
+    transform: translate(-50%, 8px);
+    background: var(--surface);
+    color: var(--white); font-size: 12px;
+    padding: 12px 22px; border-radius: 999px;
+    z-index: 90; opacity: 0; pointer-events: none;
+    transition: opacity .3s ease, transform .3s ease;
+    max-width: 80vw; text-align:center;
+  }
+  #toast.visible{ opacity: 1; transform: translate(-50%, 0); }
+
+  /* ================= tela do feed ================= */
+  #feed-view{
+    position: fixed; inset: 0;
+    background: var(--blue);
+    z-index: 60; display: none;
+  }
+  #feed-view.open{ display: block; }
+  #feed-canvas{ position: absolute; inset: 0; overflow: hidden; }
+
+  .feed-topbar{
+    position: absolute; top: 0; left: 0; right: 0;
+    display: flex; align-items: flex-start; justify-content: space-between;
+    padding: 26px 30px; z-index: 3;
+    pointer-events: none;
+  }
+  .feed-topbar > *{ pointer-events: auto; }
+  .feed-wordmark{
+    font-family: 'Bitcount Prop Single', 'IBM Plex Mono', monospace;
+    font-weight: 300;
+    font-size: 34px; line-height: 1; margin: 0 0 4px 0;
+  }
+  .feed-sub{ font-size: 12px; color: var(--soft); margin: 0 0 16px 0; }
+  .feed-sub b{ color: var(--white); font-weight: 600; }
+
+  .fbubble{
+    position: absolute; top: 0; left: 0;
+    cursor: pointer; touch-action: none; text-align: center;
+    will-change: transform;
+    transition: opacity .3s ease;
+    animation: bubble-in .5s ease backwards;
+  }
+  @keyframes bubble-in{ from{ opacity: 0; } to{ opacity: 1; } }
+  .fbubble.visited{ opacity: 0.5; }
+  .fbubble svg{ position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+
+  .fbubble-inner{
+    position: absolute; top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+  }
+  .fbubble-term{
+    font-weight: 500; line-height: 1.25;
+    overflow-wrap: break-word; word-break: normal;
+    color: var(--blue);
+  }
+  .fbubble.hybrid .fbubble-term{ color: var(--white); }
+
+  .feed-status{
+    position: absolute; left: 50%; top: 50%;
+    transform: translate(-50%,-50%);
+    text-align: center; max-width: 460px; width: 88vw; z-index: 4;
+  }
+  .feed-status.hidden{ display: none; }
+  .status-title{ font-size: 14px; margin: 0 0 12px 0; }
+  .status-detail{ font-size: 13px; line-height: 1.7; color: var(--soft); margin: 0; }
+
+  .engine-dock{
+    position: absolute;
+    left: 50%; bottom: 46px;
+    transform: translateX(-50%);
+    z-index: 5; display: flex; gap: 14px;
+  }
+
+  @media (max-width: 760px){
+    #side-panel, #deck-drawer{ width: 88vw; }
+    header.topbar, .feed-topbar{ padding: 18px 18px; }
+    .dominance{ font-size: 10.5px; max-width: 150px; }
+    #hero-desc{ font-size: 12px; line-height: 1.75; margin-top: 24px; }
+    .wordmark-big{ font-size: clamp(58px, 19vw, 110px); margin-bottom: 10px; }
+
+    /* a aba lateral fica sobre o conteúdo, então o bloco central recua
+       dos dois lados para não passar por baixo dela */
+    .deck-toggle{ padding: 26px 9px; font-size: 11px; letter-spacing: 0.18em; }
+    #input-dock{ width: calc(100vw - 104px); }
+    .pill{ font-size: 14px; padding: 9px 18px; }
+    .header-wordmark, .feed-wordmark{ font-size: 26px; }
+
+    /* com bolhas em cena, o campo desce para junto dos botões
+       em vez de disputar espaço com o cabeçalho */
+    body.has-nodes #input-dock{
+      top: auto; bottom: 104px;
+      transform: translateX(-50%);
+      width: min(420px, 88vw);
+    }
+    .bottom-actions{
+      bottom: 26px; gap: 8px;
+      width: 92vw; flex-wrap: wrap; justify-content: center;
+    }
+    .engine-dock{ bottom: 26px; gap: 8px; flex-wrap: wrap; justify-content: center; width: 92vw; }
+  }
+
+  @media (max-height: 720px){
+    .wordmark-big{ font-size: clamp(60px, 11vh, 120px); margin-bottom: 8px; }
+    #hero-desc{ margin-top: 24px; font-size: 12px; line-height: 1.7; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+  }
+
+  .sr-only{
+    position:absolute; width:1px; height:1px; padding:0; margin:-1px;
+    overflow:hidden; clip: rect(0,0,0,0); white-space:nowrap; border:0;
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="header-left">
+    <h1 class="header-wordmark">Bolhas</h1>
+    <div class="config-as" id="config-as">bolha configurada como:</div>
+  </div>
+  <div class="dominance" id="dominance-readout"></div>
+</header>
+
+<button class="deck-toggle" id="deck-toggle" aria-label="Abrir minhas bolhas">
+  <span>MINHAS BOLHAS</span>
+</button>
+
+<div class="deck-backdrop" id="deck-backdrop"></div>
+
+<aside id="deck-drawer" aria-hidden="true">
+  <div class="deck-drawer-header">
+    <p class="deck-drawer-title">Seu grupo de bolhas</p>
+    <button class="drawer-close" id="drawer-close">FECHAR</button>
+  </div>
+  <div class="deck-list" id="deck-list"></div>
+</aside>
+
+<div id="canvas-wrap">
+  <svg id="graph" role="img" aria-label="Grafo de interesses"></svg>
+</div>
+
+<div id="input-dock">
+  <h1 class="wordmark-big">Bolhas</h1>
+  <div class="input-row">
+    <label for="interest-input" class="sr-only">Digite um interesse</label>
+    <input type="text" id="interest-input" placeholder="Digite um interesse" autocomplete="off" />
+    <div class="suggestions" id="suggestions" role="listbox"></div>
+  </div>
+
+  <div id="hero-desc">
+    <p>Essa aplicação é um experimento em design especulativo que tem como objetivo propor um caminho para a customização de algoritmos de recomendação. Aqui, você criará seus próprios algoritmos a partir da construção de grafos de interesse, nos quais cada nó representa um ponto de interesse que pode ser personalizado em termos de intensidade.</p>
+    <p>A metáfora utilizada é a criação de bolhas, uma vez que os algoritmos de recomendação, de certa forma, atuam como bolhas virtuais que filtram e organizam as informações às quais somos expostos.</p>
+    <p>Após criar um conjunto de bolhas, você poderá acessar um feed a partir delas. Nesse feed, será possível realizar pesquisas em três plataformas: YouTube, Google e Pinterest. As pesquisas serão relacionadas a cada nó e às interseções entre os nós mais influentes.</p>
+  </div>
+</div>
+
+<div class="bottom-actions">
+  <button class="pill" id="save-btn">salvar</button>
+  <button class="pill" id="search-btn">acessar feed</button>
+  <button class="pill" id="new-graph-btn">novo grupo</button>
+</div>
+
+<aside id="side-panel" aria-hidden="true">
+  <button class="panel-close" id="panel-close">FECHAR</button>
+  <p class="panel-eyebrow">bolha selecionada</p>
+  <h2 class="panel-title" id="panel-title">—</h2>
+
+  <div class="slider-row">
+    <div class="slider-label">
+      <span>intensidade de influência</span>
+      <span class="slider-value" id="slider-value">5</span>
+    </div>
+    <input type="range" id="intensity-slider" min="0" max="10" step="1" value="5" aria-label="Intensidade de influência, de 0 a 10">
+  </div>
+
+  <p class="panel-description" id="panel-description"></p>
+
+  <div class="panel-footer">
+    <button class="remove-node" id="remove-node">remover esta bolha</button>
+  </div>
+</aside>
+
+<section id="feed-view" aria-hidden="true">
+  <div id="feed-canvas"></div>
+
+  <div class="feed-topbar">
+    <div>
+      <h2 class="feed-wordmark">Bolhas</h2>
+      <p class="feed-sub" id="feed-sub"></p>
+      <button class="mini-btn" id="feed-back">voltar às bolhas</button>
+    </div>
+    <div class="dominance visible" id="feed-dominance"></div>
+  </div>
+
+  <div class="feed-status hidden" id="feed-status"></div>
+  <div class="engine-dock" id="engine-dock"></div>
+</section>
+
+<div id="name-modal" role="dialog" aria-modal="true">
+  <div class="name-card">
+    <h2>Nomear grupo</h2>
+    <p>Este nome identifica o grupo de bolhas no menu lateral.</p>
+    <label for="name-input" class="sr-only">Nome do grupo</label>
+    <input type="text" id="name-input" placeholder="ex.: leituras de domingo" autocomplete="off" />
+    <div class="name-actions">
+      <button class="pill" id="name-cancel">cancelar</button>
+      <button class="pill" id="name-confirm">salvar</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+  "use strict";
+
+  var SUGGESTIONS = ["música","política","anime","ficção científica","esportes","moda","tecnologia","culinária","games","notícias","viagem","humor"];
+  var STORAGE_KEY = 'gravidade-feed:decks:v1';
+  var ENGINE_STORAGE = 'gravidade-feed:engine:v1';
+
+  var MAX_PAIR_TOPICS = 4;   // interseções apenas entre os quatro temas mais pesados
+
+  // ---- elementos ----
+  var svg = document.getElementById("graph");
+  var input = document.getElementById("interest-input");
+  var suggestionsBox = document.getElementById("suggestions");
+  var dominanceReadout = document.getElementById("dominance-readout");
+  var configAs = document.getElementById("config-as");
+  var toastEl = document.getElementById("toast");
+  var saveBtn = document.getElementById("save-btn");
+  var searchBtn = document.getElementById("search-btn");
+
+  var sidePanel = document.getElementById("side-panel");
+  var panelTitle = document.getElementById("panel-title");
+  var panelDescription = document.getElementById("panel-description");
+  var slider = document.getElementById("intensity-slider");
+  var sliderValue = document.getElementById("slider-value");
+  var panelClose = document.getElementById("panel-close");
+  var removeBtn = document.getElementById("remove-node");
+
+  var deckToggle = document.getElementById("deck-toggle");
+  var deckDrawer = document.getElementById("deck-drawer");
+  var deckBackdrop = document.getElementById("deck-backdrop");
+  var drawerClose = document.getElementById("drawer-close");
+  var deckList = document.getElementById("deck-list");
+  var newGraphBtn = document.getElementById("new-graph-btn");
+
+  var feedView = document.getElementById("feed-view");
+  var feedCanvas = document.getElementById("feed-canvas");
+  var feedSub = document.getElementById("feed-sub");
+  var feedDominance = document.getElementById("feed-dominance");
+  var feedStatus = document.getElementById("feed-status");
+  var feedBack = document.getElementById("feed-back");
+  var engineDock = document.getElementById("engine-dock");
+
+  var nameModal = document.getElementById("name-modal");
+  var nameInput = document.getElementById("name-input");
+  var nameConfirm = document.getElementById("name-confirm");
+  var nameCancel = document.getElementById("name-cancel");
+
+  var NS = "http://www.w3.org/2000/svg";
+  var W = window.innerWidth, H = window.innerHeight;
+  var FW = W, FH = H;
+
+  // ---- defs do SVG ----
+  var defs = document.createElementNS(NS, 'defs');
+  var filter = document.createElementNS(NS, 'filter');
+  filter.setAttribute('id', 'glow');
+  filter.setAttribute('x', '-100%'); filter.setAttribute('y', '-100%');
+  filter.setAttribute('width', '300%'); filter.setAttribute('height', '300%');
+  var halo = document.createElementNS(NS, "feGaussianBlur");
+  halo.setAttribute("in", "SourceGraphic");
+  halo.setAttribute("stdDeviation", "14"); halo.setAttribute("result", "halo");
+  var soft = document.createElementNS(NS, "feGaussianBlur");
+  soft.setAttribute("in", "SourceGraphic");
+  soft.setAttribute("stdDeviation", "5"); soft.setAttribute("result", "soft");
+  var merge = document.createElementNS(NS, "feMerge");
+  var m1 = document.createElementNS(NS, "feMergeNode"); m1.setAttribute("in","halo");
+  var m2 = document.createElementNS(NS, "feMergeNode"); m2.setAttribute("in","soft");
+  merge.appendChild(m1); merge.appendChild(m2);
+  filter.appendChild(halo); filter.appendChild(soft); filter.appendChild(merge);
+  defs.appendChild(filter);
+  svg.appendChild(defs);
+
+  var edgesLayer = document.createElementNS(NS, 'g');
+  var nodesLayer = document.createElementNS(NS, 'g');
+  svg.appendChild(edgesLayer);
+  svg.appendChild(nodesLayer);
+
+  var nodes = [];
+  var activeNode = null;
+  var nodeIdCounter = 0;
+
+  var BASE_DIST = 230, SPRING_K = 0.028, DAMPING = 0.86;
+  var CENTER_K = 0.0018, MIN_SEP_PAD = 16, COLLISION_ITERATIONS = 3;
+
+  // ================= utilidades =================
+  function escapeHtml(str){
+    return String(str).replace(/[&<>"']/g, function(ch){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch];
+    });
+  }
+
+  function normalizeText(s){
+    return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim();
+  }
+
+  function showToast(msg){
+    toastEl.textContent = msg;
+    toastEl.classList.add('visible');
+    clearTimeout(showToast._t);
+    showToast._t = setTimeout(function(){ toastEl.classList.remove('visible'); }, 3200);
+  }
+
+  // ================= membrana das bolhas =================
+  // Cada círculo deixa de ser um círculo: vira um anel de vértices ligados
+  // por molas. Cada vértice oscila em torno do raio de repouso, e a tensão
+  // superficial propaga a ondulação para os vizinhos, como numa gota.
+
+  var BLOB_POINTS = 16;
+
+  function createBlob(){
+    var pts = [];
+    for(var i=0;i<BLOB_POINTS;i++){
+      pts.push({ o: 0, v: 0, phase: Math.random()*Math.PI*2 });
+    }
+    return { pts: pts, prev: new Array(BLOB_POINTS) };
+  }
+
+  /** Avança um passo da membrana: tensão superficial, retorno ao repouso e respiração. */
+  function blobStep(blob, r, t, calm){
+    var n = BLOB_POINTS, pts = blob.pts, prev = blob.prev;
+    var SPRING = 0.085;      // volta ao raio de repouso
+    var TENSION = 0.30;      // acoplamento com os vizinhos, propaga a onda
+    var DAMP = 0.905;
+    var limit = r * 0.22;
+    var breath = calm ? 0.0030 : 0.0045;
+
+    for(var i=0;i<n;i++) prev[i] = pts[i].o;
+
+    for(var j=0;j<n;j++){
+      var p = pts[j];
+      var left = prev[(j-1+n)%n], right = prev[(j+1)%n];
+      p.v += ((left + right)/2 - prev[j]) * TENSION;
+      p.v -= prev[j] * SPRING;
+      p.v += Math.sin(t*1.7 + p.phase) * r * breath;
+      p.v *= DAMP;
+      p.o += p.v;
+      if(p.o > limit){ p.o = limit; p.v *= -0.35; }
+      if(p.o < -limit){ p.o = -limit; p.v *= -0.35; }
+    }
+  }
+
+  /**
+   * Aplica um impacto numa direção: afunda a membrana no ponto de contato e
+   * a estufa do lado oposto, que é como um volume de água reage a um toque.
+   */
+  function blobImpulse(blob, angle, strength, spread){
+    var n = BLOB_POINTS;
+    spread = spread || 0.85;
+    for(var i=0;i<n;i++){
+      var a = (i/n) * Math.PI * 2;
+      var d = Math.atan2(Math.sin(a - angle), Math.cos(a - angle));
+      var near = Math.exp(-(d*d)/(2*spread*spread));
+      var far = Math.exp(-(Math.pow(Math.abs(d) - Math.PI, 2))/(2*spread*spread));
+      blob.pts[i].v += strength * near - strength * 0.45 * far;
+    }
+  }
+
+  /** Converte o anel de vértices num contorno fechado e suave (Catmull-Rom em Bézier). */
+  function blobPath(blob, r, cx, cy){
+    var n = BLOB_POINTS, P = [];
+    for(var i=0;i<n;i++){
+      var a = (i/n) * Math.PI * 2;
+      var rr = Math.max(1, r + blob.pts[i].o);
+      P.push([cx + Math.cos(a)*rr, cy + Math.sin(a)*rr]);
+    }
+    var d = 'M' + P[0][0].toFixed(1) + ',' + P[0][1].toFixed(1);
+    for(var k=0;k<n;k++){
+      var p0 = P[(k-1+n)%n], p1 = P[k], p2 = P[(k+1)%n], p3 = P[(k+2)%n];
+      var c1x = p1[0] + (p2[0]-p0[0])/6, c1y = p1[1] + (p2[1]-p0[1])/6;
+      var c2x = p2[0] - (p3[0]-p1[0])/6, c2y = p2[1] - (p3[1]-p1[1])/6;
+      d += 'C' + c1x.toFixed(1) + ',' + c1y.toFixed(1)
+         + ' ' + c2x.toFixed(1) + ',' + c2y.toFixed(1)
+         + ' ' + p2[0].toFixed(1) + ',' + p2[1].toFixed(1);
+    }
+    return d + 'Z';
+  }
+
+  // ================= ferramenta de busca =================
+  var ENGINES = [
+    { id:"youtube",   name:"YouTube",   url:"https://www.youtube.com/results?search_query=" },
+    { id:"google",    name:"Google",    url:"https://www.google.com/search?q=" },
+    { id:"pinterest", name:"Pinterest", url:"https://www.pinterest.com/search/pins/?q=" }
+  ];
+
+  function getEngine(){
+    try{ return localStorage.getItem(ENGINE_STORAGE) || "youtube"; }catch(e){ return "youtube"; }
+  }
+  function setEngine(id){
+    try{ localStorage.setItem(ENGINE_STORAGE, id); }catch(e){}
+  }
+  function engineInfo(id){
+    for(var i=0;i<ENGINES.length;i++){ if(ENGINES[i].id === id) return ENGINES[i]; }
+    return ENGINES[0];
+  }
+
+  // ================= deck =================
+  function loadDeck(){
+    try{
+      var raw = localStorage.getItem(STORAGE_KEY);
+      var parsed = raw ? JSON.parse(raw) : [];
+      return Array.isArray(parsed) ? parsed : [];
+    }catch(e){ return []; }
+  }
+
+  var deck = loadDeck();
+  var currentGraphId = null;
+  var dirty = false;   // há alteração ainda não gravada no grupo em edição
+
+  function persistDeck(){
+    try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(deck)); }
+    catch(e){ showToast('Não foi possível salvar. Armazenamento indisponível.'); }
+  }
+
+  function generateId(){
+    return 'g' + Date.now().toString(36) + Math.random().toString(36).slice(2,7);
+  }
+
+  function activeGraph(){
+    for(var i=0;i<deck.length;i++){ if(deck[i].active) return deck[i]; }
+    return null;
+  }
+
+  function dominantOf(graphNodes){
+    if(!graphNodes.length) return null;
+    var sum = 0, max = null;
+    graphNodes.forEach(function(n){
+      sum += n.intensity;
+      if(!max || n.intensity > max.intensity) max = n;
+    });
+    return { label: max.label, pct: sum ? Math.round((max.intensity/sum)*100) : 0 };
+  }
+
+  function updateActiveIndicator(){
+    var act = activeGraph();
+    configAs.innerHTML = act
+      ? 'bolha configurada como: <b>' + escapeHtml(act.name) + '</b>'
+      : 'bolha ainda não salva';
+  }
+
+  function updateApplyCta(){
+    searchBtn.disabled = !nodes.some(function(n){ return n.intensity > 0; });
+  }
+
+  function renderDeckList(){
+    deckList.innerHTML = '';
+    if(deck.length === 0){
+      var empty = document.createElement('p');
+      empty.className = 'deck-empty mono';
+      empty.textContent = 'Nenhum grafo salvo ainda. Monte um grafo e clique em "Salvar grafo atual".';
+      deckList.appendChild(empty);
+    } else {
+      deck.slice().sort(function(a,b){ return b.updatedAt - a.updatedAt; }).forEach(function(g){
+        deckList.appendChild(buildDeckItem(g));
+      });
+    }
+    updateActiveIndicator();
+  }
+
+  function buildDeckItem(g){
+    var card = document.createElement('div');
+    card.className = 'deck-item' + (g.active ? ' active-graph' : '');
+
+    var name = document.createElement('div');
+    name.className = 'deck-item-name';
+    name.textContent = g.name;
+    card.appendChild(name);
+
+    var meta = document.createElement('div');
+    meta.className = 'deck-item-meta';
+    var dom = dominantOf(g.nodes);
+    meta.textContent = g.nodes.length + (g.nodes.length === 1 ? ' bolha' : ' bolhas')
+      + (dom ? ' · domina: ' + dom.label : '');
+    card.appendChild(meta);
+
+    var actions = document.createElement('div');
+    actions.className = 'deck-item-actions';
+
+    var applyBtn = document.createElement('button');
+    applyBtn.className = 'mini-btn';
+    applyBtn.textContent = 'acessar feed';
+    applyBtn.addEventListener('click', function(e){
+      e.stopPropagation();
+      activateGraphById(g.id);
+      closeDrawer();
+      openFeed(g.name, g.nodes);
+    });
+
+    var editBtn = document.createElement('button');
+    editBtn.className = 'mini-btn';
+    editBtn.textContent = 'editar';
+    editBtn.addEventListener('click', function(e){
+      e.stopPropagation();
+      loadGraphIntoCanvas(g);
+    });
+
+    var deleteBtn = document.createElement('button');
+    deleteBtn.className = 'mini-btn';
+    deleteBtn.textContent = 'excluir';
+    deleteBtn.addEventListener('click', function(e){ e.stopPropagation(); deleteGraphById(g.id); });
+
+    actions.appendChild(applyBtn);
+    actions.appendChild(editBtn);
+    actions.appendChild(deleteBtn);
+    card.appendChild(actions);
+
+    card.addEventListener('click', function(){ loadGraphIntoCanvas(g); });
+    return card;
+  }
+
+  function activateGraphById(id){
+    deck.forEach(function(g){ g.active = (g.id === id); });
+    persistDeck();
+    renderDeckList();
+  }
+
+  function deleteGraphById(id){
+    var g = deck.find(function(d){ return d.id === id; });
+    if(!g) return;
+    if(!window.confirm('Excluir o grafo "' + g.name + '"? Essa ação não pode ser desfeita.')) return;
+    deck = deck.filter(function(d){ return d.id !== id; });
+    if(currentGraphId === id) currentGraphId = null;
+    persistDeck();
+    renderDeckList();
+    showToast('Grafo excluído.');
+  }
+
+  function serializeCurrentGraph(){
+    return nodes.map(function(n){ return { label:n.label, intensity:n.intensity, x:n.x, y:n.y }; });
+  }
+
+  /** Grava o estado atual das bolhas no grupo em edição. */
+  function commitGraph(name){
+    var serialized = serializeCurrentGraph();
+    var existing = currentGraphId ? deck.find(function(d){ return d.id === currentGraphId; }) : null;
+
+    if(existing){
+      if(name) existing.name = name;
+      existing.nodes = serialized;
+      existing.updatedAt = Date.now();
+    } else {
+      deck.forEach(function(d){ d.active = false; });
+      var g = { id: generateId(), name: name, nodes: serialized, updatedAt: Date.now(), active: true };
+      deck.push(g);
+      currentGraphId = g.id;
+    }
+    dirty = false;
+    persistDeck();
+    renderDeckList();
+    return !existing;
+  }
+
+  function saveCurrentGraph(){
+    if(nodes.length === 0){ showToast('Crie ao menos uma bolha antes de salvar.'); return; }
+
+    var existing = currentGraphId ? deck.find(function(d){ return d.id === currentGraphId; }) : null;
+    if(existing){
+      commitGraph(null);
+      showToast('Grupo "' + existing.name + '" atualizado.');
+      return;
+    }
+
+    // grupo inédito: pede o nome antes de gravar
+    openNameModal('grupo ' + (deck.length + 1), function(name){
+      commitGraph(name);
+      showToast('Grupo "' + name + '" salvo.');
+      openDrawer();
+    });
+  }
+
+  function clearCanvasNodes(){
+    nodes.forEach(function(n){ n.groupEl.remove(); });
+    nodes = [];
+    closePanel();
+  }
+
+  function startNewGraph(){
+    clearCanvasNodes();
+    currentGraphId = null;
+    dirty = false;
+    document.body.classList.remove("has-nodes");
+    updateDominance();
+    updateApplyCta();
+    renderDeckList();
+  }
+
+  function requestNewGraph(){
+    if(nodes.length > 0 && dirty &&
+       !window.confirm('Começar um novo grupo? As alterações não salvas serão perdidas.')) return;
+    startNewGraph();
+    showToast('Novo grupo. Digite um interesse para começar.');
+  }
+
+  function loadGraphIntoCanvas(g){
+    clearCanvasNodes();
+    g.nodes.forEach(function(nd){ createNode(nd.label, nd.intensity, nd.x, nd.y); });
+    currentGraphId = g.id;
+    dirty = false;
+    document.body.classList.add("has-nodes");
+    updateDominance();
+    updateApplyCta();
+    closeDrawer();
+    renderDeckList();
+    showToast('Editando "' + g.name + '".');
+  }
+
+  function openDrawer(){
+    deckDrawer.classList.add('open');
+    deckDrawer.setAttribute('aria-hidden', 'false');
+    deckBackdrop.classList.add('visible');
+    deckToggle.classList.add('hidden-toggle');
+    renderDeckList();
+  }
+
+  function closeDrawer(){
+    deckDrawer.classList.remove('open');
+    deckDrawer.setAttribute('aria-hidden', 'true');
+    deckBackdrop.classList.remove('visible');
+    deckToggle.classList.remove('hidden-toggle');
+  }
+
+  // ---------- modal de nome ----------
+  var namePending = null;
+
+  function openNameModal(sugestao, aoConfirmar){
+    namePending = aoConfirmar;
+    nameInput.value = sugestao || '';
+    nameModal.classList.add('open');
+    setTimeout(function(){ nameInput.focus(); nameInput.select(); }, 60);
+  }
+
+  function closeNameModal(){
+    nameModal.classList.remove('open');
+    namePending = null;
+  }
+
+  function confirmName(){
+    var nome = nameInput.value.trim();
+    if(!nome){ nameInput.focus(); return; }
+    var cb = namePending;
+    closeNameModal();
+    if(cb) cb(nome);
+  }
+
+  nameConfirm.addEventListener('click', confirmName);
+  nameCancel.addEventListener('click', closeNameModal);
+  nameModal.addEventListener('click', function(e){ if(e.target === nameModal) closeNameModal(); });
+  nameInput.addEventListener('keydown', function(e){
+    if(e.key === 'Enter'){ e.preventDefault(); confirmName(); }
+  });
+
+  deckToggle.addEventListener('click', openDrawer);
+  drawerClose.addEventListener('click', closeDrawer);
+  deckBackdrop.addEventListener('click', closeDrawer);
+  newGraphBtn.addEventListener('click', requestNewGraph);
+  saveBtn.addEventListener('click', saveCurrentGraph);
+
+  // ================= grafo =================
+  var C_BLUE = '#1F33F2', C_YELLOW = '#E4F71C';
+
+  /** Peso baixo desbota para o branco; peso alto satura no amarelo da marca. */
+  function baseColor(intensity){
+    var t = Math.pow(intensity/10, 0.8);
+    var cold = [255,255,255], hot = [228,247,28];
+    var r = Math.round(cold[0] + (hot[0]-cold[0])*t);
+    var g = Math.round(cold[1] + (hot[1]-cold[1])*t);
+    var b = Math.round(cold[2] + (hot[2]-cold[2])*t);
+    return 'rgb(' + r + ',' + g + ',' + b + ')';
+  }
+
+  function radiusFor(intensity){ return 24 + intensity * 5.2; }
+
+  function updateDominance(){
+    if(nodes.length === 0){ dominanceReadout.classList.remove('visible'); return; }
+    var sum = 0, max = null;
+    nodes.forEach(function(n){
+      sum += n.intensity;
+      if(!max || n.intensity > max.intensity) max = n;
+    });
+    if(sum === 0){
+      dominanceReadout.innerHTML = 'todos os interesses em equilíbrio, <b>0%</b> de dominância';
+    } else {
+      var pct = Math.round((max.intensity/sum)*100);
+      dominanceReadout.innerHTML = 'nó dominante: <b>' + escapeHtml(max.label) + '</b>, ' + pct + '% do peso do seu feed';
+    }
+    dominanceReadout.classList.add('visible');
+  }
+
+  function descriptionFor(intensity){
+    if(intensity === 0) return 'Este interesse está presente, mas não influencia nada. Ele nem chega a aparecer no feed.';
+    if(intensity <= 3) return 'Presença discreta. Aparece pouco e é facilmente ofuscado por interesses mais fortes.';
+    if(intensity <= 6) return 'Presença moderada. Compete de igual para igual com os outros nós do seu grafo.';
+    if(intensity <= 8) return 'Presença forte. Este nó já começa a puxar os demais para perto de si.';
+    return 'Este interesse domina. Ele curva o grafo inteiro ao seu redor, e é praticamente tudo o que resta no seu feed.';
+  }
+
+  function createNode(label, intensity, x, y){
+    var cx = W/2, cy = H/2;
+    if(typeof intensity !== 'number') intensity = 5;
+    if(typeof x !== 'number' || typeof y !== 'number'){
+      var angle = Math.random()*Math.PI*2, startDist = 40;
+      x = cx + Math.cos(angle)*startDist;
+      y = cy + Math.sin(angle)*startDist;
+    }
+
+    var node = {
+      id: 'n' + (nodeIdCounter++),
+      label: label, x: x, y: y, vx: 0, vy: 0,
+      intensity: intensity, r: radiusFor(intensity),
+      rDraw: 0, blob: createBlob(),
+      isDragging: false, pointerId: null
+    };
+
+    var g = document.createElementNS(NS, 'g');
+    g.setAttribute('class', 'node-group');
+
+    var shape = document.createElementNS(NS, 'path');
+    shape.setAttribute('class', 'node-shape');
+    shape.setAttribute('fill', baseColor(node.intensity));
+    shape.setAttribute('filter', 'url(#glow)');
+    shape.setAttribute('opacity', '0.92');
+    shape.setAttribute('d', blobPath(node.blob, 1, 0, 0));
+
+    var text = document.createElementNS(NS, 'text');
+    text.setAttribute('class', 'node-label');
+    text.setAttribute('text-anchor', 'middle');
+    text.textContent = label;
+
+    g.appendChild(shape); g.appendChild(text);
+    nodesLayer.appendChild(g);
+
+    node.el = shape; node.groupEl = g; node.textEl = text;
+    attachDragHandlers(node);
+    nodes.push(node);
+
+    node.groupEl.setAttribute('transform', 'translate(' + node.x + ',' + node.y + ')');
+    node.textEl.setAttribute('y', node.r + 18);
+
+    return node;
+  }
+
+  function addNode(label){
+    label = label.trim();
+    if(!label) return;
+    if(nodes.some(function(n){ return normalizeText(n.label) === normalizeText(label); })) return;
+
+    createNode(label, 5);
+    dirty = true;
+    document.body.classList.add("has-nodes");
+    updateDominance();
+    updateApplyCta();
+  }
+
+  function removeNode(node){
+    dirty = true;
+    nodes = nodes.filter(function(n){ return n.id !== node.id; });
+    node.groupEl.remove();
+    closePanel();
+    updateDominance();
+    updateApplyCta();
+    if(nodes.length === 0){ document.body.classList.remove("has-nodes"); }
+  }
+
+  function attachDragHandlers(node){
+    var el = node.groupEl;
+    var startX = 0, startY = 0, moved = false;
+
+    el.addEventListener('pointerdown', function(e){
+      e.preventDefault();
+      startX = e.clientX; startY = e.clientY; moved = false;
+      node.pointerId = e.pointerId;
+      // afunda a membrana no ponto tocado
+      blobImpulse(node.blob, Math.atan2(e.clientY - node.y, e.clientX - node.x), -node.r*0.055, 0.7);
+      try{ el.setPointerCapture(e.pointerId); }catch(err){}
+    });
+
+    el.addEventListener('pointermove', function(e){
+      if(node.pointerId === null || e.pointerId !== node.pointerId) return;
+      var dx = e.clientX - startX, dy = e.clientY - startY;
+      if(!moved && Math.hypot(dx, dy) > 4){
+        moved = true; node.isDragging = true;
+        node.el.style.cursor = 'grabbing';
+      }
+      if(moved){
+        node.x = Math.max(node.r+10, Math.min(W-node.r-10, e.clientX));
+        node.y = Math.max(node.r+70, Math.min(H-node.r-20, e.clientY));
+        node.vx = 0; node.vy = 0;
+        node.groupEl.setAttribute('transform', 'translate(' + node.x + ',' + node.y + ')');
+      }
+    });
+
+    function endDrag(e){
+      if(node.pointerId === null || (e.pointerId !== undefined && e.pointerId !== node.pointerId)) return;
+      try{ el.releasePointerCapture(node.pointerId); }catch(err){}
+      node.pointerId = null;
+      node.isDragging = false;
+      node.el.style.cursor = 'grab';
+      if(!moved){ openPanel(node); }
+      moved = false;
+    }
+
+    el.addEventListener('pointerup', endDrag);
+    el.addEventListener('pointercancel', endDrag);
+  }
+
+  function openPanel(node){
+    activeNode = node;
+    nodes.forEach(function(n){ n.el.setAttribute('opacity', '0.92'); });
+    node.el.setAttribute('opacity', '1');
+    panelTitle.textContent = node.label;
+    slider.value = node.intensity;
+    sliderValue.textContent = node.intensity;
+    panelDescription.textContent = descriptionFor(node.intensity);
+    sidePanel.classList.add('open');
+    sidePanel.setAttribute('aria-hidden', 'false');
+  }
+
+  function closePanel(){
+    if(activeNode){ activeNode.el.setAttribute('opacity', '0.92'); }
+    activeNode = null;
+    sidePanel.classList.remove('open');
+    sidePanel.setAttribute('aria-hidden', 'true');
+  }
+
+  panelClose.addEventListener('click', closePanel);
+  removeBtn.addEventListener('click', function(){ if(activeNode) removeNode(activeNode); });
+
+  slider.addEventListener('input', function(){
+    if(!activeNode) return;
+    var val = parseInt(slider.value, 10);
+    var grew = val > activeNode.intensity;
+    if(val !== activeNode.intensity) dirty = true;
+    activeNode.intensity = val;
+    activeNode.r = radiusFor(val);
+    activeNode.el.setAttribute('fill', baseColor(val));
+    blobImpulse(activeNode.blob, Math.random()*Math.PI*2, (grew ? 1 : -1) * activeNode.r * 0.03, 1.4);
+    sliderValue.textContent = val;
+    panelDescription.textContent = descriptionFor(val);
+    updateDominance();
+    updateApplyCta();
+  });
+
+  document.addEventListener('keydown', function(e){
+    if(e.key !== 'Escape') return;
+    if(nameModal.classList.contains('open')) closeNameModal();
+    else if(feedView.classList.contains('open')) closeFeed();
+    else if(deckDrawer.classList.contains('open')) closeDrawer();
+    else closePanel();
+  });
+
+  // ---------- sugestões ----------
+  var highlightedIndex = -1;
+  var filteredSuggestions = [];
+
+  function renderSuggestions(list){
+    suggestionsBox.innerHTML = '';
+    filteredSuggestions = list;
+    highlightedIndex = -1;
+    if(list.length === 0){ suggestionsBox.classList.remove('visible'); return; }
+    list.forEach(function(word){
+      var item = document.createElement('div');
+      item.className = 'suggestion-item';
+      item.setAttribute('role', 'option');
+      var span = document.createElement('span'); span.textContent = word;
+      var tag = document.createElement('span'); tag.className = 'hint-tag'; tag.textContent = 'ENTER';
+      item.appendChild(span); item.appendChild(tag);
+      item.addEventListener('click', function(){
+        addNode(word); input.value = ''; renderSuggestions([]); input.focus();
+      });
+      suggestionsBox.appendChild(item);
+    });
+    suggestionsBox.classList.add('visible');
+  }
+
+  input.addEventListener('input', function(){
+    var v = normalizeText(input.value);
+    if(!v){ renderSuggestions([]); return; }
+    renderSuggestions(SUGGESTIONS.filter(function(s){
+      return normalizeText(s).indexOf(v) === 0 &&
+             !nodes.some(function(n){ return normalizeText(n.label) === normalizeText(s); });
+    }));
+  });
+
+  input.addEventListener('keydown', function(e){
+    if(e.key === 'ArrowDown' && filteredSuggestions.length){
+      e.preventDefault();
+      highlightedIndex = Math.min(highlightedIndex+1, filteredSuggestions.length-1);
+      updateHighlight();
+    } else if(e.key === 'ArrowUp' && filteredSuggestions.length){
+      e.preventDefault();
+      highlightedIndex = Math.max(highlightedIndex-1, 0);
+      updateHighlight();
+    } else if(e.key === 'Enter'){
+      e.preventDefault();
+      var word = highlightedIndex >= 0 ? filteredSuggestions[highlightedIndex] : input.value;
+      if(word && word.trim()){ addNode(word); input.value = ''; renderSuggestions([]); }
+    } else if(e.key === 'Escape'){
+      renderSuggestions([]);
+    }
+  });
+
+  function updateHighlight(){
+    suggestionsBox.querySelectorAll('.suggestion-item').forEach(function(el, i){
+      el.classList.toggle('highlighted', i === highlightedIndex);
+    });
+  }
+
+  document.addEventListener('click', function(e){
+    if(!suggestionsBox.contains(e.target) && e.target !== input){ renderSuggestions([]); }
+  });
+
+  // ---------- física do grafo ----------
+  function step(){
+    var cx = W/2, cy = H/2;
+
+    for(var i=0;i<nodes.length;i++){
+      var a = nodes[i];
+      if(a.isDragging) continue;
+      var massA = 1 + a.intensity*0.6;
+      var fx = (cx - a.x) * CENTER_K, fy = (cy - a.y) * CENTER_K;
+
+      for(var j=0;j<nodes.length;j++){
+        if(i===j) continue;
+        var b = nodes[j];
+        var dx = b.x - a.x, dy = b.y - a.y;
+        var dist = Math.sqrt(dx*dx+dy*dy) || 0.01;
+        var idealDist = Math.max(a.r+b.r+MIN_SEP_PAD, BASE_DIST - (a.intensity+b.intensity)*9);
+        var force = (dist - idealDist) * SPRING_K;
+        fx += (dx/dist) * force;
+        fy += (dy/dist) * force;
+      }
+
+      a.vx = (a.vx + fx/massA) * DAMPING;
+      a.vy = (a.vy + fy/massA) * DAMPING;
+    }
+
+    for(var k=0;k<nodes.length;k++){
+      var n = nodes[k];
+      if(!n.isDragging){
+        n.x += n.vx; n.y += n.vy;
+        n.x = Math.max(n.r+10, Math.min(W-n.r-10, n.x));
+        n.y = Math.max(n.r+70, Math.min(H-n.r-GRAPH_BOTTOM, n.y));
+      }
+    }
+
+    resolveCollisions();
+
+    var tt = Date.now()/1000;
+    for(var m=0;m<nodes.length;m++){
+      var nn = nodes[m];
+      // o raio desenhado persegue o raio real, para a mudança de peso ser fluida
+      nn.rDraw += (nn.r - nn.rDraw) * 0.16;
+      blobStep(nn.blob, nn.rDraw, tt, true);
+      nn.el.setAttribute('d', blobPath(nn.blob, nn.rDraw, 0, 0));
+      nn.textEl.setAttribute('y', nn.rDraw + 18);
+      nn.groupEl.setAttribute('transform', 'translate(' + nn.x + ',' + nn.y + ')');
+    }
+
+    renderEdges();
+    requestAnimationFrame(step);
+  }
+
+  function resolveCollisions(){
+    for(var iter=0; iter<COLLISION_ITERATIONS; iter++){
+      for(var i=0;i<nodes.length;i++){
+        for(var j=i+1;j<nodes.length;j++){
+          var a = nodes[i], b = nodes[j];
+          var dx = b.x - a.x, dy = b.y - a.y;
+          var dist = Math.sqrt(dx*dx+dy*dy) || 0.01;
+          var minSep = a.r + b.r + 10;
+          if(dist < minSep){
+            var overlap = (minSep - dist) / 2;
+            var nx = dx/dist, ny = dy/dist;
+            if(!a.isDragging){ a.x -= nx*overlap; a.y -= ny*overlap; }
+            if(!b.isDragging){ b.x += nx*overlap; b.y += ny*overlap; }
+            // só na primeira passagem, para o impacto não ser contado várias vezes
+            if(iter === 0 && overlap > 0.4){
+              var ang = Math.atan2(dy, dx);
+              var pen = Math.min(1, overlap / 12);
+              blobImpulse(a.blob, ang, -pen * a.r * 0.03, 0.8);
+              blobImpulse(b.blob, ang + Math.PI, -pen * b.r * 0.03, 0.8);
+            }
+          }
+        }
+      }
+      for(var k=0;k<nodes.length;k++){
+        var n = nodes[k];
+        if(n.isDragging) continue;
+        n.x = Math.max(n.r+10, Math.min(W-n.r-10, n.x));
+        n.y = Math.max(n.r+70, Math.min(H-n.r-GRAPH_BOTTOM, n.y));
+      }
+    }
+  }
+
+  function renderEdges(){
+    var lines = [];
+    for(var i=0;i<nodes.length;i++){
+      var distances = [];
+      for(var j=0;j<nodes.length;j++){
+        if(i===j) continue;
+        var dx = nodes[j].x-nodes[i].x, dy = nodes[j].y-nodes[i].y;
+        distances.push({j:j, d: Math.sqrt(dx*dx+dy*dy)});
+      }
+      distances.sort(function(p,q){ return p.d-q.d; });
+      distances.slice(0, Math.min(2, distances.length)).forEach(function(nb){
+        lines.push({key:[i, nb.j].sort().join('-'), a:nodes[i], b:nodes[nb.j]});
+      });
+    }
+    var seen = {};
+    var unique = lines.filter(function(l){
+      if(seen[l.key]) return false;
+      seen[l.key] = true; return true;
+    });
+
+    while(edgesLayer.children.length < unique.length){
+      var line = document.createElementNS(NS, 'line');
+      line.setAttribute('class', 'edge-line');
+      edgesLayer.appendChild(line);
+    }
+    while(edgesLayer.children.length > unique.length){
+      edgesLayer.removeChild(edgesLayer.lastChild);
+    }
+    unique.forEach(function(l, idx){
+      var el = edgesLayer.children[idx];
+      el.setAttribute('x1', l.a.x); el.setAttribute('y1', l.a.y);
+      el.setAttribute('x2', l.b.x); el.setAttribute('y2', l.b.y);
+      var avgIntensity = (l.a.intensity+l.b.intensity)/2;
+      el.setAttribute('stroke-width', 1 + avgIntensity*0.35);
+      el.setAttribute('opacity', 0.12 + avgIntensity*0.045);
+    });
+  }
+
+  window.addEventListener('resize', function(){
+    W = window.innerWidth; H = window.innerHeight;
+    FW = feedCanvas.clientWidth || W;
+    FH = feedCanvas.clientHeight || H;
+  });
+
+  // ==========================================================
+  // ==================== FEED (bolhas) =======================
+  // ==========================================================
+
+  var bubbles = [];
+  var feedRunning = false;
+  var currentFeedName = '';
+  var currentFeedTopics = [];
+
+  function setStatus(html){
+    if(html === null){
+      feedStatus.classList.add('hidden');
+      feedStatus.innerHTML = '';
+      return;
+    }
+    feedStatus.classList.remove('hidden');
+    feedStatus.innerHTML = html;
+  }
+
+  /**
+   * Monta o conjunto de bolhas:
+   * - uma bolha por tema com peso maior que zero
+   * - bolhas de interseção apenas entre os quatro temas mais pesados,
+   *   com peso pela média geométrica, que só cresce quando os dois lados pesam
+   */
+  function buildBubbleSet(topics){
+    var live = topics.filter(function(t){ return t.intensity > 0; })
+                     .map(function(t){ return { label: t.label, weight: t.intensity }; });
+    if(live.length === 0) return null;
+
+    live.sort(function(a,b){ return b.weight - a.weight; });
+    live.forEach(function(t){ t.color = baseColor(t.weight); });
+
+    var items = live.map(function(t){
+      return { type:'solo', topics:[t], weight: t.weight, color: t.color };
+    });
+
+    var top = live.slice(0, MAX_PAIR_TOPICS);
+    for(var i=0;i<top.length;i++){
+      for(var j=i+1;j<top.length;j++){
+        items.push({
+          type: 'hybrid',
+          topics: [top[i], top[j]],
+          weight: Math.sqrt(top[i].weight * top[j].weight),
+          color: top[i].color,
+          color2: top[j].color
+        });
+      }
+    }
+
+    return { topics: live, items: items, pairTopics: top.length };
+  }
+
+  /**
+   * Raio proporcional à raiz do peso, para que a ÁREA da bolha cresça na mesma
+   * medida do peso. É a área, e não o raio, que o olho lê como quantidade.
+   */
+  var TOP_BAND = 132;   // faixa reservada ao cabeçalho
+  var MOBILE = window.matchMedia('(max-width: 760px)').matches;
+  // no celular o campo de busca e os botões ficam no rodapé, então o grafo
+  // precisa parar antes deles em vez de ocupar a tela inteira
+  var GRAPH_BOTTOM = MOBILE ? 176 : 20;
+  var EDGE_PAD = 10;
+  var BLOB_PAD = 16;    // folga em volta, para a membrana poder estufar
+
+  function feedArea(){
+    return {
+      w: Math.max(140, FW - EDGE_PAD*2),
+      h: Math.max(160, FH - TOP_BAND - EDGE_PAD)
+    };
+  }
+
+  /**
+   * Raio proporcional à raiz do peso, para que a ÁREA da bolha cresça na mesma
+   * medida do peso. É a área, e não o raio, que o olho lê como quantidade.
+   * O teto do raio e a ocupação máxima garantem que sempre haja folga para
+   * as bolhas se separarem sem sobreposição.
+   */
+  function computeRadii(items){
+    var av = feedArea();
+    var R_MAX = Math.min(96, Math.min(av.w, av.h) * 0.30);
+    var R_MIN = Math.min(30, R_MAX * 0.34);
+
+    var maxW = items.reduce(function(a,it){ return Math.max(a, it.weight); }, 1);
+    items.forEach(function(it){
+      var base = Math.max(R_MIN, R_MAX * Math.sqrt(it.weight / maxW));
+      it.r = it.type === 'hybrid' ? base * 0.82 : base;
+    });
+
+    // encolhe tudo proporcionalmente para caber com folga de circulação
+    var MAX_OCCUPANCY = 0.18;
+    var area = items.reduce(function(a,it){ return a + Math.PI*it.r*it.r; }, 0);
+    var allowed = av.w * av.h * MAX_OCCUPANCY;
+    if(area > allowed){
+      var scale = Math.sqrt(allowed / area);
+      items.forEach(function(it){ it.r = Math.max(20, it.r * scale); });
+    }
+  }
+
+  function clampBubble(b){
+    var minX = b.r + EDGE_PAD, maxX = FW - b.r - EDGE_PAD;
+    var minY = b.r + TOP_BAND, maxY = FH - b.r - EDGE_PAD;
+    var hit = 0, ang = 0;
+    if(b.x < minX){ hit = minX - b.x; ang = Math.PI; b.x = minX; }
+    else if(b.x > maxX){ hit = b.x - maxX; ang = 0; b.x = maxX; }
+    if(b.y < minY){ if(minY - b.y > hit){ hit = minY - b.y; ang = -Math.PI/2; } b.y = minY; }
+    else if(b.y > maxY){ if(b.y - maxY > hit){ hit = b.y - maxY; ang = Math.PI/2; } b.y = maxY; }
+    if(hit > 0.5 && b.blob){
+      blobImpulse(b.blob, ang, -Math.min(hit * 0.05, b.r * 0.04), 0.75);
+    }
+  }
+
+  /**
+   * Separa as bolhas até que nenhuma encoste na outra. O limite de tela é
+   * aplicado depois das passagens de separação, e não dentro delas, para que
+   * a borda não empurre de volta o que a colisão acabou de afastar.
+   */
+  function relaxCollisions(passes){
+    for(var iter=0; iter<passes; iter++){
+      var moved = false;
+      for(var p=0;p<bubbles.length;p++){
+        for(var q=p+1;q<bubbles.length;q++){
+          var b1 = bubbles[p], b2 = bubbles[q];
+          var dx = b2.x-b1.x, dy = b2.y-b1.y;
+          var dist = Math.sqrt(dx*dx+dy*dy);
+          if(dist < 0.01){
+            // sobreposição exata: desempata com um deslocamento mínimo
+            dx = (Math.random()-0.5); dy = (Math.random()-0.5);
+            dist = Math.sqrt(dx*dx+dy*dy) || 0.01;
+          }
+          var minSep = b1.r + b2.r + 12;
+          if(dist < minSep){
+            var overlap = (minSep - dist)/2;
+            var nx = dx/dist, ny = dy/dist;
+            if(!b1.isDragging){ b1.x -= nx*overlap; b1.y -= ny*overlap; }
+            if(!b2.isDragging){ b2.x += nx*overlap; b2.y += ny*overlap; }
+            moved = true;
+            // deformação só na primeira passagem, senão o impacto é contado várias vezes
+            if(iter === 0 && overlap > 0.5 && b1.blob && b2.blob){
+              var ang = Math.atan2(dy, dx);
+              var pen = Math.min(1, overlap / 14);
+              blobImpulse(b1.blob, ang, -pen * b1.r * 0.035, 0.8);
+              blobImpulse(b2.blob, ang + Math.PI, -pen * b2.r * 0.035, 0.8);
+            }
+          }
+        }
+      }
+      for(var k=0;k<bubbles.length;k++){
+        if(!bubbles[k].isDragging) clampBubble(bubbles[k]);
+      }
+      if(!moved) break;
+    }
+  }
+
+  function openFeed(name, graphNodes){
+    currentFeedName = name;
+    currentFeedTopics = graphNodes.map(function(n){ return { label:n.label, intensity:n.intensity }; });
+    feedView.classList.add('open');
+    feedView.setAttribute('aria-hidden', 'false');
+    FW = feedCanvas.clientWidth || W;
+    FH = feedCanvas.clientHeight || H;
+    buildFeed();
+  }
+
+  function closeFeed(){
+    feedView.classList.remove('open');
+    feedView.setAttribute('aria-hidden', 'true');
+    feedRunning = false;
+    clearBubbles();
+  }
+
+  function clearBubbles(){
+    bubbles.forEach(function(b){ if(b.el && b.el.parentNode) b.el.remove(); });
+    bubbles = [];
+  }
+
+  function buildFeed(){
+    clearBubbles();
+
+    var set = buildBubbleSet(currentFeedTopics);
+    if(!set){
+      setStatus('<p class="status-title">nenhuma bolha com peso maior que zero</p>' +
+                '<p class="status-detail">Volte e aumente a intensidade de pelo menos uma bolha. Um algoritmo sem pesos não tem o que recomendar.</p>');
+      feedSub.textContent = '';
+      return;
+    }
+    setStatus(null);
+
+    computeRadii(set.items);
+
+    var cx = FW/2, cy = TOP_BAND + (FH - TOP_BAND)/2;
+    var ringR = Math.min(FW, FH - TOP_BAND) * 0.30;
+    set.items.forEach(function(item, idx){
+      var angle = (idx / set.items.length) * Math.PI * 2;
+      var dist = ringR * (0.85 + (idx % 2) * 0.35);
+
+      var box = (item.r + BLOB_PAD) * 2;
+      var el = document.createElement('div');
+      el.className = 'fbubble' + (item.type === 'hybrid' ? ' hybrid' : '');
+      el.style.width = box + 'px';
+      el.style.height = box + 'px';
+      el.style.animationDelay = (idx * 45) + 'ms';
+
+      var svgEl = document.createElementNS(NS, 'svg');
+      svgEl.setAttribute('viewBox', '0 0 ' + box + ' ' + box);
+
+      // anel externo, usado só nas interseções para mostrar as duas origens
+
+      var shape = document.createElementNS(NS, 'path');
+      shape.setAttribute('class', 'blob-shape');
+      if(item.type === 'hybrid'){
+        // interseção: só o contorno, para ler como um recorte entre duas bolhas
+        shape.setAttribute('fill', 'none');
+        shape.setAttribute('stroke', C_YELLOW);
+        shape.setAttribute('stroke-width', '2.5');
+        shape.style.filter = 'drop-shadow(0 0 14px rgba(228,247,28,0.45))';
+      } else {
+        shape.setAttribute('fill', item.color);
+        shape.setAttribute('stroke', 'none');
+        shape.style.filter = 'blur(3px) drop-shadow(0 0 26px rgba(255,255,255,0.35))';
+      }
+
+      svgEl.appendChild(shape);
+      el.appendChild(svgEl);
+
+      var inner = document.createElement('div');
+      inner.className = 'fbubble-inner';
+      var inset = BLOB_PAD + item.r * 0.16;
+      inner.style.left = inset + 'px';
+      inner.style.right = inset + 'px';
+
+      var term = document.createElement('div');
+      term.className = 'fbubble-term';
+      inner.appendChild(term);
+
+
+      el.appendChild(inner);
+      feedCanvas.appendChild(el);
+
+      var bubble = {
+        item: item, r: item.r, el: el,
+        shapeEl: shape,
+        blob: createBlob(), box: box,
+        termEl: term,
+        query: '', visited: false,
+        x: cx + Math.cos(angle)*dist,
+        y: cy + Math.sin(angle)*dist,
+        vx: 0, vy: 0,
+        isDragging: false, pointerId: null,
+        drift: Math.random()*Math.PI*2
+      };
+      attachBubbleHandlers(bubble);
+      bubbles.push(bubble);
+    });
+
+    // resolve as sobreposições antes do primeiro quadro, para que o feed
+    // já nasça com as bolhas separadas
+    relaxCollisions(160);
+    bubbles.forEach(function(b){
+      drawBubble(b, 0);
+    });
+
+    applyQueries();
+
+    if(!feedRunning){
+      feedRunning = true;
+      requestAnimationFrame(feedStep);
+    }
+  }
+
+  /**
+   * Ajusta o corpo do texto ao diâmetro da bolha. O limite é a palavra mais
+   * longa: ela precisa caber inteira na largura útil, senão o navegador a
+   * quebra letra a letra e o rótulo vira uma coluna ilegível.
+   */
+  function fitBubbleText(bubble){
+    var text = bubble.termEl.textContent || '';
+    var usable = bubble.r * 1.5;
+    var longest = text.split(/\s+/).reduce(function(a,w){ return Math.max(a, w.length); }, 1);
+    var byWord = usable / (longest * 0.56);
+    var byRadius = bubble.r * 0.30;
+    var size = Math.max(9, Math.min(19, byRadius, byWord));
+    bubble.termEl.style.fontSize = size.toFixed(1) + 'px';
+  }
+
+  function updateFeedSub(){
+    var visited = bubbles.filter(function(b){ return b.visited; }).length;
+    feedDominance.innerHTML = dominanceReadout.innerHTML;
+    feedSub.innerHTML = "buscando no <b>" + escapeHtml(engineInfo(getEngine()).name) + "</b> · "
+      + (visited
+          ? visited + " de " + bubbles.length + " temas visitados"
+          : "clique numa bolha para abrir a busca");
+  }
+
+  /** Monta a consulta de cada bolha a partir dos temas do grafo. */
+  function applyQueries(){
+    bubbles.forEach(function(b){
+      var labels = b.item.topics.map(function(t){ return t.label; });
+      b.query = labels.join(" ");
+      b.termEl.textContent = labels.join(" × ");
+      b.el.title = "Buscar \"" + b.query + "\" no " + engineInfo(getEngine()).name;
+      fitBubbleText(b);
+    });
+    updateFeedSub();
+  }
+
+  function searchUrlFor(query){
+    return engineInfo(getEngine()).url + encodeURIComponent(query);
+  }
+
+  function openSearchFor(bubble){
+    if(!bubble.query){
+      bubble.query = bubble.item.topics.map(function(t){ return t.label; }).join(" ");
+    }
+    window.open(searchUrlFor(bubble.query), "_blank", "noopener");
+    if(!bubble.visited){
+      bubble.visited = true;
+      bubble.el.classList.add("visited");
+      updateFeedSub();
+    }
+  }
+
+  function attachBubbleHandlers(bubble){
+    var el = bubble.el;
+    var startX = 0, startY = 0, moved = false;
+
+    el.addEventListener('pointerdown', function(e){
+      e.preventDefault();
+      startX = e.clientX; startY = e.clientY; moved = false;
+      bubble.pointerId = e.pointerId;
+      var rect = feedCanvas.getBoundingClientRect();
+      var ang = Math.atan2((e.clientY - rect.top) - bubble.y, (e.clientX - rect.left) - bubble.x);
+      blobImpulse(bubble.blob, ang, -bubble.r*0.06, 0.7);
+      try{ el.setPointerCapture(e.pointerId); }catch(err){}
+    });
+
+    el.addEventListener('pointermove', function(e){
+      if(bubble.pointerId === null || e.pointerId !== bubble.pointerId) return;
+      var dx = e.clientX - startX, dy = e.clientY - startY;
+      if(!moved && Math.hypot(dx, dy) > 4){ moved = true; bubble.isDragging = true; }
+      if(moved){
+        var rect = feedCanvas.getBoundingClientRect();
+        bubble.x = e.clientX - rect.left;
+        bubble.y = e.clientY - rect.top;
+        bubble.vx = 0; bubble.vy = 0;
+      }
+    });
+
+    function endDrag(e){
+      if(bubble.pointerId === null || (e.pointerId !== undefined && e.pointerId !== bubble.pointerId)) return;
+      try{ el.releasePointerCapture(bubble.pointerId); }catch(err){}
+      bubble.pointerId = null;
+      bubble.isDragging = false;
+      blobImpulse(bubble.blob, Math.random()*Math.PI*2, bubble.r*0.035, 1.2);
+      if(!moved) openSearchFor(bubble);
+      moved = false;
+    }
+
+    el.addEventListener('pointerup', endDrag);
+    el.addEventListener('pointercancel', endDrag);
+  }
+
+  function feedStep(){
+    if(!feedView.classList.contains('open')){ feedRunning = false; return; }
+
+    var cx = FW/2, cy = FH/2;
+    var t = Date.now()/1000;
+
+    for(var i=0;i<bubbles.length;i++){
+      var a = bubbles[i];
+      if(a.isDragging) continue;
+      var fx = (cx - a.x) * 0.0014;
+      var fy = (cy - a.y) * 0.0014;
+      // deriva suave, para o feed nunca ficar completamente parado
+      fx += Math.cos(t*0.35 + a.drift) * 0.018;
+      fy += Math.sin(t*0.30 + a.drift) * 0.018;
+      a.vx = (a.vx + fx) * 0.9;
+      a.vy = (a.vy + fy) * 0.9;
+      a.x += a.vx; a.y += a.vy;
+    }
+
+    relaxCollisions(6);
+
+    for(var m=0;m<bubbles.length;m++){
+      drawBubble(bubbles[m], t);
+    }
+
+    requestAnimationFrame(feedStep);
+  }
+
+  /** Posiciona a bolha e redesenha o contorno da membrana. */
+  function drawBubble(b, t){
+    blobStep(b.blob, b.r, t, false);
+    var c = b.box / 2;
+    var d = blobPath(b.blob, b.r, c, c);
+    b.shapeEl.setAttribute('d', d);
+    b.el.style.transform = 'translate(' + (b.x - c) + 'px,' + (b.y - c) + 'px)';
+  }
+
+  // ---------- seletor de ferramenta de busca ----------
+  function renderEngineDock(){
+    var current = getEngine();
+    engineDock.innerHTML = "";
+    ENGINES.forEach(function(e){
+      var btn = document.createElement("button");
+      btn.className = 'pill' + (e.id === current ? ' accent' : '');
+      btn.textContent = e.name.toLowerCase();
+      btn.addEventListener("click", function(){
+        setEngine(e.id);
+        renderEngineDock();
+        applyQueries();
+        showToast("Buscas agora no " + e.name + ".");
+      });
+      engineDock.appendChild(btn);
+    });
+  }
+
+  // ---------- controles do feed ----------
+  feedBack.addEventListener('click', closeFeed);
+
+  searchBtn.addEventListener('click', function(){
+    if(!nodes.some(function(n){ return n.intensity > 0; })){
+      showToast('Aumente a intensidade de pelo menos uma bolha.');
+      return;
+    }
+    var saved = currentGraphId ? deck.find(function(d){ return d.id === currentGraphId; }) : null;
+    openFeed(saved ? saved.name : 'bolhas sem título', serializeCurrentGraph());
+  });
+
+  // ---------- init ----------
+  renderDeckList();
+  renderEngineDock();
+  updateApplyCta();
+  requestAnimationFrame(step);
+})();
+</script>
+</body>
+</html>
