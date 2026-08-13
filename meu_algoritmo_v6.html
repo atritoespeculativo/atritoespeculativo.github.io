@@ -159,8 +159,8 @@
   /* ---------- texto de abertura ---------- */
   #hero-desc{
     margin: 38px auto 0;
-    max-width: 900px;
-    font-size: 13px; line-height: 1.85;
+    max-width: 940px;
+    font-size: 14.5px; line-height: 1.85;
     color: var(--yellow);
     text-align: center;
     pointer-events: none;
@@ -173,9 +173,9 @@
 
   /* ---------- botões em pílula ---------- */
   .pill{
-    font-family: 'Bitcount Prop Single', 'IBM Plex Mono', monospace;
-    font-weight: 350;
-    font-size: 17px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 500;
+    font-size: 14px; letter-spacing: 0.02em;
     background: none;
     border: 2px solid var(--white);
     color: var(--white);
@@ -188,6 +188,13 @@
   .pill.accent{ border-color: var(--yellow); color: var(--yellow); }
   .pill.accent:hover{ background: rgba(228,247,28,0.14); }
   .pill:disabled{ opacity: .45; cursor: default; }
+  /* ação principal da tela: destaque discreto, sem virar bloco sólido */
+  .pill.filled{
+    background: rgba(228,247,28,0.22);
+    border-color: var(--yellow);
+    color: var(--yellow);
+  }
+  .pill.filled:hover{ background: rgba(228,247,28,0.38); }
 
   .bottom-actions{
     position: fixed;
@@ -202,8 +209,7 @@
 
   /* ---------- aba lateral ---------- */
   .deck-toggle{
-    font-family: 'Bitcount Prop Single', 'IBM Plex Mono', monospace;
-    font-weight: 350;
+    font-family: 'IBM Plex Mono', monospace;
     position: fixed;
     left: 0; top: 50%;
     transform: translateY(-50%);
@@ -253,10 +259,9 @@
     font-size: 20px; margin: 10px 0 0 0;
   }
   .drawer-close{
-    font-family: 'Bitcount Prop Single', 'IBM Plex Mono', monospace;
-    font-weight: 350;
+    font-family: 'IBM Plex Mono', monospace;
     background:none; border:none; color: var(--white);
-    font-size: 13px; letter-spacing: 0.06em; cursor: pointer; padding: 0;
+    font-size: 12px; letter-spacing: 0.06em; cursor: pointer; padding: 0;
   }
   .drawer-close:hover{ color: var(--yellow); }
 
@@ -286,8 +291,7 @@
   .deck-item-meta{ font-size: 11px; color: var(--soft); margin-bottom: auto; }
   .deck-item-actions{ display:flex; gap: 8px; margin-top: 16px; flex-wrap: wrap; }
   .mini-btn{
-    font-family: 'Bitcount Prop Single', 'IBM Plex Mono', monospace;
-    font-weight: 350;
+    font-family: 'IBM Plex Mono', monospace;
     background:none; border: 1px solid rgba(255,255,255,0.6);
     color: var(--white); font-size: 12px;
     padding: 6px 12px; border-radius: 999px; cursor: pointer;
@@ -382,7 +386,7 @@
   }
   #name-input::placeholder{ color: rgba(255,255,255,0.55); }
   .name-actions{ display: flex; gap: 12px; justify-content: flex-end; }
-  .name-actions .pill{ font-size: 15px; padding: 9px 22px; }
+  .name-actions .pill{ font-size: 13px; padding: 9px 22px; }
 
   /* ---------- aviso ---------- */
   #toast{
@@ -464,7 +468,7 @@
     #side-panel, #deck-drawer{ width: 88vw; }
     header.topbar, .feed-topbar{ padding: 18px 18px; }
     .dominance{ font-size: 10.5px; max-width: 150px; }
-    #hero-desc{ font-size: 12px; line-height: 1.75; margin-top: 24px; }
+    #hero-desc{ font-size: 13px; line-height: 1.75; margin-top: 24px; }
     .wordmark-big{ font-size: clamp(58px, 19vw, 110px); margin-bottom: 10px; }
 
     /* a aba lateral fica sobre o conteúdo, então o bloco central recua
@@ -490,7 +494,7 @@
 
   @media (max-height: 720px){
     .wordmark-big{ font-size: clamp(60px, 11vh, 120px); margin-bottom: 8px; }
-    #hero-desc{ margin-top: 24px; font-size: 12px; line-height: 1.7; }
+    #hero-desc{ margin-top: 24px; font-size: 13px; line-height: 1.7; }
   }
 
   @media (prefers-reduced-motion: reduce){
@@ -547,7 +551,7 @@
 </div>
 
 <div class="bottom-actions">
-  <button class="pill" id="save-btn">salvar</button>
+  <button class="pill filled" id="save-btn">salvar</button>
   <button class="pill" id="search-btn">acessar feed</button>
   <button class="pill" id="new-graph-btn">novo grupo</button>
 </div>
@@ -562,7 +566,7 @@
       <span>intensidade de influência</span>
       <span class="slider-value" id="slider-value">5</span>
     </div>
-    <input type="range" id="intensity-slider" min="0" max="10" step="1" value="5" aria-label="Intensidade de influência, de 0 a 10">
+    <input type="range" id="intensity-slider" min="1" max="5" step="1" value="3" aria-label="Intensidade de influência, de 1 a 5">
   </div>
 
   <p class="panel-description" id="panel-description"></p>
@@ -784,7 +788,8 @@
   var ENGINES = [
     { id:"youtube",   name:"YouTube",   url:"https://www.youtube.com/results?search_query=" },
     { id:"google",    name:"Google",    url:"https://www.google.com/search?q=" },
-    { id:"pinterest", name:"Pinterest", url:"https://www.pinterest.com/search/pins/?q=" }
+    { id:"pinterest", name:"Pinterest", url:"https://www.pinterest.com/search/pins/?q=" },
+    { id:"reddit",    name:"Reddit",    url:"https://www.reddit.com/search/?q=" }
   ];
 
   function getEngine(){
@@ -1063,8 +1068,10 @@
   var C_BLUE = '#1F33F2', C_YELLOW = '#E4F71C';
 
   /** Peso baixo desbota para o branco; peso alto satura no amarelo da marca. */
+  var MAX_INTENSITY = 5;
+
   function baseColor(intensity){
-    var t = Math.pow(intensity/10, 0.8);
+    var t = Math.pow((intensity - 1) / (MAX_INTENSITY - 1), 0.8);
     var cold = [255,255,255], hot = [228,247,28];
     var r = Math.round(cold[0] + (hot[0]-cold[0])*t);
     var g = Math.round(cold[1] + (hot[1]-cold[1])*t);
@@ -1072,7 +1079,7 @@
     return 'rgb(' + r + ',' + g + ',' + b + ')';
   }
 
-  function radiusFor(intensity){ return 24 + intensity * 5.2; }
+  function radiusFor(intensity){ return 26 + intensity * 9.6; }
 
   function updateDominance(){
     if(nodes.length === 0){ dominanceReadout.classList.remove('visible'); return; }
@@ -1091,16 +1098,19 @@
   }
 
   function descriptionFor(intensity){
-    if(intensity === 0) return 'Este interesse está presente, mas não influencia nada. Ele nem chega a aparecer no feed.';
-    if(intensity <= 3) return 'Presença discreta. Aparece pouco e é facilmente ofuscado por interesses mais fortes.';
-    if(intensity <= 6) return 'Presença moderada. Compete de igual para igual com os outros nós do seu grafo.';
-    if(intensity <= 8) return 'Presença forte. Este nó já começa a puxar os demais para perto de si.';
-    return 'Este interesse domina. Ele curva o grafo inteiro ao seu redor, e é praticamente tudo o que resta no seu feed.';
+    if(intensity <= 1) return 'Presença mínima. Esta bolha aparece pouco e é facilmente ofuscada pelas mais fortes.';
+    if(intensity === 2) return 'Presença discreta. Ela existe no feed, mas raramente puxa a atenção para si.';
+    if(intensity === 3) return 'Presença moderada. Compete de igual para igual com as outras bolhas do grupo.';
+    if(intensity === 4) return 'Presença forte. Esta bolha já começa a puxar as demais para perto de si.';
+    return 'Esta bolha domina. Ela curva o grupo inteiro ao seu redor, e é quase tudo o que resta no seu feed.';
   }
 
   function createNode(label, intensity, x, y){
     var cx = W/2, cy = H/2;
-    if(typeof intensity !== 'number') intensity = 5;
+    if(typeof intensity !== 'number') intensity = 3;
+    // grupos salvos na escala antiga (0 a 10) são reconvertidos para 1 a 5
+    if(intensity > MAX_INTENSITY) intensity = Math.max(1, Math.round(intensity / 2));
+    intensity = Math.max(1, Math.min(MAX_INTENSITY, intensity));
     if(typeof x !== 'number' || typeof y !== 'number'){
       var angle = Math.random()*Math.PI*2, startDist = 40;
       x = cx + Math.cos(angle)*startDist;
@@ -1148,7 +1158,7 @@
     if(!label) return;
     if(nodes.some(function(n){ return normalizeText(n.label) === normalizeText(label); })) return;
 
-    createNode(label, 5);
+    createNode(label, 3);
     dirty = true;
     document.body.classList.add("has-nodes");
     updateDominance();
@@ -1684,7 +1694,7 @@
         shapeEl: shape,
         blob: createBlob(), box: box,
         termEl: term,
-        query: '', visited: false,
+        query: '', visitedBy: {},
         x: cx + Math.cos(angle)*dist,
         y: cy + Math.sin(angle)*dist,
         vx: 0, vy: 0,
@@ -1726,7 +1736,8 @@
   }
 
   function updateFeedSub(){
-    var visited = bubbles.filter(function(b){ return b.visited; }).length;
+    var eng = getEngine();
+    var visited = bubbles.filter(function(b){ return b.visitedBy[eng]; }).length;
     feedDominance.innerHTML = dominanceReadout.innerHTML;
     feedSub.innerHTML = "buscando no <b>" + escapeHtml(engineInfo(getEngine()).name) + "</b> · "
       + (visited
@@ -1755,11 +1766,25 @@
       bubble.query = bubble.item.topics.map(function(t){ return t.label; }).join(" ");
     }
     window.open(searchUrlFor(bubble.query), "_blank", "noopener");
-    if(!bubble.visited){
-      bubble.visited = true;
+
+    var eng = getEngine();
+    if(!bubble.visitedBy[eng]){
+      bubble.visitedBy[eng] = true;
       bubble.el.classList.add("visited");
       updateFeedSub();
     }
+  }
+
+  /**
+   * Cada ferramenta guarda o próprio rastro. Ao trocar de mecanismo as bolhas
+   * voltam à cor cheia, porque aquela busca ainda não foi feita ali; ao
+   * retornar, o que já havia sido percorrido reaparece marcado.
+   */
+  function refreshVisited(){
+    var eng = getEngine();
+    bubbles.forEach(function(b){
+      b.el.classList.toggle("visited", !!b.visitedBy[eng]);
+    });
   }
 
   function attachBubbleHandlers(bubble){
@@ -1851,6 +1876,7 @@
         setEngine(e.id);
         renderEngineDock();
         applyQueries();
+        refreshVisited();
         showToast("Buscas agora no " + e.name + ".");
       });
       engineDock.appendChild(btn);
