@@ -485,11 +485,20 @@
       transform: translateX(-50%);
       width: min(420px, 88vw);
     }
+    /* a altura real da barra de botões é medida em tempo de execução e
+       devolvida ao campo de busca, que nunca fica por cima dela */
     .bottom-actions{
-      bottom: 26px; gap: 8px;
-      width: 92vw; flex-wrap: wrap; justify-content: center;
+      bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+      gap: 8px; width: 92vw;
+      flex-wrap: wrap; justify-content: center;
     }
-    .engine-dock{ bottom: 26px; gap: 8px; flex-wrap: wrap; justify-content: center; width: 92vw; }
+    .engine-dock{
+      bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+      gap: 8px; width: 92vw;
+      flex-wrap: wrap; justify-content: center;
+    }
+    .pill{ font-size: 12.5px; padding: 9px 15px; }
+    header.topbar{ padding-top: calc(18px + env(safe-area-inset-top, 0px)); }
   }
 
   @media (max-height: 720px){
@@ -649,6 +658,8 @@
   var feedStatus = document.getElementById("feed-status");
   var feedBack = document.getElementById("feed-back");
   var engineDock = document.getElementById("engine-dock");
+  var inputDock = document.getElementById("input-dock");
+  var bottomActions = document.querySelector(".bottom-actions");
 
   var nameModal = document.getElementById("name-modal");
   var nameInput = document.getElementById("name-input");
@@ -847,6 +858,21 @@
       : 'bolha ainda não salva';
   }
 
+  /**
+   * No celular o campo de busca fica logo acima dos botões. Como eles podem
+   * quebrar em duas linhas conforme a largura, a folga é medida a cada
+   * mudança em vez de ficar presa a um valor fixo.
+   */
+  function layoutBottomDock(){
+    var estreito = window.matchMedia("(max-width: 760px)").matches;
+    if(!estreito || !document.body.classList.contains("has-nodes")){
+      inputDock.style.bottom = "";
+      return;
+    }
+    var altura = bottomActions.offsetHeight || 44;
+    inputDock.style.bottom = (altura + 40) + "px";
+  }
+
   function updateApplyCta(){
     searchBtn.disabled = !nodes.some(function(n){ return n.intensity > 0; });
   }
@@ -990,6 +1016,7 @@
     document.body.classList.remove("has-nodes");
     updateDominance();
     updateApplyCta();
+    layoutBottomDock();
     renderDeckList();
   }
 
@@ -1008,6 +1035,7 @@
     document.body.classList.add("has-nodes");
     updateDominance();
     updateApplyCta();
+    layoutBottomDock();
     closeDrawer();
     renderDeckList();
     showToast('Editando "' + g.name + '".');
@@ -1163,6 +1191,7 @@
     document.body.classList.add("has-nodes");
     updateDominance();
     updateApplyCta();
+    layoutBottomDock();
   }
 
   function removeNode(node){
@@ -1173,6 +1202,7 @@
     updateDominance();
     updateApplyCta();
     if(nodes.length === 0){ document.body.classList.remove("has-nodes"); }
+    layoutBottomDock();
   }
 
   function attachDragHandlers(node){
@@ -1448,6 +1478,7 @@
     W = window.innerWidth; H = window.innerHeight;
     FW = feedCanvas.clientWidth || W;
     FH = feedCanvas.clientHeight || H;
+    layoutBottomDock();
   });
 
   // ==========================================================
@@ -1899,6 +1930,7 @@
   renderDeckList();
   renderEngineDock();
   updateApplyCta();
+  layoutBottomDock();
   requestAnimationFrame(step);
 })();
 </script>
