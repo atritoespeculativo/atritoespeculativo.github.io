@@ -264,7 +264,9 @@
     position: fixed; top:0; left:0; bottom:0;
     width: 340px;
     background: var(--surface);
-    z-index: 55; padding: 26px 30px;
+    z-index: 55;
+    padding: calc(26px + env(safe-area-inset-top, 0px)) 24px
+             calc(26px + env(safe-area-inset-bottom, 0px)) 30px;
     display:flex; flex-direction: column;
     transform: translateX(-100%);
     transition: transform .45s cubic-bezier(.2,.8,.2,1);
@@ -273,7 +275,8 @@
 
   .deck-drawer-header{
     display:flex; align-items:flex-start; justify-content:space-between;
-    margin-bottom: 40px;
+    margin-bottom: 32px;
+    flex: 0 0 auto;
   }
   .deck-drawer-title{
     font-family: 'Bitcount Prop Single', 'IBM Plex Mono', monospace;
@@ -287,10 +290,33 @@
   }
   .drawer-close:hover{ color: var(--yellow); }
 
+  /* min-height: 0 é o que destrava a rolagem: sem isso, um item flexível
+     nunca encolhe abaixo do próprio conteúdo e o overflow jamais acontece */
   .deck-list{
-    flex: 1; overflow-y: auto;
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
     display: flex; flex-direction: column; gap: 20px;
+    padding-right: 10px;
+    margin-right: -6px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--yellow) rgba(255,255,255,0.16);
   }
+  .deck-list::-webkit-scrollbar{ width: 5px; }
+  .deck-list::-webkit-scrollbar-button{ display: none; width: 0; height: 0; }
+  .deck-list::-webkit-scrollbar-corner{ background: transparent; }
+  .deck-list::-webkit-scrollbar-track{
+    background: rgba(255,255,255,0.14);
+    border-radius: 999px;
+    margin: 2px 0;
+  }
+  .deck-list::-webkit-scrollbar-thumb{
+    background: var(--yellow);
+    border-radius: 999px;
+  }
+  .deck-list::-webkit-scrollbar-thumb:hover{ background: #ffffff; }
+  .deck-item{ flex: 0 0 auto; }
   .deck-empty{ font-size: 13px; line-height: 1.7; color: var(--soft); }
 
   .deck-item{
@@ -298,20 +324,31 @@
     border: 2px solid transparent;
     border-radius: 16px;
     padding: 20px 20px 16px;
-    cursor: pointer; min-height: 132px;
+    cursor: pointer;
+    flex: 0 0 auto;
     display: flex; flex-direction: column;
     transition: border-color .2s ease;
   }
   .deck-item:hover{ border-color: rgba(255,255,255,0.5); }
   .deck-item.active-graph{ border-color: var(--yellow); }
 
+  /* flex-shrink: 0 impede que o nome seja comprimido até desaparecer quando
+     os botões do cartão quebram em duas linhas */
   .deck-item-name{
     font-family: 'Bitcount Prop Single', 'IBM Plex Mono', monospace;
-    font-size: 18px; font-weight: 350; margin-bottom: 6px;
-    overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+    font-size: 18px; font-weight: 350;
+    margin-bottom: 6px;
+    flex: 0 0 auto;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
   }
-  .deck-item-meta{ font-size: 11px; color: var(--soft); margin-bottom: auto; }
-  .deck-item-actions{ display:flex; gap: 8px; margin-top: 16px; flex-wrap: wrap; }
+  .deck-item-meta{
+    font-size: 11px; color: var(--soft);
+    margin-bottom: 14px; flex: 0 0 auto;
+  }
+  .deck-item-actions{
+    display:flex; gap: 8px; margin-top: 0;
+    flex-wrap: wrap; flex: 0 0 auto;
+  }
   .mini-btn{
     font-family: 'IBM Plex Mono', monospace;
     background:none; border: 1px solid rgba(255,255,255,0.6);
@@ -362,6 +399,7 @@
   }
 
   .panel-description{
+    flex: 1 1 auto; min-height: 0; overflow-y: auto;
     margin-top: 30px; font-size: 13px; line-height: 1.7;
     color: var(--soft); padding-top: 22px;
     border-top: 1px solid rgba(255,255,255,0.3);
