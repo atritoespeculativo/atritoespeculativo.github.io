@@ -21,6 +21,14 @@
 
   *{ box-sizing: border-box; }
 
+  /* a rolagem da tela de abertura só existe quando o script marca este estado,
+     porque html e body precisam liberar o overflow ao mesmo tempo */
+  html.hero-scroll, html.hero-scroll body{
+    height: auto; min-height: 100%;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
   html, body{
     margin:0; padding:0; height:100%;
     background: var(--blue);
@@ -41,7 +49,8 @@
     z-index: 20;
     pointer-events:none;
   }
-  .header-left{ display:flex; flex-direction:column; gap:4px; }
+  .header-left{ display:flex; flex-direction:column; gap:4px; align-items: flex-start; }
+  .header-left .header-wordmark{ pointer-events: auto; }
 
   .header-wordmark{
     font-family: 'Bitcount Prop Single', 'IBM Plex Mono', monospace;
@@ -50,7 +59,13 @@
     color: var(--white);
     margin: 0;
     opacity: 0;
-    transition: opacity .5s ease;
+    cursor: pointer;
+    align-self: flex-start;
+    transition: opacity .5s ease, color .2s ease;
+  }
+  .header-wordmark:hover, .feed-wordmark:hover{ color: var(--yellow); }
+  .header-wordmark:focus-visible, .feed-wordmark:focus-visible{
+    outline: 2px solid var(--yellow); outline-offset: 4px; border-radius: 4px;
   }
   body.has-nodes .header-wordmark{ opacity: 1; }
 
@@ -163,13 +178,20 @@
     font-size: 14.5px; line-height: 1.85;
     color: var(--yellow);
     text-align: center;
-    pointer-events: none;
     transition: opacity .4s ease, max-height .5s ease, margin .5s ease;
     max-height: 400px; overflow: hidden;
   }
   #hero-desc p{ margin: 0 0 18px 0; }
   #hero-desc p:last-child{ margin-bottom: 0; }
-  body.has-nodes #hero-desc{ opacity: 0; max-height: 0; margin: 0; }
+
+  /* o texto de apresentação existe apenas na tela de abertura: assim que a
+     primeira bolha nasce, ele se recolhe e deixa de ocupar espaço */
+  body.has-nodes #hero-desc{
+    opacity: 0;
+    max-height: 0;
+    margin: 0;
+    pointer-events: none;
+  }
 
   /* ---------- botões em pílula ---------- */
   .pill{
@@ -421,6 +443,8 @@
     font-family: 'Bitcount Prop Single', 'IBM Plex Mono', monospace;
     font-weight: 300;
     font-size: 34px; line-height: 1; margin: 0 0 4px 0;
+    cursor: pointer; align-self: flex-start;
+    transition: color .2s ease;
   }
   .feed-sub{ font-size: 12px; color: var(--soft); margin: 0 0 16px 0; }
   .feed-sub b{ color: var(--white); font-weight: 600; }
@@ -475,6 +499,17 @@
        dos dois lados para não passar por baixo dela */
     .deck-toggle{ padding: 26px 9px; font-size: 11px; letter-spacing: 0.18em; }
     #input-dock{ width: calc(100vw - 104px); }
+
+    /* na abertura o texto passa da altura da tela: a página deixa de ser
+       travada e o bloco central entra no fluxo normal, rolando com o dedo */
+    body:not(.has-nodes) #hero-desc{ max-height: none; }
+    body:not(.has-nodes) #canvas-wrap{ display: none; }
+    body:not(.has-nodes) #input-dock{
+      position: static;
+      transform: none;
+      width: auto; max-width: none;
+      padding: 84px 52px 72px;
+    }
     .pill{ font-size: 14px; padding: 9px 18px; }
     .header-wordmark, .feed-wordmark{ font-size: 26px; }
 
@@ -520,7 +555,8 @@
 
 <header class="topbar">
   <div class="header-left">
-    <h1 class="header-wordmark">Bolhas</h1>
+    <h1 class="header-wordmark" id="home-wordmark" role="button" tabindex="0"
+        title="Voltar à tela inicial">Bolhas</h1>
     <div class="config-as" id="config-as">bolha configurada como:</div>
   </div>
   <div class="dominance" id="dominance-readout"></div>
@@ -553,10 +589,11 @@
   </div>
 
   <div id="hero-desc">
-    <p>Essa aplicação é um experimento em design especulativo que tem como objetivo propor um caminho para a customização de algoritmos de recomendação. Aqui, você criará seus próprios algoritmos a partir da construção de grafos de interesse, nos quais cada nó representa um ponto de interesse que pode ser personalizado em termos de intensidade.</p>
+    <p>Essa aplicação é um experimento em design especulativo que tem como objetivo propor um caminho para a customização de algoritmos de recomendação. Aqui, você testará criar seus próprios algoritmos a partir da construção de grafos de interesse, nos quais cada nó representa um ponto de interesse que pode ser personalizado em termos de intensidade.</p>
     <p>A metáfora utilizada é a criação de bolhas, uma vez que os algoritmos de recomendação, de certa forma, atuam como bolhas virtuais que filtram e organizam as informações às quais somos expostos.</p>
-    <p>Após criar um conjunto de bolhas, você poderá acessar um feed a partir delas. Nesse feed, será possível realizar pesquisas em três plataformas: YouTube, Google e Pinterest. As pesquisas serão relacionadas a cada nó e às interseções entre os nós mais influentes.</p>
+    <p>Após criar um conjunto de bolhas, você poderá acessar um feed a partir delas. Nesse feed, será possível realizar pesquisas em quatro plataformas: YouTube, Google, Pinterest e Reddit. As pesquisas serão relacionadas a cada nó e às interseções entre os nós mais influentes.</p>
   </div>
+
 </div>
 
 <div class="bottom-actions">
@@ -590,7 +627,8 @@
 
   <div class="feed-topbar">
     <div>
-      <h2 class="feed-wordmark">Bolhas</h2>
+      <h2 class="feed-wordmark" id="feed-wordmark" role="button" tabindex="0"
+          title="Voltar à tela inicial">Bolhas</h2>
       <p class="feed-sub" id="feed-sub"></p>
       <button class="mini-btn" id="feed-back">voltar às bolhas</button>
     </div>
@@ -659,6 +697,8 @@
   var feedBack = document.getElementById("feed-back");
   var engineDock = document.getElementById("engine-dock");
   var inputDock = document.getElementById("input-dock");
+  var homeWordmark = document.getElementById("home-wordmark");
+  var feedWordmark = document.getElementById("feed-wordmark");
   var bottomActions = document.querySelector(".bottom-actions");
 
   var nameModal = document.getElementById("name-modal");
@@ -863,7 +903,21 @@
    * quebrar em duas linhas conforme a largura, a folga é medida a cada
    * mudança em vez de ficar presa a um valor fixo.
    */
+  /**
+   * A rolagem da abertura precisa ser liberada em html e body ao mesmo tempo.
+   * Ela vale apenas em tela estreita e enquanto não há bolhas em cena; assim
+   * que a primeira nasce, a página volta a ser uma superfície travada.
+   */
+  function syncHeroScroll(){
+    var estreito = window.matchMedia("(max-width: 760px)").matches;
+    var abertura = !document.body.classList.contains("has-nodes");
+    var rolar = estreito && abertura;
+    document.documentElement.classList.toggle("hero-scroll", rolar);
+    if(!rolar) window.scrollTo(0, 0);
+  }
+
   function layoutBottomDock(){
+    syncHeroScroll();
     var estreito = window.matchMedia("(max-width: 760px)").matches;
     if(!estreito || !document.body.classList.contains("has-nodes")){
       inputDock.style.bottom = "";
@@ -1020,6 +1074,18 @@
     renderDeckList();
   }
 
+  /**
+   * O título funciona como marca e como saída: leva de volta à tela de
+   * abertura, fechando o feed se estiver aberto. Só pergunta antes quando há
+   * alteração ainda não salva, para não atrapalhar quem só quer recomeçar.
+   */
+  function goHome(){
+    if(nodes.length > 0 && dirty &&
+       !window.confirm('Voltar à tela inicial? As alterações não salvas serão perdidas.')) return;
+    if(feedView.classList.contains('open')) closeFeed();
+    startNewGraph();
+  }
+
   function requestNewGraph(){
     if(nodes.length > 0 && dirty &&
        !window.confirm('Começar um novo grupo? As alterações não salvas serão perdidas.')) return;
@@ -1091,6 +1157,14 @@
   deckBackdrop.addEventListener('click', closeDrawer);
   newGraphBtn.addEventListener('click', requestNewGraph);
   saveBtn.addEventListener('click', saveCurrentGraph);
+
+  // o título leva de volta à abertura, por clique ou pelo teclado
+  [homeWordmark, feedWordmark].forEach(function(el){
+    el.addEventListener('click', goHome);
+    el.addEventListener('keydown', function(e){
+      if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); goHome(); }
+    });
+  });
 
   // ================= grafo =================
   var C_BLUE = '#1F33F2', C_YELLOW = '#E4F71C';
