@@ -104,7 +104,7 @@
     position: fixed;
     left: 50%; top: 50%;
     transform: translate(-50%, -50%);
-    width: min(960px, 92vw);
+    width: min(1080px, 92vw);
     z-index: 30;
     text-align: center;
     transition: top .65s cubic-bezier(.2,.8,.2,1), transform .65s cubic-bezier(.2,.8,.2,1), width .5s ease;
@@ -115,20 +115,26 @@
     width: min(440px, 84vw);
   }
 
+  /* o título é uma matriz de bolhas desenhada em SVG, não mais um texto */
   .wordmark-big{
-    font-family: 'Bitcount Prop Single', 'IBM Plex Mono', monospace;
-    /* peso regular: é nele que os pontos da Bitcount se tocam e formam o traço */
-    font-weight: 400;
-    font-size: clamp(76px, 16vw, 190px);
-    line-height: 0.95;
-    color: var(--yellow);
-    margin: 0 0 12px 0;
-    letter-spacing: 0.01em;
-    transition: opacity .4s ease, font-size .5s ease, margin .5s ease;
+    width: min(820px, 86%);
+    margin: 0 auto 18px;
+    line-height: 0;
+    transition: opacity .4s ease, max-height .5s ease, margin .5s ease;
+    max-height: 400px;
+  }
+  .wordmark-big svg{
+    display: block;
+    width: 100%; height: auto;
+    overflow: visible;
+    cursor: pointer;
+    touch-action: manipulation;
   }
   body.has-nodes .wordmark-big{
-    opacity: 0; font-size: 0; margin: 0; overflow: hidden;
+    opacity: 0; max-height: 0; margin: 0; overflow: hidden; pointer-events: none;
   }
+  .wordmark-dot{ fill: var(--yellow); }
+  .wordmark-big svg path{ fill: var(--yellow); }
 
   .input-row{ position: relative; max-width: 430px; margin: 0 auto; }
   body.has-nodes .input-row{ max-width: none; }
@@ -531,7 +537,7 @@
     header.topbar, .feed-topbar{ padding: 18px 18px; }
     .dominance{ font-size: 10.5px; max-width: 150px; }
     #hero-desc{ font-size: 13px; line-height: 1.75; margin-top: 24px; }
-    .wordmark-big{ font-size: clamp(58px, 19vw, 110px); margin-bottom: 10px; }
+    .wordmark-big{ width: 100%; margin-bottom: 14px; }
 
     /* a aba lateral fica sobre o conteúdo, então o bloco central recua
        dos dois lados para não passar por baixo dela */
@@ -575,7 +581,7 @@
   }
 
   @media (max-height: 720px){
-    .wordmark-big{ font-size: clamp(60px, 11vh, 120px); margin-bottom: 8px; }
+    .wordmark-big{ width: min(620px, 84%); margin-bottom: 12px; }
     #hero-desc{ margin-top: 24px; font-size: 13px; line-height: 1.7; }
   }
 
@@ -619,7 +625,7 @@
 </div>
 
 <div id="input-dock">
-  <h1 class="wordmark-big">Bolhas</h1>
+  <h1 class="wordmark-big" id="wordmark-big"><span class="sr-only">Bolhas</span></h1>
   <div class="input-row">
     <label for="interest-input" class="sr-only">Digite um interesse</label>
     <input type="text" id="interest-input" placeholder="Digite um interesse" autocomplete="off" />
@@ -1465,6 +1471,10 @@
     if(!suggestionsBox.contains(e.target) && e.target !== input){ renderSuggestions([]); }
   });
 
+  // ================= título em matriz de bolhas =================
+  // A palavra é desenhada ponto a ponto, e cada ponto vira uma bolha com vida
+  // própria: deriva lenta, respiração da forma e recuo quando o cursor chega perto.
+
   // ---------- física do grafo ----------
   function step(){
     var cx = W/2, cy = H/2;
@@ -2038,11 +2048,243 @@
     openFeed(saved ? saved.name : 'bolhas sem título', serializeCurrentGraph());
   });
 
+  // ==========================================================
+  // ============ TÍTULO COMPOSTO POR BOLHAS ==================
+  // ==========================================================
+  // A fonte desenha os pontos como parte do glifo, então eles não podem ser
+  // animados um a um. Aqui a palavra é remontada como uma matriz de bolhas
+  // de verdade: cada ponto é um corpo com membrana, posição e reação própria.
+
+  var GLYPHS = {
+    B: ["1110","1001","1001","1110","1001","1001","1110"],
+    o: ["0000","0000","0110","1001","1001","1001","0110"],
+    l: ["1","1","1","1","1","1","1"],
+    h: ["1000","1000","1000","1110","1001","1001","1001"],
+    a: ["0000","0000","1110","0001","1111","1001","1111"],
+    s: ["0000","0000","0111","1000","0110","0001","1110"]
+  };
+
+  var TN = 8;              // vértices da membrana de cada ponto
+  var STEP = 10;           // passo da matriz, em unidades do viewBox
+  var LETTER_GAP = 1;
+  var DOT_R = STEP * 0.52; // levemente maior que o passo, para os pontos se tocarem
+
+  var titleDots = [];
+  var titleWave = null;
+  var titleHover = null;
+  var titleSvg = null;
+
+  function mkDotBlob(){
+    var pts = [];
+    for(var i=0;i<TN;i++) pts.push({ o:0, v:0, ph: Math.random()*Math.PI*2 });
+    return pts;
+  }
+
+  function dotStep(pts, r, t){
+    var prev = [];
+    for(var i=0;i<TN;i++) prev[i] = pts[i].o;
+    for(var j=0;j<TN;j++){
+      var p = pts[j];
+      p.v += ((prev[(j-1+TN)%TN] + prev[(j+1)%TN])/2 - prev[j]) * 0.30;
+      p.v -= prev[j] * 0.10;
+      p.v += Math.sin(t*1.9 + p.ph) * r * 0.028;
+      p.v *= 0.90;
+      p.o += p.v;
+      var lim = r * 0.36;
+      if(p.o > lim){ p.o = lim; p.v *= -0.35; }
+      if(p.o < -lim){ p.o = -lim; p.v *= -0.35; }
+    }
+  }
+
+  function dotImpulse(pts, ang, s){
+    for(var i=0;i<TN;i++){
+      var a = (i/TN) * Math.PI * 2;
+      var d = Math.atan2(Math.sin(a-ang), Math.cos(a-ang));
+      pts[i].v += s * Math.exp(-(d*d)/1.62);
+    }
+  }
+
+  function dotPath(pts, r, cx, cy){
+    var P = [];
+    for(var i=0;i<TN;i++){
+      var a = (i/TN) * Math.PI * 2;
+      var rr = Math.max(0.6, r + pts[i].o);
+      P.push([cx + Math.cos(a)*rr, cy + Math.sin(a)*rr]);
+    }
+    var d = "M" + P[0][0].toFixed(2) + "," + P[0][1].toFixed(2);
+    for(var k=0;k<TN;k++){
+      var p0=P[(k-1+TN)%TN], p1=P[k], p2=P[(k+1)%TN], p3=P[(k+2)%TN];
+      d += "C" + (p1[0]+(p2[0]-p0[0])/6).toFixed(2) + "," + (p1[1]+(p2[1]-p0[1])/6).toFixed(2)
+         + " " + (p2[0]-(p3[0]-p1[0])/6).toFixed(2) + "," + (p2[1]-(p3[1]-p1[1])/6).toFixed(2)
+         + " " + p2[0].toFixed(2) + "," + p2[1].toFixed(2);
+    }
+    return d + "Z";
+  }
+
+  function buildTitle(){
+    var host = document.getElementById("wordmark-big");
+    if(!host) return;
+
+    var col = 0, cells = [];
+    "Bolhas".split("").forEach(function(ch){
+      var g = GLYPHS[ch];
+      if(!g) return;
+      var w = g[0].length;
+      for(var r=0;r<g.length;r++){
+        for(var c=0;c<w;c++){
+          if(g[r].charAt(c) === "1") cells.push({ gx: col + c, gy: r });
+        }
+      }
+      col += w + LETTER_GAP;
+    });
+    var cols = col - LETTER_GAP, rows = 7;
+
+    var pad = STEP * 0.9;
+    var vbW = cols*STEP + pad*2, vbH = rows*STEP + pad*2;
+
+    titleSvg = document.createElementNS(NS, "svg");
+    titleSvg.setAttribute("viewBox", (-pad) + " " + (-pad) + " " + vbW + " " + vbH);
+    titleSvg.setAttribute("preserveAspectRatio", "xMidYMid meet");
+    titleSvg.setAttribute("aria-hidden", "true");
+
+    // o brilho segue a mesma receita das bolhas do grafo, com os desvios
+    // proporcionais ao raio do ponto para não engolir a forma
+    var tDefs = document.createElementNS(NS, "defs");
+    var tFilter = document.createElementNS(NS, "filter");
+    tFilter.setAttribute("id", "dot-glow");
+    tFilter.setAttribute("x", "-80%"); tFilter.setAttribute("y", "-80%");
+    tFilter.setAttribute("width", "260%"); tFilter.setAttribute("height", "260%");
+
+    var tHalo = document.createElementNS(NS, "feGaussianBlur");
+    tHalo.setAttribute("in", "SourceGraphic");
+    tHalo.setAttribute("stdDeviation", (DOT_R * 0.32).toFixed(2));
+    tHalo.setAttribute("result", "halo");
+
+    var tSoft = document.createElementNS(NS, "feGaussianBlur");
+    tSoft.setAttribute("in", "SourceGraphic");
+    tSoft.setAttribute("stdDeviation", (DOT_R * 0.10).toFixed(2));
+    tSoft.setAttribute("result", "soft");
+
+    // o halo entra atenuado: sem isso ele soma com o desenho e estoura o amarelo
+    var tFade = document.createElementNS(NS, "feComponentTransfer");
+    tFade.setAttribute("in", "halo");
+    tFade.setAttribute("result", "haloFraco");
+    var tFadeA = document.createElementNS(NS, "feFuncA");
+    tFadeA.setAttribute("type", "linear");
+    tFadeA.setAttribute("slope", "0.45");
+    tFade.appendChild(tFadeA);
+
+    var tMerge = document.createElementNS(NS, "feMerge");
+    ["haloFraco", "soft", "SourceGraphic"].forEach(function(src){
+      var node = document.createElementNS(NS, "feMergeNode");
+      node.setAttribute("in", src);
+      tMerge.appendChild(node);
+    });
+
+    tFilter.appendChild(tHalo);
+    tFilter.appendChild(tSoft);
+    tFilter.appendChild(tFade);
+    tFilter.appendChild(tMerge);
+    tDefs.appendChild(tFilter);
+    titleSvg.appendChild(tDefs);
+
+    var titleLayer = document.createElementNS(NS, "g");
+    titleLayer.setAttribute("filter", "url(#dot-glow)");
+    titleSvg.appendChild(titleLayer);
+
+    host.appendChild(titleSvg);
+
+    cells.forEach(function(c){
+      var el = document.createElementNS(NS, "path");
+      el.setAttribute("class", "wordmark-dot");
+      titleLayer.appendChild(el);
+      titleDots.push({
+        el: el,
+        cx: (c.gx + 0.5) * STEP,
+        cy: (c.gy + 0.5) * STEP,
+        ox: 0, oy: 0, vx: 0, vy: 0,
+        pts: mkDotBlob()
+      });
+    });
+
+    // o ponteiro é convertido para as coordenadas do viewBox, para a reação
+    // acontecer no mesmo espaço em que os pontos vivem
+    function toLocal(e){
+      var b = titleSvg.getBoundingClientRect();
+      if(!b.width) return null;
+      return {
+        x: (e.clientX - b.left) / b.width * vbW - pad,
+        y: (e.clientY - b.top) / b.height * vbH - pad
+      };
+    }
+
+    titleSvg.addEventListener("pointermove", function(e){ titleHover = toLocal(e); });
+    titleSvg.addEventListener("pointerleave", function(){ titleHover = null; });
+    titleSvg.addEventListener("pointerdown", function(e){
+      var p = toLocal(e);
+      if(p) titleWave = { x: p.x, y: p.y, t0: Date.now() };
+    });
+  }
+
+  function titleStep(){
+    requestAnimationFrame(titleStep);
+    if(!titleDots.length || document.body.classList.contains("has-nodes")) return;
+
+    var t = Date.now()/1000;
+    var ringR = titleWave ? (Date.now() - titleWave.t0) * 0.13 : -1;
+    if(titleWave && ringR > 340) titleWave = null;
+
+    for(var i=0;i<titleDots.length;i++){
+      var d = titleDots[i];
+      var px = d.cx + d.ox, py = d.cy + d.oy;
+
+      // o cursor afasta os pontos próximos e amassa a membrana do lado tocado
+      if(titleHover){
+        var hx = px - titleHover.x, hy = py - titleHover.y;
+        var hd = Math.sqrt(hx*hx + hy*hy) || 0.01;
+        if(hd < 42){
+          var f = (1 - hd/42);
+          d.vx += (hx/hd) * f * 0.55;
+          d.vy += (hy/hd) * f * 0.55;
+          dotImpulse(d.pts, Math.atan2(-hy, -hx), -DOT_R * 0.06 * f);
+        }
+      }
+
+      // o clique abre uma onda que percorre a palavra a partir do ponto tocado
+      if(titleWave){
+        var wx = px - titleWave.x, wy = py - titleWave.y;
+        var wd = Math.sqrt(wx*wx + wy*wy) || 0.01;
+        var diff = Math.abs(wd - ringR);
+        if(diff < 14){
+          var g = (1 - diff/14) * (1 - ringR/340);
+          d.vx += (wx/wd) * g * 1.6;
+          d.vy += (wy/wd) * g * 1.6;
+          dotImpulse(d.pts, Math.atan2(wy, wx), DOT_R * 0.22 * g);
+        }
+      }
+
+      // deriva lenta de repouso, para a palavra nunca ficar totalmente parada
+      d.vx += Math.cos(t*0.7 + d.cx*0.05) * 0.012;
+      d.vy += Math.sin(t*0.6 + d.cy*0.07) * 0.012;
+
+      // mola de volta ao lugar de origem
+      d.vx -= d.ox * 0.10;
+      d.vy -= d.oy * 0.10;
+      d.vx *= 0.88; d.vy *= 0.88;
+      d.ox += d.vx; d.oy += d.vy;
+
+      dotStep(d.pts, DOT_R, t + i);
+      d.el.setAttribute("d", dotPath(d.pts, DOT_R, d.cx + d.ox, d.cy + d.oy));
+    }
+  }
+
   // ---------- init ----------
   renderDeckList();
   renderEngineDock();
   updateApplyCta();
   layoutBottomDock();
+  buildTitle();
+  requestAnimationFrame(titleStep);
   requestAnimationFrame(step);
 })();
 </script>
