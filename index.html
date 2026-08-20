@@ -2,78 +2,204 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fricção Especulativa</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LeoLopes — Pesquisador e Designer</title>
+<meta name="description" content="Aplicações, ensaios e trabalhos acadêmicos de Leo Lopes, pesquisador e designer.">
+
+<!-- ==========================================================
+     COMO PREENCHER OS LINKS
+     Cada item da lista é um <a href="#">. Troque o "#" pela
+     URL de destino. Para abrir em nova aba, adicione:
+     target="_blank" rel="noopener"
+     Para adicionar um item novo, copie um bloco <li>...</li>.
+     ========================================================== -->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 
 <style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
+  :root{
+    --papel:      #D7CB7F;   /* fundo */
+    --tinta:      #000000;   /* texto e traços */
+    --traco:      1px;       /* espessura da borda dos blocos */
+    --goteira:    18px;      /* espaço entre blocos */
 
-body{
-    font-family:Arial, Helvetica, sans-serif;
-    background:#f7f7f7;
-    color:#222;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    min-height:100vh;
-}
+    --fs-nome:    clamp(2rem, 5.2vw, 2.75rem);   /* 44px */
+    --fs-cargo:   clamp(1.25rem, 3.4vw, 1.875rem); /* 30px */
+    --fs-titulo:  clamp(1.25rem, 3.1vw, 1.875rem); /* 30px */
+    --fs-item:    clamp(0.9375rem, 2.1vw, 1.25rem); /* 20px */
 
-.container{
-    width:90%;
-    max-width:700px;
-}
+    --margem:     clamp(20px, 4.4vw, 64px);
+  }
 
-h1{
-    font-size:3rem;
-    margin-bottom:40px;
-    font-weight:700;
-}
+  *,
+  *::before,
+  *::after{ box-sizing: border-box; }
 
-p{
-    font-size:1.2rem;
-}
+  html{ -webkit-text-size-adjust: 100%; }
 
-a{
-    color:#0066cc;
-    text-decoration:none;
-    font-weight:600;
-    transition:.2s;
-}
+  body{
+    margin: 0;
+    background: var(--papel);
+    color: var(--tinta);
+    font-family: "JetBrains Mono", "Roboto Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: var(--fs-item);
+    line-height: 1.15;
+    -webkit-font-smoothing: antialiased;
+  }
 
-a:hover{
-    text-decoration:underline;
-}
+  ::selection{ background: var(--tinta); color: var(--papel); }
+
+  .pagina{
+    max-width: 1452px;
+    margin-inline: auto;
+    padding: clamp(40px, 6vw, 72px) var(--margem) clamp(48px, 8vw, 120px);
+  }
+
+  /* ---------- Cabeçalho ---------- */
+
+  .cabecalho{ margin-bottom: clamp(24px, 3.5vw, 34px); }
+
+  .nome{
+    margin: 0;
+    font-size: var(--fs-nome);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.1;
+  }
+
+  .cargo{
+    margin: 0.25em 0 0;
+    font-size: var(--fs-cargo);
+    font-weight: 400;
+    line-height: 1.2;
+  }
+
+  /* ---------- Grade de blocos ---------- */
+
+  .blocos{
+    display: grid;
+    align-items: start;
+    gap: var(--goteira);
+    /* proporções do design original: 324 / 464 / 501 */
+    grid-template-columns: minmax(0, 324fr) minmax(0, 464fr) minmax(0, 501fr);
+  }
+
+  /* Duas colunas: o bloco maior ocupa a linha inteira */
+  @media (max-width: 1080px){
+    .blocos{ grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+    .blocos > :last-child{ grid-column: 1 / -1; }
+  }
+
+  /* Uma coluna */
+  @media (max-width: 680px){
+    .blocos{ grid-template-columns: minmax(0, 1fr); }
+    .blocos > :last-child{ grid-column: auto; }
+  }
+
+  /* ---------- Bloco ---------- */
+
+  .bloco{
+    border: var(--traco) solid var(--tinta);
+    padding: 10px 14px 24px;
+  }
+
+  .bloco__titulo{
+    margin: 0 0 24px;
+    font-size: var(--fs-titulo);
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  .lista{
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .lista > li + li{ margin-top: 24px; }
+
+  /* ---------- Links ---------- */
+
+  .lista a{
+    color: inherit;
+    text-decoration: none;
+    display: inline-block;
+    text-underline-offset: 0.22em;
+    text-decoration-thickness: 1px;
+  }
+
+  .lista a:hover,
+  .lista a:focus-visible{
+    text-decoration: underline;
+  }
+
+  .lista a:focus-visible{
+    outline: var(--traco) solid var(--tinta);
+    outline-offset: 3px;
+  }
+
+  /* Rótulo em negrito antes do título (ex.: "Artigo:") */
+  .rotulo{ font-weight: 700; }
+
+  /* Item ainda sem link definido */
+  .lista a[href="#"]{ cursor: default; }
 </style>
-
 </head>
+
 <body>
+<div class="pagina">
 
-<div class="container">
+  <header class="cabecalho">
+    <h1 class="nome">LeoLopes</h1>
+    <p class="cargo">Pesquisador e Designer</p>
+  </header>
 
-    <h1>Fricção Especulativa</h1>
+  <main class="blocos">
 
-    <p>
-        <a href="meu_algoritmo_v6.html">
-            Projeto 01 - Meu Algoritmo
-        </a>
- 
+    <!-- ---------- Bloco 1 ---------- -->
+    <section class="bloco" aria-labelledby="t-aplicacoes">
+      <h2 class="bloco__titulo" id="t-aplicacoes">Aplicações</h2>
+      <ul class="lista">
+        <li><a href="meu_algoritmo_v6.html">Bolhas</a></li>
+        <li><a href="i-ching.html">Consulte o I-Ching</a></li>
+      </ul>
+    </section>
 
-    </p>
-<p> </p>
-    <p>
-        <a href="i-ching.html">
-            Projeto 02 - I-CHING
-        </a>
- 
+    <!-- ---------- Bloco 2 ---------- -->
+    <section class="bloco" aria-labelledby="t-ensaios">
+      <h2 class="bloco__titulo" id="t-ensaios">Ensaios</h2>
+      <ul class="lista">
+        <li><a href="https://osimulacron.substack.com/p/o-cursor">O Cursor</a></li>
+        <li><a href="https://osimulacron.substack.com/p/eu-conteudo-de-mim">Eu, conteúdo de mim</a></li>
+        <li><a href="https://osimulacron.substack.com/p/eu-conteudo-de-mim">O dia em que transformamos a terra em uma gigantesca máquina autofágica</a></li>
+        <li><a href="https://osimulacron.substack.com/p/o-realidade-transborda-em-nosso-feed">A realidade transborda em nosso feed</a></li>
+        <li><a href="https://osimulacron.substack.com/p/a-natureza-e-o-ser-humano">A natureza e o ser humano</a></li>
+      </ul>
+    </section>
 
-    </p>
+    <!-- ---------- Bloco 3 ---------- -->
+    <section class="bloco" aria-labelledby="t-academicos">
+      <h2 class="bloco__titulo" id="t-academicos">Trabalhos acadêmicos</h2>
+      <ul class="lista">
+        <li>
+          <a href="#"><span class="rotulo">Dissertação de Mestrado:</span> Entre opacidade e transparências</a>
+        </li>
+        <li>
+          <a href="https://www.even3.com.br/anais/v-coloquio-pesquisa-design-arte/1248464-letreiros-populares-como-estrategia-retorica--preservacao-e-resistencia-no-espaco-urbano-de-fortaleza/"><span class="rotulo">Artigo:</span> Letreiro populares como estratégia retórica</a>
+        </li>
+        <li>
+          <a href="https://www.proceedings.blucher.com.br/article-details/tipografia-vernacular-na-orla-de-fortaleza-um-estudo-de-caso-dos-letreiros-em-comrcios-de-ambulantes-na-praia-de-iracema-40130"><span class="rotulo">Artigo:</span> Tipografia vernacular na orla de Fortaleza</a>
+        </li>
+        <li>
+          <a href="https://www.even3.com.br/anais/iv-coloquio-de-pesquisa-em-design-e-arte/694495-a-retorica-no-design-da-informacao-uma-analise-retorica-do-infografico-mapas-de-conflitos/"><span class="rotulo">Artigo:</span> A Retórica no Design da Informação uma análise retórica do infográfico mapas de conflitos</a>
+        </li>
+      </ul>
+    </section>
 
+  </main>
 
 </div>
-
 </body>
 </html>
