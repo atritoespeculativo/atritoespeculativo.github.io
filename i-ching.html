@@ -245,13 +245,21 @@ button.nu.alerta{color:var(--selo);text-decoration-thickness:2px}
 }
 .aros-caixa{position:relative;overflow:hidden;pointer-events:none;z-index:0}
 .aros{display:block;position:absolute}
-/* cada anel gira continuamente sobre o centro do viewBox, que coincide com o
-   centro do círculo. as durações e os atrasos são definidos no script */
-.aro{transform-box:view-box;transform-origin:50% 50%}
-@keyframes giroH{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
-@keyframes giroA{from{transform:rotate(0deg)}to{transform:rotate(-360deg)}}
+/* cada anel gira sobre o centro do viewBox, que coincide com o centro do
+   círculo. a transição é a varredura de um setor, de 30 graus */
+.aro{
+  transform-box:view-box;transform-origin:50% 50%;
+  transition:transform .9s cubic-bezier(.45,0,.15,1)
+}
+/* a roda leva o conjunto todo, devagar, sem alterar o alinhamento entre anéis */
+.roda{
+  transform-box:view-box;transform-origin:50% 50%;
+  animation:roda 240s linear infinite
+}
+@keyframes roda{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 @media (prefers-reduced-motion:reduce){
-  .aro{animation:none!important}
+  .aro{transition:none}
+  .roda{animation:none}
 }
 
 /* celular: faixa no alto mostrando só a coroa externa, sem o miolo do círculo.
@@ -620,6 +628,12 @@ const AROS=(function montaAros(){
   const MEIO=46;                         // vão do meio, o que faz a linha yin
   const ns="http://www.w3.org/2000/svg";
   const anel=[];
+  /* todos os anéis dentro de uma roda que gira devagar sobre o próprio eixo.
+     como ela leva o conjunto inteiro, o alinhamento radial entre os anéis não
+     se desfaz: o giro em setores continua acontecendo por dentro dela */
+  const roda=document.createElementNS(ns,"g");
+  roda.setAttribute("class","roda");
+  svg.appendChild(roda);
 
 
   /* sorteia as linhas de cada anel, garantindo que nenhum fique todo igual */
@@ -658,38 +672,42 @@ const AROS=(function montaAros(){
        e os vãos do meio no centro deles, alinhados de um anel a outro */
     c.setAttribute("stroke-dashoffset",(-SEPARA/2).toFixed(2));
     g.appendChild(c);
-    svg.appendChild(g);
+    roda.appendChild(g);
     /* cada anel entra num setor diferente e gira no seu próprio sentido */
-    anel.push({no:g});
+    /* cada anel entra num setor diferente e gira sempre no mesmo sentido */
+    const ang=Math.floor(Math.random()*SETORES)*PASSO;
+    g.style.transform="rotate("+ang+"deg)";
+    anel.push({no:g, ang:ang, sentido:i%2?-1:1});
   });
 
-  /* rotação contínua por @keyframes do CSS, uma animação por anel.
-     é o mesmo mecanismo da versão que rodou corretamente antes.
+  /* giro em passos de um setor. entre um passo e outro os anéis ficam sempre em
+     múltiplos de 30 graus, ou seja, alinhados: a leitura radial de cada setor
+     dá um hexagrama legível o tempo todo, e são doze na roda.
 
-     um giro em passos de 30 graus seria invisível: como os 12 setores são
-     iguais, girar um setor devolve o anel à mesma aparência. por isso cada
-     anel gira sem parar, numa duração e num sentido próprios.
+     a cada segundo um anel sorteado varre 30 graus, e essa varredura é o que se
+     vê como movimento. no celular o anel mais interno fica fora do sorteio,
+     porque a faixa mostra só a coroa externa e o giro dele não apareceria */
+  const PASSO_MS=1000;
+  let relogio=null, ultimo=-1;
 
-     as durações são escolhidas para que, a cada 24 segundos, todos tenham
-     girado um número inteiro de setores. nesses instantes o alinhamento radial
-     se refaz e os doze hexagramas voltam a ficar legíveis, sem que o movimento
-     pare em momento algum */
-  const CICLO=24, VOLTAS=[3,-4,5,-6,7,-8];   // setores percorridos por ciclo
-  anel.forEach((a,i)=>{
-    const graus=VOLTAS[i]*PASSO;
-    const dur=Math.abs(360/graus)*CICLO;      // segundos para a volta completa
-    a.no.style.animationName=graus>0?"giroH":"giroA";
-    a.no.style.animationDuration=dur.toFixed(2)+"s";
-    a.no.style.animationTimingFunction="linear";
-    a.no.style.animationIterationCount="infinite";
-    /* atraso negativo em múltiplos de um setor: cada anel entra num ponto
-       diferente da volta sem quebrar o alinhamento */
-    a.no.style.animationDelay="-"+(Math.floor(Math.random()*12)*dur/12).toFixed(2)+"s";
-  });
-
-  function corre(ligar){
-    anel.forEach(a=>{ a.no.style.animationPlayState=ligar?"running":"paused"; });
+  function pulso(){
+    const primeiro=window.innerWidth<960?1:0;
+    const livres=[];
+    for(let i=primeiro;i<anel.length;i++) if(i!==ultimo) livres.push(i);
+    const i=livres[Math.floor(Math.random()*livres.length)];
+    ultimo=i;
+    const a=anel[i];
+    a.ang+=a.sentido*PASSO;
+    a.no.style.transform="rotate("+a.ang+"deg)";
   }
+
+  const parado=window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function corre(ligar){
+    if(ligar && !relogio && !parado) relogio=setInterval(pulso,PASSO_MS);
+    if(!ligar && relogio){ clearInterval(relogio); relogio=null; }
+    roda.style.animationPlayState=(ligar&&!parado)?"running":"paused";
+  }
+  corre(true);
   document.addEventListener("visibilitychange",()=>corre(!document.hidden));
   return {corre:corre};
 })();
