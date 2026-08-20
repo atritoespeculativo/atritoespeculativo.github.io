@@ -1,0 +1,1857 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>I Ching · consulta com traçado do ensō</title>
+<style>
+/* Elms Sans, de Amarachi Nwauwa / Gida Type Studio, licença SIL OFL 1.1.
+   Eixo de peso variável 100 a 900, reduzida aos caracteres usados nesta página
+   e embutida em base64 para o arquivo seguir funcionando offline. */
+@font-face{
+  font-family:"Elms Sans Variable";
+  font-style:normal; font-display:swap; font-weight:100 900;
+  src:url(data:font/woff2;base64,d09GMgABAAAAAECkABMAAAAAkAwAAEA1AAEPngAAAAAAAAAAAAAAAAAAAAAAAAAAGoJfG7M2HIVuP0hWQVKEbgZgP1NUQVSBOACCJi9+EQgK0EC/FjD1GAE2AiQDhHQLgjwABCAFiGQHIAwHG9uEE26Ms9sBoIqU36Qogo2DeMzYJVHUDsbJJ/uvD3QwQvodakKpbZvwKDatqtGbQ5SI1dKrl2noIdSr1DIs4lSMh8GNahPCxocgUCCx/ATOEY4IH59RTmtQDBV/ROhvnF8QOL/qCElmW57n345/97kzX5x58HwogiuRpdSmzHplWLRilSquxPsTbdq/eTOzO6sssNgiwRIgcUKI2EZr+qWn/WLOQtLefbPeN7WeiNZzkvauv1F+oG3+oxwmqHiccCJyRLTHwZGCiTYWaGPPrXX5K1t/xX6X+7WfuV/+D23r/84QImAWutVHd/voe2N8X3T8zVfJDIixbFT7XN1MREQXUBHBoi1GBUaQHvi31vAlt3tbBFelmWVnTqiWfX4JhNSBqG7fzILtwgHGiVGYWHj+oy793+eQnlU3gDiVYFgl63LOIc4B8movSwGHpd2Zh9bcXf1jDTOJlieiJZAJaeIOzO3vTdXa/QAeRYjgDZZy2MukbcztZeBi60DqQspVLj/+Bw18LAAtAEFeBJ7gvBSkmQXFuwNIJxKgDgQppxgXoD1eSg5LyoEyL6RchdyFFLtUh9zduXMnX1FeUeWiu6JsDv7/f79W5649mFw0m4ZuoVgrI364aPrz8EoiEpo1GouQoKTpZCKpk3rERMYyl7RWHPwHg8a3K1oxuG3/j6n/uTjSbvJzepaPppYgIYiEIEWCfOtb851AUAFgDwCeguKIDkSXHkSfOTTzYui+6CCEjglrMyuFXj8dEAyNBhKUuR8UkgDqfxuoG0/okzxFKOPm7hD/KP2fAZWmHWAcA7YC+wBHA+9CIBi46xwBFmMb470vSK49q/SCTGrIW19YyHAxUAUKkNe+qD84qDJSdUslAUsJWBa8KdeTK+89QKq+l+Qu9eTjWvaqvJYp4IXKvWgHfU+UpVyFYi8V3bWBq3nvRoZ3TRFPyfPy8jVbRX+kCkVhUZN0Wfnd7S1ylb2yW5n18gARiID6z8vosWjAUu1G0COOamgD3mXzuUngXT24mAceBhh6+111yXwe2ICX3M2URpiw6ao+DqGbBSKAICYEJOpTsSEJ1pS1xZq2Zq05a97aam2zFqwla9U6aB2yDltHvy83W/VnLbrs/aCsnlcG1uxW0QRyCYB+/D6YGGYjQ9VeLT4v4rZnuyYo6k/wkeXip6R6R+oJ60HbIT7+Xt0RQ/Y6AN/dz1WPpYQPq3rL9/eIH27K/Jx16HDt01tsXus9ZrsZY6su6U8AROZ1Z24Cu2N3rW67ubvTVcp1zYZDq0yVKUXXr6o3gva6dfwOWO2nrH+/9Kdt6t0OP+y7F/jDWcVh13GMsByyq37uu7eu71k/knrrob13eVJ85XZ/8IUx+LiSG23A+R13824RuGbRMX1WDeNhd/ojPfL9pXnOze7WqieiHqxz9xu/n/f2ZXNecvemP8xTcw67JlQPXdR+U2kKhymZPvFELiU5Pa4OyZ1rYeyr+ovtCOvSAiYyKOo67f+udG0igantfnVhzb4Fv2l/NaB0SvM3eLYvAiCmuRu+Xr6fjVKSiu1B/bnout6vBryz9VZquQePP2quHYdVkFqa/JWG6209PRekniR0YduFsut2x6bG292j2WZf2oXqDFeQe67Kylttle0AK41o3PoNijFu21s58AC86M/Ki7ejghCzh48/Ght+Y8Q6mmr99ol3bX8xSVzkr8J00P/zRQhBgQU4ShbEhDj8EjIi8oqS2nXI6tIjr880hVkhLvOi3HZI8Nmjkd8+req9xDBSzqigadPCZsyJ2GvF8/YhvOgUUi+hIT4MhUxgMTAgKIpL8KEoIoOwgdU4P78sHaCVFq5YEvwiStsGiiDfibBFmMEWz4tRGcDm4AmWATMUBOEpQKNPwaSAaEmWofOxWXniYASMtQkqIhBVNokEeKTxPhaPAjwKeeoiogyOpyIhjch4WrIKiCLvV+KJdl7S4anq0k0lbw9fBn18GZT5AujHUtsKNmBCFVxAgxHwKHh4GozxTBjn2TAxdjFMAgELpighyTE6icoSYDeUZfUsFVbhKbDPE+GQZ8Jhz4CTPA3OepgMdOiqwYV2FDpxCFABLB5QKQx02IADSEEoGBZMAAShiSPJSL1AmR4stdChxPBTtHwQOTD5KrC8URVNgjSt9KsPyGFXFAIpoCPBn+YCCAhAPE2blIFmurlADBNexdqVAIvDUmWYtN3PBvF24Hno38JpOU3bo11VdHpUL+X6FEPVDvrfEoSeX9FuZ3hxshVn+71Tz/N3tj0FaN2vJv7Las/WZRbJK1fJg7wejKaH/9YRtV1SSqMmzVq0GpaVM2LUtLwZs+bstYJQQUIKZdsursQuSYV2S9lij0Z0ezVh2acZ0wGtGF5iGN1LZbG8TA7TK4xieJ1pdK+Xx/IGM5jeZA7DB6zgqCMgFlVgO0KC68OkeFDQTg0SJ8IWTRYM6KJJgQFdNPEwRA+bKgmYsMXMiIKXxfjILG42w0KQ8aCEIERIEqVNIpPJAYeSAk1NDQBrK5+wmftqUlBln6rxCuWOO5EPPZMSw+sPD7RdfPrwlpPXH78uYvSkhlD7hWcELvyMlkT5EzvWKvHtXiYomz0jr/PlzlIX+7t60UXTs+C/OD8zDaF/fO4biF89PjoIbVfPDE9B9x0Dj0auXZqeh6nrcxvmbwZtEyQAE63m+pxGyocgIBwZQ2as/d2E/U6w23mtQXjEWJBYSWUke3IeX4i1mYnYFuev+5H6JKHldQdpU9uRoYVLjJU7wZUMEuNpK+S9jYgENx+N4r0x6zL4CCzkeNqD9nxT8kAdePphSHUCCSsLVRa1QEyLtuXXxJvretoNP19lFIC8cPArze1zUN8A1bdrnWwJdd4nRk3Jfp6yBUNRh3l0RVvRddiGbliK5ZA0kl2UjRkKbPx6HqR89DV3aAn+2eWn712fBFsA+YuuMElSxROLnxX2YufSP1VUDdVUc0CKdaUMLlSgPJTn5zVVEYgYLUb5qL9aK+AIcIFTEMKEmEakFYVqBbUqsV+clWzFSWlYPqsklAMaShvWRawJu9TR5Gh2LXkbvNtCi2FdeCaSjg2m8+O7AQUaoIAA0MYH4R0cVhVwyA7fuuA7D5wehOtDcCgMp0RhNQGHGuDEFJzSBPd1wNt9sN4PVw3B7Vm4Jwtv5WB9jJadhhdo7h2YEAJRiwlHhUgF1WU/xJcI1ahRIKBP1QDbkI+Y7ZglPgpTpE/YuB5CxIQOH7SKT2pl+nicuZHIyriW+c2PjUa8SGoGC34SO+Lq5kCtWh0hUqlKDM9uFcTyfAKPrIuC88vjm54tRuVI+p9aJiYEagTM6Eb1AgW5ycbQa8BYGPAZW2234h3m+nQIfBxts1DDQJ91QlSbD2HkBrGSiD5bhfJkeSFw/P2J51zmiOHHvx80yN979ELDY/KGGsZX/2sB2veyHQggX5c/AkMw4QVcfk8FNsLbLhtbpAH4IZgW2otnS+s0ZKs2A6ZscwACsMZLxc0f8d+KH4sWNdsuMB8H5Z36+VP5DdacKZ2Vc/Q11zVifkNz4C4bBKYVJBThUp+Re54l8PpbL41BOT2GTenWZ7f7PWA1aMQoj8CQs7kJg1a9Rkzr0Z8hExpGlDW7mElQHx7oNfKaJb8NFKYviS3b8m9Ak1UE9gOOEgd4EH593eSgf51su52EfrHsJJsRfrJKSkRsmy22ktgB8W6n+tOSSybbKMtai7WU61HWP/0au2rEqDHjJkxOsFDwmlK2OdfvaiWlpBFgNUTYFKpVibXImhp0oSAdKaRPFbGfkNHwSdkj46kGpUcmIwT51TmdGup+mdnUWlXIkDpiLyHrg5PSno05UmnTYHnVnv24by5p2fZg1QUgT4IcAHeVSrsiYx7Gipb0zpchIhFAlKPhiglJURChmYeN4itDhM/PHKKkj8kv00kxyh9G6XTlE1sCSrKU3uQJoIgAuferZbENBRHkU8bPSFCYCwBCtVA+VIKBOdOaYphf4MzRz1indfXZ4UK9xNiwYM62Czt60SosK2qR+ey+AUW9Kq9E7776Ew8P+NiQYAi3qtvuusKYeFmDLTkSQ/uMZFcsfRO2peu2PRt5QZiQgiZGYPQ6EIERYMoPhGOqEIPMLDljygww8AbjHR37DvRJPGGShiMhSaujKmqoGJYEm3A0mcBgPMYclu9HIxDaIea0wU50GzuFmf9teKlkQ506YTCRUbSOXmx/IodDdoLoxA+4E73aaRjaGxN8SYXiTD7AoAXOPkqXpNKakJAYuOu9Iyy9yp0TEjATxmifu0e60ExymzONDBH3t+qGMVjneVNcabHYka4yCjIj1KhY1lAVdVRcp6TXBsrubG0FUQd/S0YmHTKUOT6a3qLOCVgvDaJgQY2WBHa7IM47UycIteu3MV29HdopyTNgLNhRPRAPW6Mba3Mt29CY6NBVY9eMXTFYzf0HxN/praWQFGnsOff0IEygvFwor/iQsRKKooyCdTW0YIkNqh02NQYrE7J//1J0iiByRXNqh6HQKzm0+SfbP36Rqqic7fzwSI7Q9pURcNYgdk6LY98wECN0jg6+K3F7GLnBGqCNPs1fUBIMarrXTfSl3rKUxI5lrIFfvPZsF7HaqGNvQE9B23Yh0e8zuBL6XYuB8r4OUbOdv5jmHnRHI9IelibbMrL3SNqBOtkihFZ3AlNsL1Wug37ZvXor219+1C4rdV/kClIu3yKHBIW88b/eWP3tc65W2rE2Jv/LEyjsf7G/ltnJm3YbZUtw/0+1WK3f9EUJ7AofcWkRp/I6NaFqlpUZyd26jop5XLRaRuHScFFFWpU8X5+CImNOuSeWM1hv0EmHp1WQQedng0iMSrw2pCPAWIHcCpiA7+/4KU2pGGuycXd4n1j2CibJw+l2c/m/0J5UNlDkde+W2OEyrJNPXqz/pQOyARG95vLuT3oPhQu+JKelWvOSD/V9MpQuzh6qo5JiSX5dtQenCZE7vRPSp+vQvThJRpwLR+fjwnwZjp0OT+QlLGTr6Fe09v4XkvekMWgEeLAKC509+203DHIHlkmN/gbpQ7VrE9uP7ngASIfK/zHQS9kBDPqsRLW/cfUHVWI3CCyqRHB03H9wAMzasDq/+4Xb6SbYauRsEhdkEtucSgn0c0irp53Ccs3Hn9t+1mTCA3amfMQHiy4T3Ver1vndg1AD4gmKOu9cND5UhpCgsGerg8Ggvf22Hz8EUV+lSel7cFoJ80hX/+9e+GGHvt2PhmYQYHXQ75C/vn5HL2+vz7oJaLM53SHWJvgj7KsamVTRyUAFpQE70nwqncPxlbBxMPgffHFOtoLwJg05col/31MB8tu55hAQ9U1MlENVqBcbt7enCCP4MEeFaGcCR7iT/gUM7FHd0eS3gzSjI67TfjT86EEgXXzBHV3gBOdnsUEC71isQPOgdOV9GrUqcxFh5OnjcBauez3HVdO7/peUwp7aII177rWQ/k0K+UNARz5b/C5jX/G0k67PNH+HBCVwZWhGjRhvVHtQZljpIU/LNPZy7FLDka+nj7CfPcSBYcwccSKPfZaUsXzD+RxnKR9dnjJZf1gLP6Z+ZPgj6cVxoR9hP0+nx2oe6f+4pxF/Dz9Xc+M1Eu50GJi3NRn/2PF/gijaOrbMbD3IvuBY08eXNSd4qV8E34NgwtEdoOGTPcY2gnzqO1AH2tNGLD7L8qDTBsoULbwhFnT1QbETRW4/RCDzSSrlcx3V5FXYvpqbRU6c4qj3xnoJEPkubpHd94e8nj8IxPemnOdvL9KjdGodGSnv2djYu7Nj2PV24tHIVz/pzmBz9LhdwJiCB1/H1jn7KkXyu70yueduuUiguINSKsNaNYw0qIxwKid5wDE87DiQTDJmXE0mqR2GgbZ3T21vunioP7zD0t1n2RmNMmbMOuHwdmtPZvcpAiJkZtUB4XVsnYt+H9lu6um0LFGUrHBv505T5BuUaqhbh/rte+Ix+97BzKotcVlQLLxaeFWv4PRx05DgEsHzbJEXvRBsZNCFXZzYHkdm2HYgmUzYcTUV6zgzpScHbju4rYlcsHT0GHdGo4wZ88qS5Jypo8u0DSIiSNhXM4O77cYhQZg/BNl1bN3NOWY/UoUIf+nBfxxi1ENNFAexW32ZHpuLyJHeufCD2INu+TAV71HBS6P5Z/Nbb471ruydyEhymZZ2o+eicPTG1mxC5vo1ie32SsftEmINFEfXWj5dk5+xN1Hq4A1GHriBH9luQFyrRQw6FWj+FWU7Ou2WHpfL0ttpc7BR9k+5Mc9IgDDsKaLyVxkX5CPNc6fmd1+SCezLUq6aLGmbTbAQpBI5h2dgwCLnnIzKs7c/Jc49vRdCAYec9NWPB0QuR++A3ePtNzlaTIon4HcFn+K+w3pQY7E19xhc3n6zM20X6fXRJo3Z3KTQB9Xa9p9TwRPfPiva1iZzEQMzbqhZx9atV6MpFJY5RF7f2qrPExdhF6Vie3bHU56sOp5Q5zyrANHDfbxlDipK1ySM2ytZt0vK1uCp79Za3j2Jn4X0d2snpEzFtaig+G1NCnMR3v4QK18xE9xwTANEUH4lXnAOj9zx8isFoFg/tcX8KdSGaq4NH0GAcRQz0TmRhWBwMRINLjg+yPNByNFI60UBn8j5vGOBgGF0EcRohdETfK9immOc7WgTjMoocAk/YDTXj2DPByknvhyk3pepBUwgruvBEz7bqQzS2SJWBSZ8PmDD/PlwQNFUR7ksFygSRJ8MWK9iGqZyEWE2Lc/CZDCWyAe98xFmcaWAVlQQsI8N+UJExmfe2y+Rj/kIPMY/rqyIR9TN1VXfC2QCOKzTq6NRja5YhurlT/ln6ZqPIH0IaI+7Rw3hllXsZn+4W2XyDvicY4H3se5I/eJ0sO3rQ6j5uXJmtinyxMDrzRGlWKnb1tNjd7kM+0vdXQpFRzETPEjiGG7RtiSNRpZb4FMRKnkYdgl4uIDX9yqmYZX/+hI+9hI4K9l6ql/jdS31Vv9AkGks6CTd1la9MWUmMEKjpCilRiNYKjUfYqRiejvPqCtasXk2J7KoF1qEBSyBCGAEo5KozhS8x9/Hur/62gSVUVfZcZDvEpX1EAMmz/bNNOM/2KPYLxX8hrhPHpJ4ztl15rHHavNJX12vqRTaOLZ2vbnRJFJpgnG5XhcV34jXkXc7+FTZeS5c8XJCajAk5NqASlRHfayY+R1RK/yovOXP/3vfvySvsgQ75PC7PqHSRLTfYg5Z4ZOylajxxyMIH4H/No5if+EXzyYivkG3a9jHw3gOa1eX1eHsdFj73EWgf32jVvkK+7lXxG0bsHm1UXxuI3/thvjgRmVdq/bMhv64CgeWNiRns1f+89/+u4+tPfH748/rYP9x9/ti7P3m499scjbnzqUbPqg3CLFLsYNPCXEheFyTYy3ahnQfYb3UEkQbzi4LIs/fGj5y9OwicgHvLAmq+Wz8gLe4+sziqdQUtx3izx8fqDq68XphLadxvtN39dycYa9srPRS/HC2xX7h+IT9AghhKtciT4y3GG9pYL8abUb52DoGZozEM55Q1JL+p23ARll0eqpJYTY3qfUxo8jubB8weVw9elujRV8X3B9WU6GQcY847T0FAx6HmvWSI/Ui50t10ObzDUIZ8HoN4y3IVx2CmfrAZDBITOXre58qefqoWPlZ4YPfCSoEED1GVlvXVY/sQfccE5JHXnXKkhSoONFFMjRLify+3LiHJMd9vjEi4Bsls6QmLQ44fznNFvd24bqG7cHIYjQSWaAayNx1eMvlgpOh+rMVDIYWI3X/Hrn3AHb4f+ZC5YygJ+gYCbDkKJQc9wpCYySotYwGCBXOYl4pPBvf9DXnDgH8d6Y2LFMFlCoV4UFtpRAqZYuh86Cj02hptlosLRJ0gNJisQqGafvh+qzDk3FTLRMEj+FptRqNDa1aq9Wwq0art/XXDu72pdzuTM4BuheUe2IL0brv3stGI/M7oKCBCYRHQ+129S6AM7Z4Q4PptCW9XsoxdO432NOxuL3NoCc5Hqvvq4BRqBF9B/sYAwFPi9pP97L9vNpzJZLzxBh205Za0TMXxGtO6Ovb8/iH+E0UTtqCn8oQY7JFpXJUqRxRovgMU1JXMON5u+KjLJ6bKOndij6JwvVjV6MXfiTrN6ebx4SLG3ccu/+Er8ENW+SXb5Fh2gv0+gsvXnN1+es1V/se48++QymXqe44/NPXca97C30Ap2yRnqmSlq32dN+I+ZdeIWm3d8ilrscVOd8+ktQ+pK355qrVvAjEXkqAnwk7KPRdFFZewt4SCtowrE0gTN8v5eKSWqmUI8EBf1jsebVGsO2IqwWZ0awUnncohrzgah4T1byqgety0iurpaX7ZLRoXtAcN+0anNFnvIard3N1ruh4epev6ytmR7r96ZTmeS0M64PZb+nwC3mZLl6rGrMpgOdzBEOAOg95AAHvYe8o2bBVc1lPr+ZSx1XPi9p7/eFZ+TkdHYwZ88Hbof7wZgjlUC7t7fmIwEsKyiaNDUZdi2XK8KMkDmGzais/kK3WyqLHFWk0xbkU4Ui+1qy2vMRvrJyRlULTiuOyiG5K8g43lwX1plruO5LVOlnka+WbdVjGpFHbYpnSfL0TOX0pZOXXJ1U7JfugEowtjT8afKftseF/5478gLbb21GoP/f+NTA2AoU48xxfebS4iD7GLd9RVXFTBff078qzT7oHiB+ZL4iYL8BUYenUM6W8F3mxvU+XpZMB1KnnTHC3fuv6tiLr5Gtg9ny6Q0hzFF2HbCL8/xH+D/y4d0+FN28kLfyRk3659eaCdIKsUykI6WmISGeKNmmMxqRcR6r1d9+B5/P7aY0lD3J2f8XZZ8g59V0O8iNccSvdNlJ/z6RzDtzjuEroOT/hnCggGNth/ttX+OfFM0/y8niMJ5G9MpwPlV3cs9V8u2Vgd3Fa1Uh/mPwbuedptPGeZRFMNiMryN5rkgb2x1Dz+cd8tPEqAbwRY3ykz3Th/QtKQaWC0mgUIVdUarKiUICC7lnS/SVyefF+KX52MRWVnA0stFLNt91lW4z5Lf+pycFLAuOLmkvKukpb2k5bec2lnnTHGc6REeNhdqrfPtro1de+xSuOiDaqBBuW2WGJLGgypReLk8rDvblDztbm82y7BlpXSmPcLtlFwwvnBPqqnra9Ypa153L+9j6z3S5I8TZa354xn2vp0LqTmX68IawzGVp1job+TG0yqAU6x9Ak+bDuNYPPMzTq/eWWX9BD6NhNv9zYIehoRVvf0k1teK+59i3ne2Zr2vbWvWODVle3y2nt6bK50JQEI9Dp5Y5wy3Pc8nQ5tx121cQvrfNfCqYav1viytylyFnBBg6mFQMT3W2IyIWGG3/kJ07soVUto/LuJgFhlK02wLG/tj+9RVDzwCBe55V9cEA1N2zDbv1KUDfiEE5xATYjwCLHHNWLAoml63jA7s8hpo85d7fQ58+oyPZ/4Z5o5aajhBoL0To/o3P6sz9787pVdYe90HVdWQjSqF53mcsin1yb9X/+kJhkwKRilvozRNX2O3awk13sZg972cd+HRDC+wvofB6wRZ20eKLcLbFXb3qmGlOstkf9++uBPI3NQxNtdQxyujCVGQ8+JhR0/Hcrx8AAjCJ/KjL12Ao2HQIAI/ZX4AADwJ2MvZDTdKIt+EdAizk2+skz18AJeE4HgDf7Riiq+BrZq0nSBfA0JEiKtXoSnIuwKopsSvFrAPk1aiCv55nGG2A5AHwSFbAHwLLBVCA2ewxsNtAQSwcqIhT9nBNEkYei3XkA2OviAiyRMmWN5EIB3gSF5Bn4KDBuqemBL5uD/5nTtX6zaLgPeQ0UwpEeNy9KppA7AQWYUsH/JWsJsvcT8+jg/4QASuCFK6GQEtlJW0fTIOdRgTP01XQJNqCGYdEJ+kH6iDnNfJ+5k9UzAwt5ju9jVfJ9/AK/y9VsVXp+wbcFh2WGHJIL8hVb6uQxDhER0S7GxR72b+wacUOoooeUtxceURqUx9F3cgPqtqJqNcTr1F5V/Efxfu0R7xxf1/v0a3RPzHTpW6US46iJmNvKcLMtLu2b4dwQxS3mCrkaroeb4PZwJ7k7uSdzL+bezP2I6ymPl59d/kxFTsVYxYkV/1bGKndUnlP5Na+Al+M9UlVUpam6rOpbBEUqEAXiQrYidyD/8MP8Qf4O/mn8a/mf8SfRUtSBbkdPQa9EX+ZxN2O+uqt6snp39Z2xuzPOZmxkxpw+Z7tgWHBrfE54dfx38XuylrIBiyUux85KfD0NBEIHGwQuALhAzqXlAQEYjG6JFAg654TCSgUSWmDr9WDPip8QIW5XsS1s8UjqqwkQlfy+7XHAwF/P3Vtff6TxbGGwBZQxah6CHVoUIhOMoQqZ0O94/qDti0bzoTVS3YOhfCxWbC8VtaX2oqrOh29JQZ7tekwQUSw2+alC64QCFng17goWlXxNZ6fcBMFECDSbFWAgonwOW59GQRMi2EG3w95nMIiyHEKQEkRigIzJS5IQhka1+5RqcOHgyMR82O9GF2rGy7HPVNnzCt98+Kdnlv602P2bvHYqZ0NGg41btR6U4syAm1RrAUmY0rQxaBLGGtIEZMkL7jL6mZGruJiyFTfYhqO7k6PqChiexw4HQ8A4rUeYLE51y8mtzToJSrJnpHZfJoZNWhzwSwwJpZGTy1c4EvR4KBSWfhWKqaIq2Nc+IUFRoB5DufT7L2G5IyDHBUn5qcXLIJ56YIbWUItJhbEOc6Wb9JmdY8dw+wHHOQdab4HfAo0BF4xquaa2cKMPXE+JocwQDk9eK08+snebs6sziPNmaaN32R7KbeFYtFCX4LWpUOfN/QbrdPkTmcfxncT7V2GM5n0uFX5/vO7dQFmTc7gpSsIHm6QOemjPOpKXnIiECuHLq4FFq7js1zWdoRku13RqisyZGnGh6pqsPGAN6uHSkEtTcypDGnnGrO+K9Vk+QwjTVCDgfUjAlDMGBblpjBOgZ3qHlt+doOfd3kAEHki2z/SKMmMKhQgwnhEywssjqJkIGPCZ1rd+NZZ4pDTj/if796ercehi+ol0D5A65QX/cbI498gVMCTpAlHW1WzCenTGSgsoD6UVMRNQrEgXC6ZtKXljDcx+As5S+Pfnl1v1mW079+PdGc6gEIwgt/wCeFVHGebcCuAU1CB9YQO9o981CCtkLcKc8ukTQb7UrSjVwDYh7Xk8phYMJruGaEo5fAanAX8gLGap5uaEu5gI0fQ3dmRVfYW4wvrVzhT4vUVk1ktIkBRj+fcekUcFUYMvSAQhZPuQjq0E7Gs/t3LF6+teQ0B1wO+qITH8w2Tp2wK0PHgPQZW7a2yDLdAsDNVcWqhUGBTZzBSLEdMEmeMsVq2TFQAmupOCcr7uIg6odhTdgF9ju5L7168s3m5QmTvD8I4+iKy3fYjM75yCK1y5HF8w4sK57iey5E8C9gXGtcheP84c8oVwVOBaRpLvzl4qjl/dD9/pY0hfrgvH/eMdaStF/XkX/N2jnCBv6jusJvqhiugwXL8U/WxtQKtQaAeCerbiElaJLmrWSLcjrwy0y+XtA37Z6R6BUp1wrAAipYwQJgTo9tNHpY+mO2U9+4m330XiL9E2B4+jYs4uAB+09RpwZOSUyhRRLi7NRi11XksfeUYujo0hY5YiIYsOQURt3vS5Ip82tc/bTV36RMu7jzP1L2Obu15wtLubcLOm8cPJ1BCgOtHt6EN3ttK1+p0Cu0ZiS56OqXILGgzQ82j1P/045iVdT7F/hcRuO6AvoLYBtxidIkUmM6I51CNLIa0nRBtevifCWOW/Uy5GcpKeLxaQhzKUsDxPzFPPUeGZhiVd3b13btN027evEZu7aJPQ2BDRgMqC+aZ3rhrBcCqicT4V8KpjyoVBdTd19w/7hGGoRr6QHYylUo9ZRpl26+g8uVNeuZ+sscI5g3QLKD0P8ftwW84MkYk2g6kqWw/6PRTl8YaROpSsvWxQ4or2+0BE8t3lgdGRvpRJ1sVsVVFbC/qsZk3EiJzrwHRMbsnwmQqrGzG53vEDAwPvvjue1rtzWxC2FSaFk18niGBDx8BILttBwadaTE7uHIP5lKxsc6inU2fosw46SPcaEd30e729l/bSp7Ch12t2Tc5RpNdaipkCF8BP10e7IienMiY8kOPMuup5tw3HcpepwO4oHtY4qiwJlbmtYlu12hzuauW4JnTTANvzGJEwjZ4S4rYO0QS6EvI6TtFmOCJWowmjnNCXmkokjS5I+6SntDLZy00rhAUuRF2bwIAF4MHgXylFZjNKiTwXhOdUR1YOH1FG3B84Dv103Vb4bJWZ33mEB2ogPRH/CWrAho3crovMWZzz1KJxwN9NJtuL9sk6omj6vyZ/ePzVzOe/uIT9m9D7xRyU0AY6ZiQfSupyviXCjCtvtXHY1mTNyYx9dGHsIqGocjx3eP2hIKHSEiQX9sfgp0uQQSXEvq1ossxcLcpcnw9CaiALuo6ix+PGVHiZ8UcMiO7fvfCTGsgXw4e5E+2H4z31Ygrd/Ff8LZZqVWno3/IVsIRwCsLJIJDpzSVS4MqCaCRkzoI4DpJUQhbmw8N4TYXD0QSLBZkQFqNkpSFo3Z/AdfJwEU73DKV1j3ZHnKNi1rJBaYgrVKFYTfI6QRVHDQoJfEotFfOmoJq4xWkk2UPvsJkAaesMmZ8AJ4taIe5QFt1marfSZmj3Pds42Px63x9QJmWKyJiTzo9vKZMhJ++EQnTJSDLKk2UJLytSUGYA+Y9wpCQGQehqjc6qFOJmXDkhsRdDDXFHZ5AcApoDATPzchzr6grl9/SQwAp2jZLZriAnTxm0LKZooHrXpiKFE8Z2JYkMLvAVqoYdTgD+j4hzl4I0IaQZdD1qhNy6754Dply+B1PoqYOfmo5s83rDNPx4HejFMFPE/67tqaBNzhhhKj013UwMEuUYq4UFKp8Afy4RR7kn98a1L3r3Hwutfxq0wosTXRwTbpIpN6tVLLJCTLhz1KPT5k1q0MrapFgUAgwymuGAz+f1RtjqxW4lRN0UBNqrF9ZXyDaod2r2oig29teXVYnKhq5r2uIHt6PPJUfC4GtJqCxegjOvtFaRe25cpAFeLD5shBhPohmcAqP1DJfpusNud7CDzzRcA9F/I3GlQ9s+bCZagr94/BH7op4TIqPavHw/xJRDt1nW1QhqR8dh2b6ddfR9fV0kaXCgPjK6rT2wCst4DSVdayJZThqNhQQFXsQiPg8IInFo84jyJR+advvj3QQInfnG/hWidHvSVt4bJRxPUZvmhrmZsXh7dBQZIUdbG0NoDtvtw94kWYbVLyYhUVlVI9XCtdYnyZWFgXV1xtn7j+pGECMa/0v21baM/tAvq0ZTUqnRqRHtzs5YcA3QOiYP68YUZSpgdxUi4aBfuTtF1pAW75/Sh0yvjmbkQ9fIzi4F3XHnsHfBbwGdBLFgNIcgNaw/vnqhi6JI8qHfd2IzG59VyoQ5E/k6I21g243lDt/9BEzCW5IhipJAWmJi8FQoyuQkREsLs6WAYKgyy3SlFhKm80+gvPSUIGs91J+pciRiupKUUp/qh+netcwVEJeshvXHP5YpLlWqZ0Jlz2juQLlA4KEgLBpsLXZVl83JQ6MS16UHEZReXSS+hYDqsY8Ko+coo/ot2+Ej1RC+vgBOHJwiWDYNEsuGtycCtda2BWAIwZqL7q1mrlqGoR8dIVwCTKG33ibSI/0hiOs2hoRTDSGERpSxvjtAEn7SbBudK4zuBePxOSq1itywz7PW/f4QnDwEFSB3mEsaCJVyaRsn1i3lJ0Zys75YS3pweTip2+gIbdu39W4noXpVtyFAwkM7MjtJ2LioFxjVIlB3vF6PPsvQ6ki23MTRx/WbSnIb7I1XfZvkqquI/WHGCFFb4+9sSUZDyt0rGoS4lsG5KAj4HtJzDl8sThaM0Hyx0XVLvfFQ3pnfFr8Q9ph/NesGqIhkpjGNELATNi5/UM0KjYbUmjTzfGtrXKWfpjL6/vvPSSB0auOiKdhIat27hxAyHzIrpI5aSbe51mUD8SjLUU1RJoM6fjQb7R3vJWf7RpBoDeIXxYkkA5XKM0nqMoGrVVXT1EiuN+eCpLAeJcy8ozBzGQ6pSzqeEliyt4NMCDsvpIhzLKN+pKOzo1BYppihSGm8RLN0E+PBukaHg/0GdbNuYZ68KH4DTrqu37YjP7cjAELwmpHonmseCwJOzYqOf/FOZzjJpw24yTOHNok0c6xZn2CAp+ntQ29BEphImceRjuJmNYpI8rewZIyPx04NjgY3US5LEo89yuocHc3ZhhGIxGNpT40t0xXnyPDI+MQGoblVPcCLxVPpZCzgAXOsw0/IFIgRT25o8uIrJp085Uu1RNS6EZMvux3Z7CefTMbLW6dJEBWFkz8PxPxEsmsYBl0R+FJeKjdtu7C1m8yGagrOm3v0hh6jfdi5SkTWPS5X763TdGm3el3UTmZaC62ZeNQv+yDwbcU4T52vYmyYFqKqCGma5Ks03r0mZFExqB6pk3bgqUDzrY0CK8Vw8H6Nc8IJzTeR1nwwvXxHleNhy1aJQeyNrbVYPMhkRbk5kV3kg9MG6uN1vSTVIAh6AvWXhvJFflwwY97ojZRwPCh8u6tjJGTbK+Ss388KJ3SDOCMlBSIXJCaQWo3lR6k6gnKNAMxCeSQ2jatBYbQjoszUQ5AmLUgdIeOAsd1fqf+/2BaOBMYWEe/mSFBAFbQV+hGrFYRKxfnBfr4A7N6nkBtFghgcIDEh16lEZKxsYEgCZUzm9FDdGQJ++1ivJQkrQ2v8GXAkNsaGxXWcDiTrPaLdHLanHXQJnXFNexAcy6ECnMkpAXU+WQxbdqBcNL5Jxx8mnGfaZt2W3svmthyNEKHpKnQvou5qv+ZvqpUbWpfAIsIBmd6cSsNnyxYa6TXnH/s/kDwhQO3owDCR0FF9PiWV0pKVKd389dfnd44RHYmBnYfc+DDFVMAzG9+zOMUeK1aQpxV74+yOCOzlBl3wCNrBBwxOM0eSWQIqbeACcbpKEF6xMp/O0N30muFsQU+5fFv7t2Ot62y/Yz6cjVF+l3KH3s9GWKMaolCI0JYOwz/4OAiUpVseiVcX4g7BdkfwIcjyLE5DP9+AvBwd5gjSNUui2ZZ2r8A55MB8IkvIS+H4S4LsvVmUhRMxqD6pFfhgi+ytpOZlVUeynY0EdVm5QlcSPFqUbrkj4B+g7nORlzMxGMvRXS6cB86P9MzpO5DKDWxVWaliiwuG0ScNDqiMdAerIqSEUUKZmlUlKtkRu2nMGnUW2bKnlfFQqiPNODPc9Ho9hW8m9Y+0rbVeKgwTqdXOgxexr99OlfeD7muYL162uHNoBeQEik5Ep+Aox2MO0wfQBFfKJaZiSQh+Qa+4Kz3FQn0uwezJhRVNdw0/Hx+EV4uvtKYL3Z2ZEFka6Iya041LYkIUSToczotBWkpUKgvWKosnhvSt969ezqlpzPWKIbdwacWPWk6uPIprWu3p7J68fG73br8fnF6Nh6nQUMjSNu1Prm0vyT3FFa27/qTXWyfqhqurWfbw0WPZE1v07Px8rIM62zY53pecjNG5lHp7PvXhxLIc1RveojmL6kg1PX74mSZAwHoqFBYFnuhnoQ1mIotSLK+ozRBG3KxVbLZpHVdim7Ml3pIstYao2ulCRT+0JTmgfmzpEx8bnYa5HlDa+mUIqFaSmi8eYpgZ8niRsd4MyL0a2t4e5anA3ypMNj4IlM0aBp9EJYoxF7SodBrO8IXhaXkt7yLgsP/TNluyX4bU57cPp2IFxOZNDdYjuIdLmBB2Iem8yC6KadmBQSbBJhPs/YxVRV1M9JWGIWq34Cdd0yWre83AwGvARCCtraIECw1CIC5ztYxWAyWI1NLz44HYoUNDv3vPup/9isOMGajIHnpnujjf9OOHOMhwRAIzMQNso8KRhpBa2EupyxetpztkKuoYh4SusU9Slx8YnsdEEZpNgs8PXBgY9DR8ivXtHIOEjuFGwB9N/WgmZ8YbYUTeLLWfK9SCl5dqVhPuKt1cYhocTD9OYixPKlDukSmHoCQv7KV32gzFAHHE3Tzlfjk7Luk0QPNqjKYmaMKhSRR94qPTh1U1nwedV7M2iwOT+SZEELa9NjM1QzxWIYRzhCtaia2eMs3gkjFnspwoT/geMfER8Yx+hEGlYDQeH5i3YfoKjKQyUfMJhS32EZJ2ojoIHS+BtOoMwpozwIZLqC4o5LKE0ILKIucEWZHidxiK2TX1FXX+ldv6zLvML9a3xm9GOq9pA6uoL9leLh/a2qnXJzrDleQ/D0kOeXJ+P/Dugc03IVN+juZP93k92ds3zmx6opxICHGYj7dS4PDWf/+NM/cMbuq0eyc36bXpeZvFdW6btkYiQIhIOxbjxDRvT3WCv31YCzv88ENnkyjB4gqaM1qM6XrIHSyt/UllMreV2gfaoqkzIE4dvfglgzOJVJPFsWosmztzUzLWAwhYwFWPTG9h4VYMQpshoc8VjOO5HF7gjAaQhd1OrmUmrC9LdDsnLIx2+i28di6wCGbLfKiOFD95JANLvvlagiZqNmPj5orFbw4NpZ2GWDl8oqkJsoYjjH1FcGWgb2S3JS5qtd6uPY06nM/G64r36uoMs/ZHqvVRW5upbDf8gSsI5tiQfVVXDRpewOmw+0DOr6uIsvX2GO36ATNdqawFEUX3RVM02bAmgm3lcjoNmFdLcDSKGyHf+NAnwXW7HQ7nCqH5yAGLeS4YCkT6+hbyKywiO5sVHUb9cKhrW+wvH2IEY4UeMl+dmIm1dHWZzaDxagkpvRmgJpwDxqYGujLN/f0D3rrmHx1wjFP/D8Z0zIYMB3LbjO/UEiP0NkzhZeZH2FwevYXBZHGBauYoVLCahdwZdm7jqfQ2z38VOlBAis3FMFG8YUNdGzdDL7V3GFPSDHypl1039BimS7UgFW37vn4sIeBTBf/reEPDY2gA4lFz0S00DMbIHGUwGL7nDc55FGBlZ1cXQ47zXVUIjwxFSrYR8PuPir4rGcBWxOXu6Gq1Q2Kyq9VySujbC3kwMoUaEqABduq2MklibHy8hZ1tUYMRZqirn1HOGVLGOIsVoSTdfmB7HoKgZ2YMsxCHY02xLlvwryPTESAEzkS8E5HujNVQKBB44XjR37pzrKsL+AfGVv3BcMDn7+Bb1le4SaeulfCbGHn6PhWk8NHFLZv6IALo0X2+/QfRzOZBUmwkSGIjsyS1N1FE003sGEpXcf9yHW+MLQ6SGkOAc+Hp8RvDgxQMD59W6NKBF6TcKiINbnAR8I33Lsz4q/nTZ7A2eXfqOI5sxfD0xBVjzyjdfPbxHSNTYlFDuMa9bYkOY4EAICQoFKDgFDWa7mflOI/HQdwRGn4GDeEGnWDC9nIVKsqqTYWAEusRYopTFhxlxdLqV2RsCqRxJNTKUvRAWCj2F0Iavw62F2my8JO5FVmzE8LBbFBPVqBN6GsWPJp50hErNHnWOUmooYvqQZr+qIfedCGTJgTfUSGogsxz+Wf8jNLP6XT8qZJpc/hvHdG4qWbtndaAZEVTqcqMReCEfdFgqqm7MRL41M3aGv0LuGYpKzSexTmBERdp+uI17jmzfyIQTw7u3I91OKGU0eBTo2NFOzxWe/LM/e6fqUYihYeukgQaCPpwzcmIOCb5jy5t6DRAdol0kOw5bCO3Vm68oCFbR0lGYbzVWNI1HJhaCwzjBBOBlUkKl8aiMq02IZ5x8SeNIzBlL51iDwIbF0WzEgm+FjaDmIPmy5G85HIfQMkG6b2YnFs4Apa4ot/9xrj+0/QvroJfqEZ2SvJ+UkC7L3yLpp9zy+LeptTxjPPzM1toVvch7nMZTiRgGf+d/N3vWji/WxRa4mEjT4hI5Kpy+HknuxDUyjm+aBAbRtPzhnHEfuMTOZm8UkgkkxmkZuduNSeEopqcmVIBZz+lFhlJjiwLrSwJRRHL0/4j7tCGzk5BcuchFbTsE9cPpLZzJEBnEv94rCyoIzP+VyJ4Yq0evAikpk+3oFCEYVhCRPnyeFBMBX7S5EGVnfsGkao2itYK8meZZCFMf0gIh5yyecShLvbgjcE5cO5xjyYhRqnfn5U5t2jOHAfDQ34vM8uY4+CO/LvfMSd+NdAGBToWaGBBlmMuF1E0eg8Q+LPVwd2EhOIm0zUNjHe92A0EQlUiy68OwD12B2axTelEVq2R4TUWbr4PgN0k3M8qDASkaNtFfDwH6Om0S1cu+1SIfLR7rSYfF1Uy0j5Xj4tmhbUQycUMiam7ZMRyuULf2PQ0vaZCDjSexw4FgsAk5qlyeZttEpREz8hI42NAQZr71t+SVMyJikBNzbVNkSCkBqGvbqMOubmrbP0VvHBHgDikNne5GiHY6viwuo8HmBCBVGsh2ZoKQK/GXTXSk1Dg/7Y2MsTZTInBWiAk9jguQ+NtuDcaXJ4aWxidUz0KE+ai9P3cwn59AoPPr24tFlxC/5oCbtsZT7A+4+jjQcJklJERRGoxNkN0hV3CxLQ8tHCFR1bZHshx1EVCaij4StynOYkjBYwRai3rlSq4zZGDUXDfnXoc/RKXCRVOKAVPzU7pkHJBXAvgU4cP3NzlFlDN9zTsUQkljBeJtacfR+Fb02j4GDsypS34riV1k8HtIUd9DE8LEw06v3RKYq5OVVoYviCvrf3cD8WEH6ogp8xqzwIwbuoBy5e95TGfwwIF8sEYE0BJqvhPEISEw1ZYMdmr02HqLiKZXiHKZR5BX09Aja3Nr0zlLsS6hqIqOsfVECGxI01bdpwQMmyw+iYA4vk6KHSohzM1K/+oNOlNp3AKpATxFGFTwMFlFvqeaHT10coFE9s+4dJgdfS7+tHC6Nj45GSh0N45NK+tFjxucCNfCsIKm+dIL6qaREi4MNytMKW1O5dDnIZ/NtPX25dJJOLx3kUy12RTmHWa1AczCseXRr3UMPg6CcaWhq2n7rHbrTrKamjTULfabnsdCsG8crzFPhiDb3UUmZeegoNsC4w7AQF4kfSXc5GSnk4mKQoJ2x6cSXj62QHUyPSV1FUQMrryRCLIdprE6RkSDvIbd1qA17Z/a83foQEsMKYf7XacaCTc3d1RSvm0NVse2dqUDTsgKwZUqq01J71BQouNFoZhqivu90krImuHydJf7psNUZRFSH0mLxsPAs6WwoT/1QcYF5V6IjmoblBUkAkhO7Bntld/yKo2l80EbIfi9q3ziYgWadS7vVdkS9OYfruPC7IHXwq0YiGCgsuVkO0SVMwpfUKZjuBNUiY/511gqnY0K9vAa0YbDCCwVv+9zy1BFbIj+xcNswn4RbBGxprNzVzHnjla1OhQ+prOBIPw7oKeaNA0fYEQlpXs6B+eTTXxyqOF/rFtzQu3pqZUymbp6W4tDwyOjBkOQU4teN5qsg0NWnrbn5C4o99mI4NovOKw9GnVbb0u9FSUy6pJ+roiswV9xcjIULm7g1Z07NDEdhJ2cpqzNS/Zc2BibwyOcbVA19h1L7hEffspG/Nw/8sXKajgMP8hE9LA6MQTt8mPm3Xqxjt123GY31Z75456jIge18oe3bx8S5+ybVWNKw3vm6djHI67xAsxpj8QGwgqJSYioXmValsY+nh8InCI8GO3/8Cd1ytQQUk3uBbO4mdZzkZgRvbyUh9weDYPtV6NbRxNhB8S056U638Skp40ipOWnCV4EeYsk0XDoLpSBc5xUL2VfdQ3Db7Ek570VO5BqPZgHqgp6S4O9DGLINXI4kcbsXFDqHXr97OLDVmlKhxb0+cUNRjq/L6bYWTAMo7sdbEseL2jLvy2DX5bYgxQZjM3YXOC2KDGTHkgfoSVhJrHwdqwxn1n41+sKtiPgzJAWw+n4ENNcap8jMngV+jZ5XOOzryj/jNrQ6nfDl/K1kp2wRu8hfNZ3n4P9n8C1wVRmX1jef7T/dfgExZYsjAB+6XhwsI37F+Ar98497G14ZeUezpNMlz2hWAeJAWgnBKGiO/pBaWBSw6lktXmXKAW9aSD590LdpPoCl8Av2qpzIJ0/7xQZUM5Ix/d76xeWdQ6rd5+Fp6aKJ4e+nSg3QfI64NQSy27eaomvfXVk7XD6RML8lkI1IGrbe8whElN5rKqaYosaz7LhKwai7IxYNA3J0/TNa052NnR3kMimj/TP+kGXEpbkxmXZCFxWVWFLImA4ujL/X29Q0E5UBoeGe3PQdVXEBljnaOcwUaEIHREFLLLEOcNuGTXKvtr7T4QTvvAwDvI+Yj1ECL8FPT0ZDV4ztjGZ2b0gJbtaRQL7z6E8Iw+SBSRZdRi5Z2NEZZ3fIix8vBENf1wc4t8bl8hfVop1+TNZ2YWlvPtYqznr3e12dOAIwb7Rm4s70UHLusOgkO295zCrabczlH4DPvNI5BlKuiEPbVoS9yS6/l1ajRXNa+1bdJP13tgEuLhnlyLLTUFRqh3YtKDJaj1PA5DMX26YTv/xhlyeU7SC/dI8qXrWhgb60v6Huf+JMQly2ONaEQLAjekhCAhf2pjyLgSoJfcbrvqPjvXhf8m3n7Jlp+cHOlx/hF56+RKmGoxvz9Z/OyHpflr+f+akbKkd8rWYt9c8/DTJLy4uhhJtWrfKSSWUpeirXBa3cINj8O1wplPadhSFxiDUUJr+NxYjLFot+FYOgJyEbXAN9ygNJioHvL25/1HWVw1D60seZH4+RKA0gZropU1Febi1cYC9IiFCOt9BBAePzXfcncJMzhgcKresppIpHMtkZDOWKXSm49GbX8ome3tbcQwkFRnvqvCijclICGca26HgmJjj3uivzo2OdiZD9R+8VDab+hsy3VUZzIZkvNVOGc7R+SukERbFFaeNbVzYhT1dcBs3ekYHb7qgkfKpkd0FYqbZES1H7eaY4yaxg0XNseS1adihNC//MmbCUbkq5ShwuzsxwnRbPKHP7zGiAh1fm76eF+uyR50S9LmTL9lJfr5DQgEAIjvy3fJdz/4hFP4HIfS0wAAj5ufvhYA4OT57683r2yy6T8Y1wGABAgAAATgR5zL9PiGfXPnzpwG3P9LfgRu+qvAXBdfDeUegTTe5CwHKIl5Wu7fds4KpcAkznlzaroSKPbNiHbZW9wV9J5zL8RToRqfD0w8xyrT/4gd96CtT1074HgF5KxdhCWoQZevK70peTG8BvlzUATnMR1QdIvpJNEk630TSpCygvaDj+2gOAI1kLoKisQuk3wRish3IYm8B7g4BG4QkTuBhf+1kx+gJ9xvhHQMQ7N/YLcz3FhNxyAP3oDlqEMZE8OQg4RXwWzcCulLlsehWQdB3V7ELOMGZ3m7mrDBiYjpCsvzcUux0j32lBHwpdLAmJCf12PX50HeUFhCwtlNbG1EnsBs+zSLwmsRyTLb3dR2XKHPovsqH0PqJeWFjk3SYtsmAYN0M5c1cxPFi4VuWjpNWQ7ITTBq0Dwvv0zCfVs5oNKADgeJ04m8hmViLwgsFfLSZpPHQFoFwOugchEJP3Yh03EX1eueSkZ3cU7YTAJIXKZqvOv4ibz5tgjA8rwbEThSGYSwLYKAK8TOWa6wtlznilBzgysqkbfDMXUJuBzp/OKK00vAlZAqIleSVbyulGxpcLUQ5fWuNKdsdWUEyhmurHy5ypWjln+78hLlVdbae30tKTVj1nbzxo0as0isrFfZgLSDxuSIzZkybYHYAYPyjyyCpnhyBia2pOHrZACWnI09SvOZpBSEC5tt+rvBAAYYhXFq7SUYAj0MwwxMg8H4QZhHOjbYhnNymI59ENZzjaxSgajHxitrkdwoLMGUqHwT6MEIdu/2QAoajVFTJ6+/nKFD7URlXNlMqRDzlsk+uG7EiCzXk0b4MbOpgDS8wRYukt4oc0Y553dAztwsZuFB1hwF22DRGJEGWgn5JRnKZi27fjCjsWTDskE8jTB9NZDCWiuaTpIwExkhyzgotUwmP/h1KpOtFB2RxzAIwzB5vd16vgVmSF2E8QtE7yWYe96gbS7Ws1MBAAAA) format("woff2");
+}
+@font-face{
+  font-family:"Elms Sans Variable";
+  font-style:normal; font-display:swap; font-weight:100 900;
+  unicode-range:U+0100-024F,U+1E00-1EFF;
+  src:url(data:font/woff2;base64,d09GMgABAAAAAAUIABMAAAAAC4AAAASgAAEPngAAAAAAAAAAAAAAAAAAAAAAAAAAGhgbgQgcKj9IVkFSXgZgP1NUQVSBOABEL34RCAqBUIFIMIIyATYCJAMYCw4ABCAFiGQHIAwHGyAKERWkJ1P8PLCNOY1+U6zUpriYxrlX2Miidw+e5Xh43p/que9/yTKEZWAFAaYUCCa7SCMBTIS0tdHinAdlIs+gAEDnXUojDoD+h/eH6RP7zYqIXIcHXgmZGD8qoblNLCGe4tridp3rE/GmTWtdrzO3xiX5UhqULDuGyJDRo8+rvyWBBkAImUAI1BljlmzZinXblA869oDDlA/f5/gjleVQJRCHHXDskUoIhFxSEkqSUZZhklmSjMwNScgQCjfKhGqEUVKgrw9mS0SaHqCMbXRW0l9CJZEjpWLRac4iMqaV1DW1jtvI6SpU95jetUIxL0Qk8tRhfwXSeWkX1jZrid2mRIVYF9j/q/zpPKsS67Mf9rxD/lqsQUB8kZ5ERSaEkoSyOgyTTjro4OMDhxy/z+ERQlnFOLOsss3eDneyMwQYYH8ERKMXlEpzjGPVUopLmOokYu3xT0Jn2sVwN4nBWQXx0OwMy0xIMZzbk5ChLBMoy01CSUlCxeJYX6Wsu/qNZ/9wvFVzKKtVt/wK+2N/Jj+9EIOwP1GORrxANEUzMY5oiVbiEqIt2ol/iI7oJO0iuqIbHy8qMZisQgyJoWRnEMOEqNIPFEEDCpiEtWhAAyBJVYhS3r9/Xn9Y/SF1h9YfvDP62Oe8996L3vffrz//3Xf1vPPOjvOVaPR2onXnIaoHvr3IveXlJyoDn+iqu62h4baFD7ec36Kj38rjly49fuWqpcc1RPYep+gct2rl0uOPW9S86MD58w5evLgQaXiR8uFMntE0rokREooK2/WHzmqpM60XCAlDFMEIMNoW+zveWRWL9CRlbYuwiKGLomIRffJs5cpi17jl7e3Tplnbe0bxgw98ux/h29OLf/25uNjFaU+TXuT0fPLkNWss0vuw9PSSJU+fPpY+kDt47/Mo1RiYZZGnVFP49PVC49zGup7iiL9eeaXfNKWarCYVctl0IQY2fn9+e7HzNZ22xFnVj50aIwC9hmjssN/l/1fXe+ZF9J8mJ0kvMApxrb2nF9I4J0Uv0oovKEWkHv1i8N89XbHqr0D0u/rlVbMf2qvfvH9LWfYDfP3lwnPhu9v1bnm1tC49iaIEgm9dl66R77m+OK1DxFfsL38sbZKnOTqPZ4zLwRSBoopkmEwAgCTQFUfKRF6Lu1EQOtyNpK+XkJnkg+GcREFblHxF0IegrxkxTz1AKY41CxriVHLQzxoeBJS1xRA0KsdlaDIibkazungFLTriPbTq6yW0qcRfaNeQBqJDV+pCp/5pHroMSevQrZSOREVbOhGDDUyXYIhh6XoMVZeewzAd6Y3/a7i6BP5l5Xp5oISMoNfpDeEtCTaWHcILnRDugauJRbCII+kGIVRkFHnhrN0WKpLxv8Vcu21jgE3ENk2UN8NQyz656sbu9LaU8yQRWxh0W51Rd369XTfzIe7MbJK/U4NQuQ6gS2P7Je1xlsjhgwiULMX0UkiteCJiROxHwVcOEZpKmyyKJXKm2jvpyHZt6ppoF99vXMhQsW1oZcQv2ohaupZR23Ld8m54luvS0IkkL1dBZtYhQvx07d1fK0P1Sj1pfjSqZ96bXwgAAA==) format("woff2");
+}
+:root{
+  --papel:#EDE7D9;
+  --papel2:#E4DCC8;
+  --papel3:#D8CEB6;
+  --tinta:#1A1613;
+  --tinta2:#4E463C;
+  --tinta3:#938976;
+  --selo:#A63626;
+  --serif:"Elms Sans Variable","Helvetica Neue",Helvetica,Arial,sans-serif;
+  --sans:"Elms Sans Variable","Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  font-synthesis:none;
+  background-color:var(--papel);
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='0.055'/%3E%3C/svg%3E");
+  color:var(--tinta);
+  font-family:var(--serif);
+  font-size:17px;
+  line-height:1.72;
+  -webkit-font-smoothing:antialiased;
+}
+.folha{max-width:700px;margin:0 auto;padding:64px 26px 100px}
+
+h1{font-size:clamp(34px,7.5vw,52px);font-weight:700;line-height:1.04;letter-spacing:-.03em;margin:0;color:var(--selo)}
+h2{font-size:25px;font-weight:400;margin:0;line-height:1.28;letter-spacing:-.012em}
+.tarja{
+  font-family:var(--sans);font-size:10px;letter-spacing:.32em;text-transform:uppercase;
+  color:var(--tinta3);margin:0 0 22px
+}
+.lede{font-size:18px;font-weight:300;line-height:1.65;color:var(--tinta2);max-width:54ch;margin:20px 0 0}
+p{margin:0 0 14px}
+.nota{font-family:var(--sans);font-size:12.5px;line-height:1.8;color:var(--tinta3);letter-spacing:.01em}
+a{color:var(--selo)}
+hr{border:none;border-top:1px solid var(--papel3);margin:40px 0}
+
+.tela{display:none}
+.tela.ativa{display:block;animation:aparece .6s ease both}
+@keyframes aparece{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+label{
+  display:block;font-family:var(--sans);font-size:10px;letter-spacing:.28em;
+  text-transform:uppercase;color:var(--tinta3);margin:0 0 12px
+}
+textarea{
+  width:100%;min-height:100px;background:transparent;color:var(--tinta);
+  border:none;border-bottom:1px solid var(--tinta3);padding:6px 2px 12px;
+  font-family:var(--serif);font-size:19px;font-weight:300;line-height:1.55;resize:vertical
+}
+textarea::placeholder{color:var(--tinta3);opacity:.7}
+textarea:focus{outline:none;border-bottom-color:var(--tinta)}
+
+button{
+  font-family:var(--sans);font-size:11px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;
+  background:transparent;color:var(--tinta);border:1px solid var(--tinta2);
+  border-radius:0;padding:15px 28px;cursor:pointer;transition:background .25s,color .25s
+}
+button:hover:not(:disabled),button:focus-visible{background:var(--tinta);color:var(--papel);outline:none}
+button:disabled{opacity:.3;cursor:default}
+button.selo{border-color:var(--selo);color:var(--selo)}
+button.chamada{
+  font-size:14px;font-weight:500;letter-spacing:.02em;text-transform:none;
+  padding:18px 30px;width:100%;max-width:420px;text-align:center
+}
+button.selo:hover:not(:disabled),button.selo:focus-visible{background:var(--selo);color:var(--papel)}
+button.nu{border:none;padding:8px 0;letter-spacing:.02em;text-transform:none;
+  font-family:var(--serif);font-size:14px;font-weight:400;color:var(--tinta3);text-decoration:underline}
+button.nu:hover{background:transparent;color:var(--tinta)}
+button.nu.alerta{color:var(--selo);text-decoration-thickness:2px}
+.linha-botoes{display:flex;gap:18px;flex-wrap:wrap;align-items:center;margin-top:30px}
+.erro{font-family:var(--sans);font-size:12px;color:var(--selo);margin-top:12px;min-height:18px}
+
+.citacao{
+  border-left:2px solid var(--selo);padding:2px 0 2px 18px;margin:0 0 34px;
+  font-size:18px;font-weight:300;letter-spacing:.005em;color:var(--tinta2)
+}
+
+/* hexagrama */
+.painel{display:flex;gap:52px;flex-wrap:wrap;align-items:flex-start;margin:36px 0}
+.hex{display:flex;flex-direction:column-reverse;gap:11px;min-width:214px}
+.tr{display:flex;align-items:center;gap:12px}
+.idx,.soma{
+  font-family:var(--sans);font-size:10px;letter-spacing:.08em;color:var(--tinta3);
+  flex:none;line-height:1;font-variant-numeric:tabular-nums
+}
+.idx{width:11px;text-align:right}
+.soma{width:11px;text-align:left}
+.barras{height:13px;display:flex;align-items:center;gap:11px;flex:1;min-width:150px}
+.barras .b{height:100%;background:var(--tinta);border-radius:1px}
+.tr.yang .b{width:100%}
+.tr.yin .b{width:calc(50% - 5.5px)}
+.tr.vazia .b{width:100%;background:var(--papel3)}
+.tr.vazia .idx{opacity:.45}
+.tr.movel .b{background:var(--selo)}
+.tr.movel .idx,.tr.movel .soma{color:var(--selo)}
+.hexrot{font-family:var(--sans);font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--tinta3);margin-top:18px}
+.conta{display:flex;gap:7px;align-items:center;margin-bottom:10px}
+.grao{width:24px;height:1px;background:var(--papel3)}
+.grao.feito{background:var(--tinta)}
+
+/* moedas */
+.moedas{display:flex;gap:24px;perspective:700px}
+.palco{width:66px;display:flex;flex-direction:column;align-items:center}
+.arena{height:74px;display:flex;align-items:flex-end;justify-content:center;position:relative;width:66px}
+.sombra{
+  position:absolute;bottom:2px;left:50%;transform:translateX(-50%);
+  width:52px;height:6px;border-radius:50%;background:var(--tinta);opacity:.14
+}
+.voo{transform-style:preserve-3d}
+.giro{transform-style:preserve-3d}
+.disco{
+  width:62px;height:62px;border-radius:50%;border:1.5px solid var(--tinta2);
+  background:var(--papel2);position:relative;display:grid;place-items:center
+}
+.furo{width:16px;height:16px;border:1.5px solid var(--tinta2);background:var(--papel)}
+.mk{display:none;position:absolute;width:2px;height:9px;background:var(--tinta2)}
+.mk.a{top:7px;left:50%;margin-left:-1px}
+.mk.b{bottom:7px;left:50%;margin-left:-1px}
+.mk.c{left:7px;top:50%;margin-top:-1px;width:9px;height:2px}
+.mk.d{right:7px;top:50%;margin-top:-1px;width:9px;height:2px}
+.disco.face{border-color:var(--selo);border-width:2.5px}
+.disco.face .furo{border-color:var(--selo)}
+.disco.face .mk{display:block;background:var(--selo)}
+.rotmoeda{
+  font-family:var(--sans);font-size:10px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--tinta3);margin-top:14px;min-height:14px;text-align:center
+}
+.lancando .voo{animation:voo 1.3s both}
+.lancando .giro{animation:tombo 1.3s cubic-bezier(.1,.6,.3,1) both}
+.lancando .sombra{animation:sombra 1.3s both}
+.palco:nth-child(2) .voo,.palco:nth-child(2) .giro,.palco:nth-child(2) .sombra{animation-delay:.1s}
+.palco:nth-child(3) .voo,.palco:nth-child(3) .giro,.palco:nth-child(3) .sombra{animation-delay:.2s}
+@keyframes voo{
+  0%{transform:translateY(0);animation-timing-function:cubic-bezier(.12,.7,.35,1)}
+  42%{transform:translateY(-152px);animation-timing-function:cubic-bezier(.6,0,.85,.5)}
+  78%{transform:translateY(0);animation-timing-function:cubic-bezier(.2,.75,.4,1)}
+  88%{transform:translateY(-15px);animation-timing-function:cubic-bezier(.6,0,.9,.55)}
+  96%{transform:translateY(0)}
+  100%{transform:translateY(0)}
+}
+@keyframes tombo{
+  0%{transform:rotate3d(1,.28,0,0deg)}
+  100%{transform:rotate3d(1,.28,0,1440deg)}
+}
+@keyframes sombra{
+  0%{transform:translateX(-50%) scaleX(1);opacity:.14}
+  42%{transform:translateX(-50%) scaleX(.38);opacity:.04}
+  78%{transform:translateX(-50%) scaleX(1);opacity:.14}
+  100%{transform:translateX(-50%) scaleX(1);opacity:.14}
+}
+.dito{font-size:17px;font-weight:300;color:var(--tinta2);margin-top:26px;min-height:56px;max-width:34ch}
+
+/* véu do ensō */
+.veu{
+  position:fixed;inset:0;z-index:60;background-color:var(--papel);
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='m'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23m)' opacity='0.055'/%3E%3C/svg%3E");
+  display:none;flex-direction:column;align-items:center;justify-content:center;padding:18px
+}
+.veu.aberto{display:flex;animation:aparece .5s ease both}
+.veu-cab{text-align:center;margin-bottom:10px}
+.veu-cab h3{font-size:21px;font-weight:400;margin:0;letter-spacing:-.01em}
+.veu-guia{
+  font-family:var(--sans);font-size:10px;letter-spacing:.26em;text-transform:uppercase;
+  color:var(--tinta3);margin:10px 0 0;transition:color .3s
+}
+.veu-guia b{font-weight:700;color:var(--tinta2);letter-spacing:.26em}
+.veu-guia.aviso{color:var(--selo)}
+.veu-guia.aviso b{color:var(--selo)}
+.tela-tinta{position:relative;width:min(78vw,406px);height:min(78vw,406px)}
+.molde{
+  position:absolute;left:9%;top:9%;width:82%;height:82%;
+  fill:var(--tinta);opacity:.06;pointer-events:none
+}
+#pincel{position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:crosshair;display:block;border:1px solid var(--tinta)}
+.marca-selo{
+  position:absolute;right:6px;bottom:6px;width:44px;height:44px;
+  border:2px solid var(--selo);color:var(--selo);display:grid;place-items:center;
+  font-size:21px;line-height:1;opacity:0;transform:scale(.82);transition:opacity .4s,transform .4s
+}
+.marca-selo.posto{opacity:1;transform:scale(1)}
+.cronometro{
+  display:block;width:min(78vw,406px);height:35px;margin-top:10px;
+  opacity:.25;transition:opacity .4s
+}
+.cronometro.ativo{opacity:1}
+
+.marcador{
+  position:absolute;top:13px;right:13px;
+  width:44px;height:44px;z-index:2;pointer-events:none;
+  border-radius:50%;display:grid;place-items:center
+}
+.marcador svg{position:absolute;inset:0;width:44px;height:44px}
+.marcador .aro{fill:none;stroke:var(--papel3);stroke-width:1}
+.marcador .arco{
+  fill:none;stroke:var(--tinta);stroke-width:1;stroke-linecap:round;
+  stroke-dasharray:122.52;stroke-dashoffset:122.52
+}
+.marcador span{
+  font-family:var(--sans);font-size:13px;color:var(--tinta3);
+  font-variant-numeric:tabular-nums;line-height:1;position:relative
+}
+.marcador.correndo span{color:var(--tinta)}
+.marcador.pronto .arco{stroke:var(--tinta)}
+.marcador.pronto span{
+  width:7px;height:7px;border-radius:50%;background:var(--selo);font-size:0
+}
+.veu-pe{margin-top:10px;min-height:34px;text-align:center}
+
+.som{
+  position:fixed;top:16px;right:16px;z-index:80;
+  border:none;background:transparent;padding:8px 10px;
+  font-family:var(--sans);font-size:10px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--tinta3);cursor:pointer
+}
+.som:hover,.som:focus-visible{background:transparent;color:var(--tinta);outline:none}
+.som.mudo{text-decoration:line-through;opacity:.55}
+
+
+/* capa: anéis vazados girando, cada um no seu tempo */
+.oculto{
+  position:absolute;width:1px;height:1px;margin:-1px;padding:0;
+  overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0
+}
+.aros-caixa{position:relative;overflow:hidden;pointer-events:none;z-index:0}
+.aros{display:block;position:absolute}
+/* cada anel gira continuamente sobre o centro do viewBox, que coincide com o
+   centro do círculo. as durações e os atrasos são definidos no script */
+.aro{transform-box:view-box;transform-origin:50% 50%}
+@keyframes giroH{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+@keyframes giroA{from{transform:rotate(0deg)}to{transform:rotate(-360deg)}}
+@media (prefers-reduced-motion:reduce){
+  .aro{animation:none!important}
+}
+
+/* celular: faixa no alto mostrando só a coroa externa, sem o miolo do círculo.
+   a escala e o deslocamento são calculados para que, no ponto mais baixo da
+   faixa, a distância ao centro ainda caia sobre o anel de dentro */
+.aros-caixa{
+  height:200px;
+  width:100vw;margin:-30px 0 24px;
+  margin-left:calc(50% - 50vw)      /* sangra até as bordas, seja qual for o padding */
+}
+.aros{width:166vw;height:166vw;left:-33vw;top:-2.3vw}
+
+.capa{position:relative;z-index:1}
+.capa .lede{margin-top:18px}
+.capa textarea{margin-top:26px;min-height:74px}
+.capa .linha-botoes{margin-top:18px}
+.capa .erro{margin-top:6px;min-height:0}
+
+@media (min-width:960px){
+  /* a coluna gráfica começa depois do texto e nunca antes de 660px */
+  .aros-caixa{
+    position:fixed;top:0;right:0;left:max(52vw,660px);
+    width:auto;height:100vh;height:100dvh;margin:0
+  }
+  /* o círculo é ancorado à esquerda dessa coluna e tem 167% da largura dela,
+     então sobra cerca de 60% dele à vista, cortado pela borda da tela.
+     como cresce só para a direita, aumentar nunca o joga sobre o texto.
+     o teto em vh evita que fique largo demais em telas panorâmicas */
+  .aros{
+    left:0;top:50%;transform:translateY(-50%);
+    width:min(167%,190vh);height:auto;aspect-ratio:1
+  }
+  body.capa-ativa .folha{
+    max-width:none;padding:0;display:flex;align-items:center;
+    min-height:100vh;min-height:100dvh;position:relative;z-index:1
+  }
+  body.capa-ativa #tela1{width:100%}
+  body.capa-ativa .capa{max-width:500px;margin-left:min(8vw,104px);padding:32px 0}
+  .capa h1{font-size:clamp(44px,4.6vw,64px)}
+  .capa .lede{font-size:17px;margin-top:16px}
+  .capa textarea{margin-top:22px;min-height:66px}
+}
+
+
+/* prólogo */
+.prologo{
+  position:fixed;inset:0;z-index:70;display:none;
+  overflow-y:auto;-webkit-overflow-scrolling:touch;padding:44px 26px 56px;
+  background-color:var(--papel);
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23p)' opacity='0.055'/%3E%3C/svg%3E")
+}
+.prologo.aberto{display:block;animation:aparece .5s ease both}
+.prologo-corpo{max-width:520px;margin:0 auto}
+.prologo h2{margin:0 0 30px;font-size:27px}
+.verbete{border-top:1px solid var(--papel3);padding:20px 0 4px}
+.verbete p{font-size:16px;font-weight:300;line-height:1.68;color:var(--tinta2);margin:0}
+.verbete .rot{margin-bottom:9px}
+.prologo .linha-botoes{margin-top:34px}
+
+/* controles do pincel */
+.bancada{
+  margin-top:14px;display:flex;gap:26px;align-items:center;justify-content:center;
+  flex-wrap:wrap;max-width:min(92vw,470px)
+}
+.ajustes{display:flex;flex-direction:column;gap:11px;flex:1 1 210px;min-width:190px}
+.ajuste{display:flex;align-items:center;gap:12px}
+.ajuste span{
+  font-family:var(--sans);font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--tinta3);width:74px;flex:none
+}
+input[type=range]{
+  -webkit-appearance:none;appearance:none;flex:1;height:16px;background:transparent;cursor:pointer;margin:0
+}
+input[type=range]::-webkit-slider-runnable-track{height:1px;background:var(--tinta3)}
+input[type=range]::-moz-range-track{height:1px;background:var(--tinta3)}
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;appearance:none;width:13px;height:13px;border-radius:50%;
+  background:var(--tinta);margin-top:-6px
+}
+input[type=range]::-moz-range-thumb{width:13px;height:13px;border:none;border-radius:50%;background:var(--tinta)}
+input[type=range]:focus-visible{outline:1px solid var(--selo);outline-offset:4px}
+#amostra{display:block;width:170px;height:60px;flex:none}
+
+/* resultado */
+.bloco{border-top:1px solid var(--tinta);padding:26px 0 32px;margin:0 0 10px}
+.bloco.derivado{border-top-style:dotted;border-top-color:var(--tinta3)}
+.rot{font-family:var(--sans);font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:var(--tinta3);margin-bottom:26px}
+.cabeca{display:flex;gap:36px;align-items:center;flex-wrap:wrap}
+.cifra{font-size:62px;line-height:.88;font-weight:200;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.links{display:flex;gap:14px;flex-wrap:wrap;margin-top:28px}
+.botlink{
+  display:inline-block;font-family:var(--sans);font-size:11px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;
+  text-decoration:none;color:var(--selo);border:1px solid var(--selo);padding:14px 24px;transition:background .25s,color .25s
+}
+.botlink:hover,.botlink:focus-visible{background:var(--selo);color:var(--papel);outline:none}
+.mutacoes{font-size:16px;font-weight:300;color:var(--tinta2);margin:0 0 26px}
+.mutacoes b{color:var(--selo);font-weight:400}
+.mutacoes.legenda{font-family:var(--sans);font-size:12.5px;line-height:1.8;color:var(--tinta3);max-width:56ch}
+.rolo{display:flex;gap:14px;flex-wrap:wrap;margin-top:4px}
+.rolo figure{margin:0;width:96px}
+.rolo canvas{display:block;width:96px;height:96px;border:1px solid var(--papel3)}
+.rolo figcaption{font-family:var(--sans);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--tinta3);margin-top:8px;text-align:center;line-height:1.6;white-space:pre-line}
+footer{margin-top:56px;padding-top:22px;border-top:1px solid var(--papel3)}
+
+@media (max-width:560px){
+  .folha{padding:44px 20px 80px}
+  .painel{gap:34px}
+  .cifra{font-size:48px}
+  .moedas{gap:16px}
+}
+@media (prefers-reduced-motion:reduce){
+  .lancando .voo,.lancando .giro,.lancando .sombra{animation-duration:.2s}
+  .tela.ativa,.veu.aberto{animation:none}
+}
+@media print{
+  body{background:#fff}
+  .veu,button,.linha-botoes{display:none!important}
+  .botlink{border-color:#999;color:#333}
+}
+</style>
+</head>
+<body>
+
+<div class="folha">
+
+<!-- 1. pergunta -->
+<section class="tela ativa" id="tela1">
+  <div class="aros-caixa" aria-hidden="true">
+    <svg class="aros" id="aros" viewBox="0 0 1620 1620"></svg>
+  </div>
+  <div class="capa">
+    <p class="tarja">o livro das mutações</p>
+    <h1>Consulte o<br>I-CHING</h1>
+    <p class="lede">Cada linha do hexagrama custa um ensō. Antes de cada lançamento de moedas, uma folha em branco se abre e você traça um círculo em um movimento só, sem levantar o dedo. O traço não se corrige: o que sair é o que fica. Antes de traçar, ajuste a espessura do pincel e a quantidade de água.</p>
+    <label class="oculto" for="q">Sua pergunta</label>
+    <textarea id="q" placeholder="Escreva sua pergunta, ou apenas mentalize."></textarea>
+    <div class="erro" id="erro1"></div>
+    <div class="linha-botoes">
+      <button class="selo" onclick="iniciar(true)">Consultar</button>
+      <button class="nu" onclick="iniciar(false)">apenas mentalizei</button>
+    </div>
+  </div>
+</section>
+
+<!-- 2. rito -->
+<section class="tela" id="tela2">
+  <p class="tarja">formação do hexagrama</p>
+  <div class="citacao" id="citacao2"></div>
+  <div class="conta" id="graos" aria-hidden="true"></div>
+  <p class="nota" id="contador">linha 1 de 6 · de baixo para cima</p>
+  <div class="painel">
+    <div>
+      <div class="hex" id="hexParcial"></div>
+      <p class="hexrot">hexagrama em formação</p>
+    </div>
+    <div>
+      <div class="moedas" id="moedas">
+        <div class="palco">
+          <div class="arena"><span class="sombra"></span>
+            <div class="voo"><div class="giro"><div class="disco" id="d0"><span class="furo"></span><span class="mk a"></span><span class="mk b"></span><span class="mk c"></span><span class="mk d"></span></div></div></div>
+          </div><div class="rotmoeda" id="r0"></div>
+        </div>
+        <div class="palco">
+          <div class="arena"><span class="sombra"></span>
+            <div class="voo"><div class="giro"><div class="disco" id="d1"><span class="furo"></span><span class="mk a"></span><span class="mk b"></span><span class="mk c"></span><span class="mk d"></span></div></div></div>
+          </div><div class="rotmoeda" id="r1"></div>
+        </div>
+        <div class="palco">
+          <div class="arena"><span class="sombra"></span>
+            <div class="voo"><div class="giro"><div class="disco" id="d2"><span class="furo"></span><span class="mk a"></span><span class="mk b"></span><span class="mk c"></span><span class="mk d"></span></div></div></div>
+          </div><div class="rotmoeda" id="r2"></div>
+        </div>
+      </div>
+      <p class="dito" id="dito">O círculo vem antes das moedas.</p>
+    </div>
+  </div>
+  <div class="linha-botoes">
+    <button class="selo chamada" id="btnFolha" onclick="abrirFolha()">Desenhe um ensō para gerar uma linha</button>
+    <button class="nu" id="btnVoltar" onclick="voltarInicio()">fazer outra consulta</button>
+  </div>
+  <hr>
+  <p class="nota">Três moedas por linha. Face vale 3, verso vale 2. Soma 6 é yin em mutação, 7 é yang, 8 é yin, 9 é yang em mutação. Só as somas 6 e 9 geram um segundo hexagrama.</p>
+</section>
+
+<!-- 3. resposta -->
+<section class="tela" id="tela3">
+  <p class="tarja">resposta</p>
+  <div class="citacao" id="citacao3"></div>
+  <div id="saida"></div>
+  <div class="linha-botoes">
+    <button class="selo" onclick="reiniciar()">Nova consulta</button>
+    <button onclick="window.print()">Imprimir</button>
+  </div>
+  <footer>
+    <p class="nota">Os textos de cada hexagrama ficam em <a href="https://iching.com.br/" target="_blank" rel="noopener">iching.com.br</a>. Sobre o ensō e seus sentidos, ver <a href="https://olharbudista.com/2021/11/01/enso-o-circulo-zen/" target="_blank" rel="noopener">Olhar Budista</a>. Este site apenas sorteia e encaminha a leitura. Tipografia: Elms Sans, de Amarachi Nwauwa, licença SIL OFL.</p>
+  </footer>
+</section>
+
+</div>
+
+<button class="som" id="btnSom" onclick="alternaSom()" aria-pressed="true">som</button>
+
+<!-- prólogo, mostrado uma única vez -->
+<div class="prologo" id="prologo" role="dialog" aria-modal="true" aria-labelledby="prologoTitulo">
+  <div class="prologo-corpo">
+    <p class="tarja">antes de começar</p>
+    <h2 id="prologoTitulo">Como esta consulta funciona</h2>
+
+    <div class="verbete">
+      <p class="rot">o I Ching</p>
+      <p>Oráculo chinês de cerca de três mil anos, conhecido como o Livro das Mutações. Ele não responde com sim ou não. Devolve uma figura de seis linhas, o hexagrama, que descreve a configuração de um momento e a direção em que ela tende a se transformar.</p>
+    </div>
+
+    <div class="verbete">
+      <p class="rot">como a resposta é tirada</p>
+      <p>Cada uma das seis linhas vem de um sorteio. Aqui se usa o método das três moedas: seis lançamentos, formando o hexagrama de baixo para cima. A soma de cada lançamento diz se a linha é yin ou yang, e se ela está em mutação. Havendo linhas em mutação, um segundo hexagrama aparece, indicando a tendência.</p>
+    </div>
+
+    <div class="verbete">
+      <p class="rot">o ensō</p>
+      <p>Antes de cada lançamento você vai traçar um ensō, o círculo da caligrafia zen. Ele é feito em um movimento só, sem levantar o dedo, e não se corrige: o que sair é o que fica. Círculo fechado e círculo aberto valem igualmente, porque a imperfeição faz parte dele.</p>
+    </div>
+
+    <div class="verbete">
+      <p class="rot">por que traçar</p>
+      <p>São seis círculos, de pelo menos dez segundos cada. A demora é proposital. É o tempo de sustentar a pergunta enquanto a mão trabalha, para que a resposta não venha de um clique.</p>
+    </div>
+
+    <div class="linha-botoes">
+      <button class="selo" onclick="fechaPrologo()">Começar</button>
+    </div>
+  </div>
+</div>
+
+<!-- véu do traçado -->
+<div class="veu" id="veu" role="dialog" aria-modal="true" aria-labelledby="veuTitulo">
+  <div class="veu-cab">
+    <h3 id="veuTitulo">Primeiro círculo</h3>
+    <p class="veu-guia" id="veuGuia">um só movimento, sem levantar, <b>por ao menos 10 segundos</b></p>
+  </div>
+  <div class="tela-tinta">
+    <div class="marcador" id="marcador" aria-hidden="true">
+      <svg viewBox="0 0 44 44">
+        <circle class="aro" cx="22" cy="22" r="19.5"/>
+        <circle class="arco" id="arco" cx="22" cy="22" r="19.5" transform="rotate(-90 22 22)"/>
+      </svg>
+      <span id="marcadorNum">10</span>
+    </div>
+    <svg class="molde" viewBox="0 0 137.71 135.81" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><path d="M83.70583 20.45218c-.003-.009.16318.0204.48546.0861.32227.0657.51636.0848 1.1344.25197.61828.16643 1.121.2436 2.0044.53475.88346.29122 1.6538.49221 2.771.92691 1.1171.4347 2.1071.81687 3.4256 1.4098 1.3185.59291 2.2829 1.0426 3.7304 1.8778 1.4475.83521 2.5994 1.4811 4.1225 2.5748 1.5232 1.0938 2.7727 2.0128 4.3186 3.3711 1.5458 1.3583 2.7945 2.5973 4.3116 4.2165s2.6179 3.0294 3.9668 4.964c1.349 1.9346 2.4501 3.5966 3.562 5.8095s2.1037 4.1494 2.9174 6.5904c.81368 2.4411 1.4776 4.7573 2.0682 7.3389.59066 2.5816.79903 5.0121 1.009 7.7059.21002 2.6938.0594 5.2437-.13667 7.9708-.19604 2.727-.72953 5.3248-1.3371 8.0015-.60755 2.6767-1.5153 5.2522-2.5163 7.7963-1.001 2.5442-2.2876 5.0164-3.6418 7.3542-1.3543 2.3378-3.001 4.6252-4.6513 6.696s-3.6043 4.1113-5.4823 5.8698-4.0673 3.5182-6.0982 4.9345c-2.031 1.4164-4.3783 2.8932-6.4847 3.9527-2.1064 1.0596-4.4484 2.1041-6.516 2.9076-2.0676.80347-4.5709 1.5783-6.5756 2.0396-2.0046.46135-4.2903.92586-6.1492 1.1669-1.8588.24099-4.0268.44599-5.6962.49729-1.6695.0513-3.4462.0317-4.8907.005-1.4444-.0263-3.2219-.23011-4.4112-.37009-1.1894-.14001-2.4878-.338-3.4042-.4908-.91638-.15284-1.9402-.36099-2.565-.49474-.62487-.13374-1.1032-.23372-1.4245-.29746-.3213-.0637-.48558-.0913-.48238-.0802.006.0178.0142.0354.0228.053.009.0173.0195.0346.0315.0515.0115.017.0251.0335.0393.0501.0143.0163.03.0327.0466.0488.0168.0163.0344.0321.0535.0477.019.0158.0388.0313.0596.0466.021.0153.0426.0307.0652.0456.0226.015.0461.0299.0702.0449.0245.0135.049.0294.0746.044.0258.0131.0515.0291.0784.0433.0271.0127.0538.0286.0815.0428.0279.0129.0557.0283.0841.0423.0287.0123.0571.028.0861.0419.0293.0125.0582.0277.0875.0419.0296.0126.0589.0278.0882.0415.0297.0126.059.0278.0884.0416.0297.0126.059.0276.088.0416.0295.0125.0583.0277.087.0416.029.0124.0574.0278.0855.0418.0285.0123.0559.0281.0832.0421.0276.0128.0541.0284.0804.0428.0267.0126.0519.0288.0771.043.0254.0131.0493.029.073.0439.024.0134.0464.0296.0685.0445.022.0149.0431.0302.0633.0455s.0394.0307.0574.0464c.0181.0158.0351.0314.0512.0473.0158.0161.0306.0321.0441.0484.0134.0162.0257.0328.0365.0496.0107.0168.0202.0338.0284.051.008.0175.0147.0346.0195.0524.005.0176.009.0356.01.0541-.003.0167.13827.0682.417.15266.27866.0846 1.0042.25075 1.5539.37111.54969.12057 1.5274.34707 2.3332.474.80577.1269 2.0285.34704 3.073.45315 1.0446.10605 2.4968.25836 3.7608.3195 1.264.0611 2.9229.0901 4.3852.0853 1.4622-.005 3.576-.16328 5.2075-.33272s3.8662-.51057 5.6292-.87195c1.7629-.36132 4.0723-.95319 5.926-1.5259 1.8537-.57264 4.1789-1.4649 6.0812-2.2605 1.9023-.79562 4.4063-2.0635 6.2636-3.1761s4.0621-2.5664 5.8723-3.9016c1.8102-1.3353 4.0175-3.2158 5.6632-4.8439s3.4712-3.6516 4.9807-5.4681 3.1395-4.2469 4.3791-6.2901c1.2397-2.0432 2.6149-4.598 3.5381-6.8126.92321-2.2145 1.8559-4.7511 2.5481-7.0385.69249-2.2874 1.3176-5.0128 1.6524-7.3508.33474-2.3379.57759-4.9104.67449-7.2232.0969-2.3129.007-4.9177-.23313-7.1542-.23958-2.2365-.61149-4.5972-1.0506-6.7171-.43917-2.1199-1.0546-4.3849-1.7593-6.3226-.70466-1.9377-1.4675-3.9236-2.3009-5.6754-.83347-1.7518-1.7521-3.4991-2.6756-5.0435-.9235-1.5443-1.916-3.0503-2.8871-4.3719-.97115-1.3216-1.9533-2.6044-2.9268-3.6952-.97352-1.0908-1.9201-2.108-2.8058-3.0114-.8857-.90346-1.7405-1.7358-2.5431-2.4123-.8026-.67648-1.5024-1.3135-2.149-1.8102-.64656-.49677-1.1953-.92089-1.6386-1.2669-.44331-.34605-.7985-.59773-1.0323-.77053-.23381-.1728-.35087-.26733-.34291-.27898.007-.0118.14064.0625.39074.21631.25006.1539.62655.39279 1.0875.7245.46095.33168 1.0275.7434 1.6921 1.2294.6646.48597 1.4408 1.1034 2.2285 1.8126.78772.70911 1.6941 1.5039 2.5989 2.4057.90485.90179 1.8775 1.9349 2.87 3.0277.99248 1.0928 2.004 2.4173 2.9933 3.7453.98936 1.328 2.0044 2.8856 2.9447 4.4402.94036 1.5546 1.8726 3.3621 2.7211 5.1277.84849 1.7656 1.7342 3.8737 2.3568 5.8603.62269 1.9866 1.285 4.2313 1.7335 6.3708.44845 2.1395.79312 4.5748 1.0391 6.8326.24601 2.2578.2681 4.9618.17353 7.2974-.0946 2.3355-.39866 4.977-.73407 7.3381-.33543 2.3611-1.0757 5.1656-1.7726 7.476-.69703 2.3104-1.7025 5.108-2.7444 7.2953s-2.3636 4.6685-3.614 6.7328c-1.2503 2.0642-3.0413 4.5061-4.5643 6.3416s-3.5566 4.0842-5.2946 5.6478-3.867 3.3386-5.6936 4.6891-4.3253 2.9563-6.251 3.9919c-1.9257 1.0357-4.312 2.1982-6.2318 3.0052-1.9198.80705-4.3533 1.6221-6.2242 2.2051-1.8709.58294-4.2826 1.0824-6.0622 1.4532-1.7796.37077-4.1089.60483-5.7563.78311-1.6474.17827-3.8463.21587-5.3236.22941-1.4772.0136-3.5152-.0587-4.7886-.1742-1.2735-.11546-2.779-.26924-3.8297-.41745s-2.327-.36017-3.137-.51557c-.80995-.15538-1.8448-.36254-2.3981-.49679-.5533-.1342-.97811-.23638-1.2653-.30387-.2872-.0677-.43676-.10088-.43954-.0973-.0101.0143.17206.0796.53713.19307.36512.11337 1.2553.39165 1.9817.56197.72636.17025 1.9675.49504 3.0362.68121 1.0687.1862 2.6484.46762 4.0372.63333 1.3887.1657 3.6285.41278 5.3155.44111 1.687.0283 4.1998.0795 6.1438-.083 1.944-.16253 4.6744-.43567 6.8275-.83207 2.1531-.39643 5.0198-1.0966 7.3293-1.7594 2.3095-.66277 5.5104-1.96 7.8724-3.0253 2.3619-1.0653 5.4879-2.8509 7.8109-4.3306 2.323-1.4798 5.2411-3.8047 7.4323-5.6927 2.1912-1.8881 5.0267-4.9087 6.8809-7.2741s4.0701-5.6054 5.5964-8.2961 3.3675-6.5546 4.3435-9.5564c.97591-3.0017 2.0747-6.8541 2.5919-10.006.51722-3.1521.84166-7.1313.88127-10.338.0397-3.2068-.36892-7.3907-.95421-10.531-.58532-3.1406-1.6274-6.8763-2.6477-9.8641-1.02-2.9879-2.7729-6.6084-4.3104-9.2942s-3.6573-5.7044-5.5085-8.0742-4.4838-5.0826-6.6706-6.9789-4.8858-4.0035-7.2115-5.4838c-2.3256-1.4802-5.1654-3.0773-7.5371-4.1278-2.3716-1.0505-5.0698-2.0455-7.3562-2.7942-2.2864-.74881-5.0675-1.3539-7.2305-1.7153-2.163-.36138-4.5673-.63333-6.5178-.76267-1.9506-.12936-4.107-.12197-5.7978-.0683-1.6909.0536-3.5521.2118-4.9442.39049-1.392.17869-2.7792.40208-3.8532.58917-1.074.18707-2.1227.43572-2.8575.59467-.7349.15864-1.4353.34654-1.8129.43816-.37764.0914-.57492.12959-.57984.11103-.005-.0185.18291-.0919.55145-.21648.36849-.12467 1.0684-.34582 1.7962-.53478.72782-.1888 1.7823-.46841 2.851-.68232 1.0687-.21392 2.4674-.46512 3.8555-.66771 1.3881-.20262 3.2864-.38667 4.9754-.46149 1.689-.0748 3.8912-.10172 5.8416.009 1.9503.11075 4.4076.37056 6.5715.71584 2.1638.3453 5.0315.95423 7.3203 1.6891 2.2888.73489 5.0482 1.7376 7.4224 2.7762 2.3742 1.0387 5.305 2.6675 7.6337 4.1377 2.3286 1.4702 5.1148 3.6243 7.3049 5.512 2.1901 1.8878 4.9266 4.686 6.7814 7.0486s4.043 5.4569 5.5841 8.1362c1.5411 2.6794 3.1414 6.226 4.307 9.1559 1.1655 2.9299 2.1938 7.0622 2.7832 10.198.58937 3.1354 1.0332 7.4655.99827 10.668-.0349 3.2021-.34912 7.2971-.86099 10.445s-1.6162 7.1197-2.586 10.118c-.96985 2.9982-2.8461 7.0215-4.3652 9.71s-3.7778 6.0428-5.6239 8.4072-4.6088 5.1979-6.6973 7.1902-5.4244 4.5398-7.7378 6.0228-5.5287 3.3602-7.8808 4.4312-5.3457 2.2312-7.6107 3.0122c-2.265.78102-5.588 1.5368-7.7318 1.9444-2.1438.40761-4.9582.73246-6.8937.90906-1.9354.17662-4.5421.17349-6.2217.16238-1.6796-.0112-4.0238-.21503-5.407-.3603-1.3832-.14529-3.0177-.39597-4.0822-.55866-1.0645-.16268-2.3659-.45627-3.0897-.59951-.72383-.14333-1.6808-.38964-2.0452-.47317-.36449-.0834-.54729-.11721-.53642-.0977.0216.0383.25995.13799.70175.29483.44171.15703 1.5149.46695 2.3623.69169.84723.22546 2.3214.56797 3.5534.8157 1.2321.24771 3.5224.63175 5.1241.78038 1.6017.14861 4.2491.3763 6.1812.35647 1.9321-.0199 4.8878-.11456 7.1018-.36087 2.214-.24612 5.8374-.78706 8.2498-1.4234 2.4123-.63651 5.7252-1.6722 8.2887-2.6221 2.5633-.95048 6.6527-2.9487 9.168-4.4797 2.5149-1.5317 6.065-3.9896 8.4739-5.9836s5.9456-5.4464 8.0197-7.9892c2.0742-2.5427 4.7451-6.3658 6.4823-9.2971 1.7372-2.9314 3.8426-7.738 4.9884-11.051 1.1458-3.3127 2.4132-8.486 2.8788-12.03.46569-3.5444.74788-8.8821.50011-12.49-.24769-3.6078-1.0186-8.8762-1.9634-12.381-.94517-3.5042-2.7362-8.4784-4.3247-11.725-1.5886-3.2465-4.3034-7.7338-6.4542-10.584-2.1509-2.8506-5.6478-6.6974-8.2539-9.0328s-6.7031-5.4391-9.6317-7.1657c-2.9285-1.7266-7.078-3.7401-10.114-4.9586-3.0363-1.2184-7.7544-2.554-10.82-3.1092-3.0655-.55526-7.3155-1.0516-10.245-1.1358-2.9297-.0842-6.9774.13476-9.6762.45819-2.6988.32344-6.4205 1.0934-8.8113 1.742-2.3908.64853-5.7302 1.7764-7.7563 2.6541-2.0262.87756-4.5873 2.1032-6.2601 3.0262-1.6728.92311-3.8177 2.2567-5.126 3.1513-1.3083.89472-3.0785 2.1793-4.0233 2.9685-.94485.78915-2.0465 1.7064-2.671 2.2815-.62464.5749-1.1032 1.0159-1.4258 1.313-.32251.29723-.7494.73837-.7494.73837l3.1233-2.9052 3.0101-2.4452 3.1472-2.2657 3.6106-2.2701 3.418-1.8358 3.5197-1.6351 3.6104-1.429 4.0797-1.2947 3.7736-.94475 3.8255-.72295 4.274-.5101 3.8978-.20992 3.9069.0214 4.3219.30263 3.8792.54336 3.8426.7731 3.7924.99978 3.7281 1.2215 4.0367 1.6415 3.5354 1.7039 3.4274 1.9107 3.6582 2.3596 3.1393 2.3491 2.994 2.5294 2.8394 2.7004 2.9344 3.1999 2.4569 3.0492 2.2755 3.1866 2.2839 3.6903 1.8398 3.4583 1.6372 3.5601 1.5598 4.0616 1.1587 3.7502.93909 3.8141.71529 3.8659.48874 4.354.19623 3.9373-.0371 3.9459-.3401 4.3979-.56504 3.916-.79671 3.8783-1.0252 3.8269-1.4277 4.1989-1.5215 3.6611-1.7356 3.564-1.9436 3.4542-2.4287 3.7065-2.385 3.1607-2.5662 3.0134-3.0743 3.1758-2.94 2.6447-3.0882 2.4686-3.226 2.2853-3.7701 2.2978-3.4985 1.8438-3.6005 1.6394-4.1427 1.5582-3.7908 1.155-3.8546.93343-4.3852.75915-3.9552.41587-3.9768.18249-3.9849-.0528-4.4738-.37759s11.286 1.5335 15.363 1.067c2.818-.32245 7.4575-1.2377 10.73-2.1076 3.273-.87001 9.1469-3.1469 12.548-5.0011 3.4006-1.8543 8.6082-5.2358 11.919-7.9742 3.3106-2.7384 8.2107-7.992 10.974-11.739 2.7635-3.7469 6.8933-11.159 8.6883-16.342 1.795-5.1821 3.7571-14.12 3.942-20.121.18495-6.0005-.94318-15.882-2.8455-21.797-1.9023-5.9148-6.1954-14.83-9.8765-19.711-3.681-4.8812-10.718-12.013-15.824-15.377-5.1059-3.3636-13.339-7.3323-18.446-8.8012-5.107-1.4688-12.71-2.6176-16.585-2.7262-3.8752-.10859-8.4408.23846-8.7661.27822-.32528.0401-2.3446.23911-4.5709.58352-2.2262.34478-6.605 1.3473-9.7103 2.2857-3.1053.93843-8.3354 3.1888-11.771 4.9814-3.4352 1.7926-8.918 5.6062-11.983 8.2742-3.0649 2.668-7.3701 7.3617-9.9879 10.723-2.6178 3.361-6.0594 9.6481-7.7745 13.548-1.715 3.9-3.798 10.78-4.4665 14.789-.66861 4.0087-1.1746 10.312-1.0692 13.982.10541 3.6697.84317 9.643 1.6054 13.029.76218 3.3859 2.5148 8.9366 3.7928 11.866 1.2779 2.9297 3.5626 7.3019 5.0589 9.7252s4.2565 6.1156 5.8123 7.9771 4.0362 4.3873 5.4106 5.7426c5.6852 3.9881 4.2897 2.3216 9.5145 4.3202 7.5889 2.9813 17.616-.24092 19.336-3.5808 1.7209-3.3399-.50799-12.354-9.6623-21.468-1.3847-1.2713-1.979-1.7497-3.5755-3.5234s-1.9926-2.18-3.5708-4.5328c-1.5782-2.3527-2.0662-3.2155-3.4672-6.1145-1.4009-2.899-1.5719-3.5473-2.4883-6.9733-.91644-3.426-1.0219-4.3462-1.2887-8.15-.26686-3.8039-.35637-4.4696.39429-8.8103.75068-4.3407.76421-5.5188 2.6991-9.8673s2.4773-5.7482 5.481-9.5897 4.163-5.003 7.8955-7.9502c3.7324-2.9472 4.7127-3.6356 9.0586-5.4091s5.7372-2.4071 9.7303-3.0121 5.3981-.8679 8.3044-.74648c2.9063.12144 3.9779.17672 4.2132.20649.23528.0298 1.0724.0273 3.2484.39871 2.176.37142 3.5111.47075 6.7628 1.5461 3.2517 1.0753 5.0458 1.6615 8.783 3.7974s5.639 3.4622 9.0978 6.7716 5.2147 5.2805 7.8006 9.7903c2.586 4.5098 4.0398 7.4296 5.2845 12.675 1.2448 5.2452 1.8175 8.8222 1.48 14.176-.33749 5.3533-1.094 9.2812-2.6784 14.148-1.5844 4.8664-3.3532 8.3224-6.1966 12.355-2.8434 4.0325-5.5919 7.068-9.0826 10.095-3.4908 3.0266-6.8433 5.1387-10.556 7.051.24439-.0343.57637-.11468.99076-.23845.41438-.12377.8491-.2745 1.4126-.50951.56352-.23497 1.1612-.46561 1.854-.81976.69285-.35421 1.4231-.69367 2.2254-1.173.80233-.47934 1.633-.9513 2.5246-1.5601.89209-.60824 1.789-1.2319 2.751-1.9713.96201-.7394 1.8908-1.5278 2.9037-2.3982 1.0128-.87037 1.8962-1.7831 2.8913-2.8321.99518-1.049 1.9152-2.0505 2.8591-3.2736.94387-1.2231 1.8326-2.449 2.7606-3.7919.92801-1.3429 1.6416-2.6725 2.4644-4.1694.82279-1.4969 1.4507-2.9208 2.1408-4.5532.69012-1.6324 1.2056-3.1381 1.7397-4.8831.53405-1.745.91845-3.3138 1.2785-5.1446.36036-1.8308.58736-3.4426.76199-5.3299.17463-1.8872.22207-3.5168.20539-5.4298-.0167-1.913-.15985-3.5291-.36755-5.437-.2077-1.908-.54079-3.4773-.93382-5.3503-.39305-1.873-.90501-3.363-1.4726-5.1729-.5679-1.8098-1.0966-3.0496-1.9059-4.7333-.80939-1.6837-1.4384-3.0043-2.3839-4.5686-.94546-1.5643-1.6724-2.7521-2.7316-4.1776-1.0593-1.4254-1.8441-2.474-2.9922-3.7446s-1.948-2.1849-3.1574-3.2886-2.2329-1.9878-3.4271-2.9769c-1.1942-.98907-2.0323-1.5322-3.2354-2.3456s-1.9212-1.2944-3.1014-1.9339c-1.1802-.63949-2.0634-1.1179-3.1634-1.6473-1.1-.52944-1.9011-.8697-2.9024-1.2945-1.0012-.42487-1.6909-.65248-2.575-.98034-.88406-.32787-1.4356-.47412-2.1844-.7149-.74876-.24101-1.1396-.34246-1.7356-.50831l.00009-.00052"/></svg>
+    <canvas id="pincel" width="880" height="880" aria-label="Folha para traçar o círculo"></canvas>
+    <div class="marca-selo" id="marcaSelo" aria-hidden="true">円</div>
+  </div>
+  <canvas class="cronometro" id="cronometro" width="812" height="70" aria-hidden="true"></canvas>
+  <div class="bancada">
+    <div class="ajustes">
+      <label class="ajuste"><span>espessura</span>
+        <input type="range" id="fEspessura" min="16" max="170" step="2" value="84"></label>
+      <label class="ajuste"><span>aquarela</span>
+        <input type="range" id="fAquarela" min="0" max="100" step="1" value="55"></label>
+    </div>
+    <canvas id="amostra" width="340" height="120" aria-label="Amostra do pincel"></canvas>
+  </div>
+  <div class="veu-pe">
+    <button class="nu" id="btnDispensa" style="display:none" onclick="dispensarTraco()">não consigo traçar, lançar as moedas assim mesmo</button>
+  </div>
+</div>
+
+<script>
+/* ---------------- hexagramas e páginas de iching.com.br ---------------- */
+const BASE="https://iching.com.br/";
+const HEX=[
+{n:1,b:"111111",nome:"O Princípio Criador",slug:"hexagrama-01-o-principio-criador-o-ceu"},
+{n:2,b:"000000",nome:"O Princípio Receptivo",slug:"hexagrama-02-o-principio-receptivo-a-terra"},
+{n:3,b:"100010",nome:"O Começo",slug:"hexagrama-03-o-comeco"},
+{n:4,b:"010001",nome:"A Inexperiência Juvenil",slug:"hexagrama-04-inexperiencia-juvenil"},
+{n:5,b:"111010",nome:"A Espera",slug:"hexagrama-05-espera"},
+{n:6,b:"010111",nome:"A Disputa",slug:"hexagrama-6-disputa"},
+{n:7,b:"010000",nome:"O Exército",slug:"hexagrama-7-o-exercito"},
+{n:8,b:"000010",nome:"União",slug:"hexagrama-8-uniao"},
+{n:9,b:"111011",nome:"O Pequeno Acúmulo",slug:"hexagrama-09-o-pequeno-acumulo"},
+{n:10,b:"110111",nome:"Caminhar",slug:"hexagrama-10-caminhar"},
+{n:11,b:"111000",nome:"Paz e Prosperidade",slug:"hexagrama-11-paz-prosperidade"},
+{n:12,b:"000111",nome:"Obstáculo",slug:"hexagrama-12-obstaculo"},
+{n:13,b:"101111",nome:"Comunidade (União)",slug:"hexagrama-13-comunidade-uniao"},
+{n:14,b:"111101",nome:"Grande Conquista",slug:"hexagrama-14-grande-conquista"},
+{n:15,b:"001000",nome:"Modéstia",slug:"hexagrama-15-modestia"},
+{n:16,b:"000100",nome:"O Entusiasmo",slug:"hexagrama-16-o-entusiasmo"},
+{n:17,b:"100110",nome:"Seguir",slug:"hexagrama-17-seguir"},
+{n:18,b:"011001",nome:"Trabalhar o que se corrompeu",slug:"hexagrama-18-trabalhar-o-que-se-corrompeu"},
+{n:19,b:"110000",nome:"A Aproximação",slug:"hexagrama-19-aproximacao"},
+{n:20,b:"000011",nome:"A Contemplação",slug:"hexagrama-20-contemplacao"},
+{n:21,b:"100101",nome:"Morder",slug:"hexagrama-21-morder"},
+{n:22,b:"101001",nome:"O Ornamento (Embelezar)",slug:"hexagrama-22-o-ornamento-embelezar"},
+{n:23,b:"000001",nome:"A Desintegração",slug:"hexagrama-23-desintegracao"},
+{n:24,b:"100000",nome:"O Retorno",slug:"hexagrama-24-o-retorno"},
+{n:25,b:"100111",nome:"A Integridade (Sem Falsidade)",slug:"hexagrama-25-integridade-sem-falsidade"},
+{n:26,b:"111001",nome:"O Grande Acúmulo",slug:"hexagrama-26-o-grande-acumulo"},
+{n:27,b:"100001",nome:"A Nutrição",slug:"hexagrama-27-nutricao"},
+{n:28,b:"011110",nome:"O Excesso",slug:"hexagrama-28-o-excesso"},
+{n:29,b:"010010",nome:"O Abismo",slug:"hexagrama-29-o-abismo"},
+{n:30,b:"101101",nome:"O Luminoso (Aderir)",slug:"hexagrama-30-luminoso-aderir"},
+{n:31,b:"001110",nome:"Atração (Comunhão)",slug:"hexagrama-31-atracao-comunhao"},
+{n:32,b:"011100",nome:"Perseverança",slug:"hexagrama-32-perseveranca"},
+{n:33,b:"001111",nome:"Retirada",slug:"hexagrama-33-retirada"},
+{n:34,b:"111100",nome:"A Grande Força",slug:"hexagrama-34-grande-forca"},
+{n:35,b:"000101",nome:"O Progresso",slug:"hexagrama-35-o-progresso"},
+{n:36,b:"101000",nome:"Obscurecimento da Luz",slug:"hexagrama-36-obscurecimento-da-luz"},
+{n:37,b:"101011",nome:"A Família",slug:"hexagrama-37-familia"},
+{n:38,b:"110101",nome:"Divergência",slug:"hexagrama-38-divergencia"},
+{n:39,b:"001010",nome:"Dificuldades",slug:"hexagrama-39-dificuldades"},
+{n:40,b:"010100",nome:"Liberação",slug:"hexagrama-40-liberacao"},
+{n:41,b:"110001",nome:"Diminuição",slug:"hexagrama-41-diminuicao"},
+{n:42,b:"100011",nome:"O Aumento",slug:"hexagrama-42-o-aumento"},
+{n:43,b:"111110",nome:"Determinação",slug:"hexagrama-43-determinacao"},
+{n:44,b:"011111",nome:"O Encontro",slug:"hexagrama-44-o-encontro"},
+{n:45,b:"000110",nome:"Reunião",slug:"hexagrama-45-reuniao"},
+{n:46,b:"011000",nome:"Crescimento (Ascensão)",slug:"hexagrama-46-crescimento-ascensao"},
+{n:47,b:"010110",nome:"Esgotamento",slug:"hexagrama-47-esgotamento"},
+{n:48,b:"011010",nome:"O Poço",slug:"hexagrama-48-o-poco"},
+{n:49,b:"101110",nome:"A Revolução",slug:"hexagrama-49-revolucao"},
+{n:50,b:"011101",nome:"O Caldeirão",slug:"hexagrama-50-o-caldeirao"},
+{n:51,b:"100100",nome:"O Trovão",slug:"hexagrama-51-o-trovao"},
+{n:52,b:"001001",nome:"A Quietude (A Montanha)",slug:"hexagrama-52-quietude-montanha"},
+{n:53,b:"001011",nome:"Progresso Gradual",slug:"hexagrama-53-progresso-gradual"},
+{n:54,b:"110100",nome:"O Casamento da Jovem",slug:"hexagrama-54-o-casamento-da-jovem"},
+{n:55,b:"101100",nome:"Abundância",slug:"hexagrama-55-abundancia"},
+{n:56,b:"001101",nome:"O Viajante",slug:"hexagrama-56-o-viajante"},
+{n:57,b:"011011",nome:"A Suavidade",slug:"hexagrama-57-suavidade"},
+{n:58,b:"110110",nome:"Alegria",slug:"hexagrama-58-alegria"},
+{n:59,b:"010011",nome:"Desapego",slug:"hexagrama-59-desapego"},
+{n:60,b:"110010",nome:"A Limitação",slug:"hexagrama-60-limitacao"},
+{n:61,b:"110011",nome:"Sinceridade",slug:"hexagrama-61-sinceridade"},
+{n:62,b:"001100",nome:"O Pequeno Excesso",slug:"hexagrama-62-o-pequeno-excesso"},
+{n:63,b:"101010",nome:"Após a Conclusão",slug:"hexagrama-63-apos-conclusao"},
+{n:64,b:"010101",nome:"Antes da Conclusão",slug:"hexagrama-64-antes-da-conclusao"}
+];
+const PORBITS={}; HEX.forEach(h=>PORBITS[h.b]=h);
+const urlHex=h=>BASE+h.slug+"/";
+
+const TEMPO_MINIMO=10000;
+const ORDINAIS=["primeira","segunda","terceira","quarta","quinta","sexta"];
+const TITULOS=["Primeiro círculo","Segundo círculo","Terceiro círculo","Quarto círculo","Quinto círculo","Sexto círculo"];
+let pergunta="", valores=[], circulos=[], recusas=0, ocupado=false;
+
+
+/* ---------------- anéis da capa ---------------- */
+/* seis anéis, um por linha do hexagrama, cada um com um número diferente de
+   segmentos e girando no seu próprio ritmo. como as contagens e as durações
+   não são múltiplas entre si, os vãos nunca repetem o mesmo alinhamento:
+   figuras de seis linhas se formam e se desfazem sem nunca fechar um ciclo */
+/* seis anéis concêntricos divididos em doze setores. lendo um setor de dentro
+   para fora saem as seis linhas de um hexagrama, então doze hexagramas ficam
+   visíveis ao mesmo tempo, como na roda do calendário. arco inteiro é yang,
+   arco partido ao meio é yin. a cada segundo um anel gira um setor sobre o
+   próprio eixo, e os doze hexagramas passam a ser outros */
+const AROS=(function montaAros(){
+  const svg=document.getElementById("aros");
+  if(!svg) return null;
+
+  const C=810, ESP=54;
+  const raios=[285,385,485,585,685,785];
+  const SETORES=12, PASSO=360/SETORES;   // 30 graus por setor
+  /* vãos medidos em unidades de arco, não em graus: assim têm a mesma largura
+     em todos os anéis, como nas linhas retas de um hexagrama */
+  const SEPARA=46;                       // vão entre setores vizinhos
+  const MEIO=46;                         // vão do meio, o que faz a linha yin
+  const ns="http://www.w3.org/2000/svg";
+  const anel=[];
+
+
+  /* sorteia as linhas de cada anel, garantindo que nenhum fique todo igual */
+  function sorteiaSetores(){
+    let v;
+    do{ v=Array.from({length:SETORES},()=>Math.random()<0.5?1:0); }
+    while(v.every(x=>x===v[0]));
+    return v;
+  }
+
+  /* monta o dasharray de uma volta inteira: cada setor entra como um arco
+     contínuo (yang) ou como dois arcos separados (yin) */
+  function padrao(setores,arcoSetor){
+    const linha=arcoSetor-SEPARA;
+    const metade=(linha-MEIO)/2;
+    const g=[];
+    setores.forEach(v=>{
+      if(v) g.push(linha,SEPARA);
+      else   g.push(metade,MEIO,metade,SEPARA);
+    });
+    return g.map(x=>x.toFixed(2)).join(" ");
+  }
+
+  raios.forEach((r,i)=>{
+    const setores=sorteiaSetores();
+    const arcoSetor=2*Math.PI*r/SETORES;
+    const g=document.createElementNS(ns,"g");
+    g.setAttribute("class","aro");
+    const c=document.createElementNS(ns,"circle");
+    c.setAttribute("cx",C); c.setAttribute("cy",C); c.setAttribute("r",r);
+    c.setAttribute("fill","none");
+    c.setAttribute("stroke","var(--selo)");
+    c.setAttribute("stroke-width",ESP);
+    c.setAttribute("stroke-dasharray",padrao(setores,arcoSetor));
+    /* meio vão para trás: as separações caem exatamente nos limites dos setores
+       e os vãos do meio no centro deles, alinhados de um anel a outro */
+    c.setAttribute("stroke-dashoffset",(-SEPARA/2).toFixed(2));
+    g.appendChild(c);
+    svg.appendChild(g);
+    /* cada anel entra num setor diferente e gira no seu próprio sentido */
+    anel.push({no:g});
+  });
+
+  /* rotação contínua por @keyframes do CSS, uma animação por anel.
+     é o mesmo mecanismo da versão que rodou corretamente antes.
+
+     um giro em passos de 30 graus seria invisível: como os 12 setores são
+     iguais, girar um setor devolve o anel à mesma aparência. por isso cada
+     anel gira sem parar, numa duração e num sentido próprios.
+
+     as durações são escolhidas para que, a cada 24 segundos, todos tenham
+     girado um número inteiro de setores. nesses instantes o alinhamento radial
+     se refaz e os doze hexagramas voltam a ficar legíveis, sem que o movimento
+     pare em momento algum */
+  const CICLO=24, VOLTAS=[3,-4,5,-6,7,-8];   // setores percorridos por ciclo
+  anel.forEach((a,i)=>{
+    const graus=VOLTAS[i]*PASSO;
+    const dur=Math.abs(360/graus)*CICLO;      // segundos para a volta completa
+    a.no.style.animationName=graus>0?"giroH":"giroA";
+    a.no.style.animationDuration=dur.toFixed(2)+"s";
+    a.no.style.animationTimingFunction="linear";
+    a.no.style.animationIterationCount="infinite";
+    /* atraso negativo em múltiplos de um setor: cada anel entra num ponto
+       diferente da volta sem quebrar o alinhamento */
+    a.no.style.animationDelay="-"+(Math.floor(Math.random()*12)*dur/12).toFixed(2)+"s";
+  });
+
+  function corre(ligar){
+    anel.forEach(a=>{ a.no.style.animationPlayState=ligar?"running":"paused"; });
+  }
+  document.addEventListener("visibilitychange",()=>corre(!document.hidden));
+  return {corre:corre};
+})();
+
+/* ---------------- prólogo ---------------- */
+/* aparece a cada consulta, depois de "Consultar", como a leitura que antecede
+   o rito. fecha pelo botão ou pela tecla Esc */
+function abrePrologo(){
+  document.getElementById("prologo").classList.add("aberto");
+  document.getElementById("prologo").scrollTop=0;
+}
+function fechaPrologo(){
+  document.getElementById("prologo").classList.remove("aberto");
+}
+document.addEventListener("keydown",e=>{
+  if(e.key==="Escape" && document.getElementById("prologo").classList.contains("aberto")) fechaPrologo();
+});
+
+/* ---------------- navegação ---------------- */
+function tela(id){
+  document.querySelectorAll(".tela").forEach(t=>t.classList.remove("ativa"));
+  document.getElementById(id).classList.add("ativa");
+  document.body.classList.toggle("capa-ativa", id==="tela1");
+  if(typeof AROS!=="undefined" && AROS) AROS.corre(id==="tela1");
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+document.getElementById("q").addEventListener("input",()=>document.getElementById("erro1").textContent="");
+
+function iniciar(exigeTexto){
+  const t=document.getElementById("q").value.trim();
+  if(exigeTexto && !t){
+    document.getElementById("erro1").textContent="Escreva a pergunta, ou use a opção de seguir sem escrever.";
+    return;
+  }
+  pergunta=t; valores=[]; circulos=[]; recusas=0; ocupado=false;
+  const texto=pergunta?("“"+pergunta+"”"):"Pergunta mentalizada, não registrada.";
+  document.getElementById("citacao2").textContent=texto;
+  document.getElementById("citacao3").textContent=texto;
+  document.getElementById("dito").textContent="O círculo vem antes das moedas.";
+  document.getElementById("btnDispensa").style.display="none";
+  [0,1,2].forEach(i=>{
+    document.getElementById("d"+i).classList.remove("face");
+    document.getElementById("r"+i).textContent="";
+  });
+  const v=document.getElementById("btnVoltar");
+  if(confirmandoVolta){ clearTimeout(confirmandoVolta); confirmandoVolta=null; }
+  v.textContent="fazer outra consulta"; v.classList.remove("alerta");
+  const b=document.getElementById("btnFolha");
+  b.textContent="Desenhe um ensō para gerar uma linha"; b.classList.add("chamada");
+  b.onclick=abrirFolha; b.disabled=false;
+  desenhaParcial(); atualizaConta();
+  tela("tela2");
+  abrePrologo();
+}
+
+function atualizaConta(){
+  const g=document.getElementById("graos");
+  g.innerHTML="";
+  for(let i=0;i<6;i++){
+    const d=document.createElement("span");
+    d.className="grao"+(i<valores.length?" feito":"");
+    g.appendChild(d);
+  }
+  document.getElementById("contador").textContent =
+    valores.length<6 ? ("linha "+(valores.length+1)+" de 6 · de baixo para cima") : "seis linhas completas";
+}
+
+/* ---------------- hexagrama ---------------- */
+const ehYang=v=>(v===7||v===9);
+const ehMovel=v=>(v===6||v===9);
+
+function desenhaParcial(){
+  const c=document.getElementById("hexParcial");
+  c.innerHTML="";
+  for(let i=0;i<6;i++){
+    const d=document.createElement("div");
+    if(i>=valores.length){
+      d.className="tr vazia";
+      d.innerHTML='<span class="idx">'+(i+1)+'</span><span class="barras"><span class="b"></span></span><span class="soma"></span>';
+    } else {
+      const v=valores[i];
+      d.className="tr "+(ehYang(v)?"yang":"yin")+(ehMovel(v)?" movel":"");
+      const barras=ehYang(v)?'<span class="b"></span>':'<span class="b"></span><span class="b"></span>';
+      d.innerHTML='<span class="idx">'+(i+1)+'</span><span class="barras">'+barras+'</span><span class="soma">'+v+'</span>';
+    }
+    c.appendChild(d);
+  }
+}
+
+function hexHTML(bits,moveis,somas){
+  let h='<div class="hex">';
+  for(let i=0;i<6;i++){
+    const yang=bits[i]==="1", mv=moveis&&moveis.includes(i);
+    const barras=yang?'<span class="b"></span>':'<span class="b"></span><span class="b"></span>';
+    const soma=(somas&&somas[i]!==undefined)?somas[i]:"";
+    h+='<div class="tr '+(yang?"yang":"yin")+(mv?" movel":"")+'">'
+      +'<span class="idx">'+(i+1)+'</span>'
+      +'<span class="barras">'+barras+'</span>'
+      +'<span class="soma">'+soma+'</span></div>';
+  }
+  return h+'</div>';
+}
+
+/* ---------------- pincel de tinta ---------------- */
+const cv=document.getElementById("pincel");
+const LADO=880;
+
+/* o pigmento é acumulado numa folha 2D fora da tela; o canvas visível é WebGL
+   e aplica sobre ela o passe de aquarela (borda escura, granulação e modulação
+   de borda pela textura do papel, na linha do pipeline de Luft e Deussen) */
+const folha=document.createElement("canvas");
+folha.width=LADO; folha.height=LADO;
+const ctx=folha.getContext("2d");
+let tracos=[], desenhando=false, quadro=null;
+
+/* ---------------- passe de aquarela em WebGL ---------------- */
+const VERT=`attribute vec2 pos;varying vec2 vUv;
+void main(){vUv=vec2(pos.x*0.5+0.5,0.5-pos.y*0.5);gl_Position=vec4(pos,0.0,1.0);}`;
+
+const FRAG=`precision highp float;
+varying vec2 vUv;
+uniform sampler2D uTinta;      // mapa de pigmento vindo do canvas 2D
+uniform sampler2D uPapel;      // textura de papel (ruído fractal)
+uniform vec2  uPasso;          // 1 / resolução
+uniform float uAgua;           // quantidade de água (0 a 1)
+uniform float uEspalha;        // raio da difusão
+uniform float uBorda;          // intensidade da borda molhada
+uniform float uGranulacao;     // pigmento preso na fibra
+uniform float uTurbulencia;    // modulação irregular da borda
+uniform float uFlor;           // 0 a 1, a tinta assentando
+uniform float uCarga;          // pigmento por volume de água
+
+float densidade(vec2 uv){ return texture2D(uTinta,uv).a; }
+
+/* difusão: dois anéis curtos, a água puxando o pigmento para os lados */
+float espalhada(vec2 uv,float r){
+  float soma=densidade(uv)*1.5, peso=1.5;
+  for(int i=0;i<6;i++){
+    float a=float(i)*1.0471976;
+    vec2 o=vec2(cos(a),sin(a));
+    soma+=densidade(uv+o*r*uPasso*0.5); peso+=1.0;
+    soma+=densidade(uv-o*r*uPasso)*0.7; peso+=0.7;
+  }
+  return soma/peso;
+}
+
+void main(){
+  /* modulação de borda: a fibra do papel desvia o contorno, nada fica liso */
+  float n1=texture2D(uPapel,vUv*3.1).g;
+  float n2=texture2D(uPapel,vUv*8.7+vec2(0.37,0.11)).g;
+  float n3=texture2D(uPapel,vUv*1.3+vec2(0.71,0.29)).g;
+  vec2 desvio=(vec2(n1,n2)-0.5)*uTurbulencia*(0.45+n3);
+  vec2 uv=vUv+desvio*uFlor;
+
+  float seca=densidade(uv);
+  float d=seca;
+  float molhada=seca;
+  if(uEspalha*uFlor>0.6){
+    molhada=espalhada(uv,uEspalha*uFlor);
+    d=mix(seca,molhada,uAgua*uFlor);
+    /* borda molhada: a diferença entre a tinta seca e a espalhada marca
+       exatamente o contorno, onde o pigmento se acumula ao secar */
+    float orlaVal=abs(molhada-seca)*molhada;
+    d*=mix(1.0,uCarga,uFlor);
+    d+=orlaVal*uBorda*uFlor;
+  }
+
+  /* granulação: o pigmento assenta nos vales da fibra */
+  float papel=texture2D(uPapel,vUv*2.6).r;
+  float papel2=texture2D(uPapel,vUv*6.1).b;
+  d*=1.0-uGranulacao*uFlor*((papel*0.68+papel2*0.32)-0.5)*2.0;
+
+  d=clamp(d,0.0,1.4);
+  /* absorção tipo Beer-Lambert: a tinta satura em vez de virar preto chapado */
+  float alfa=1.0-exp(-d*3.2);
+  vec3 cor=mix(vec3(0.27,0.245,0.215),vec3(0.055,0.045,0.035),clamp(d*1.9,0.0,1.0));
+  if(alfa<0.004) discard;
+  gl_FragColor=vec4(cor,alfa);
+}
+`;
+
+let GL=null, prog=null, texTinta=null, texPapel=null, uni={};
+
+function compila(gl,tipo,src){
+  const s=gl.createShader(tipo);
+  gl.shaderSource(s,src); gl.compileShader(s);
+  if(!gl.getShaderParameter(s,gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s));
+  return s;
+}
+
+/* textura de papel gerada aqui mesmo: fibras em várias escalas */
+function texturaPapel(){
+  const n=256, c=document.createElement("canvas");
+  c.width=n; c.height=n;
+  const x=c.getContext("2d"), img=x.createImageData(n,n);
+  const camadas=[[4,0.5],[9,0.26],[21,0.14],[47,0.10]];
+  const grades=camadas.map(([f])=>{
+    const g=new Float32Array((f+1)*(f+1));
+    for(let i=0;i<g.length;i++) g[i]=Math.random();
+    return g;
+  });
+  function valor(cam,u,v){
+    const [f]=camadas[cam], g=grades[cam];
+    const x0=Math.floor(u*f), y0=Math.floor(v*f);
+    const tx=u*f-x0, ty=v*f-y0;
+    const sx=tx*tx*(3-2*tx), sy=ty*ty*(3-2*ty);
+    const id=(a,b)=>g[(b%f)*(f+1)+(a%f)];
+    const a=id(x0,y0), b=id(x0+1,y0), c2=id(x0,y0+1), d=id(x0+1,y0+1);
+    return (a+(b-a)*sx)+((c2+(d-c2)*sx)-(a+(b-a)*sx))*sy;
+  }
+  for(let y=0;y<n;y++) for(let x2=0;x2<n;x2++){
+    const u=x2/n, v=y/n;
+    let soma=0, peso=0;
+    camadas.forEach((c3,i)=>{ soma+=valor(i,u,v)*c3[1]; peso+=c3[1]; });
+    const base=soma/peso;
+    const i4=(y*n+x2)*4;
+    img.data[i4]=Math.round(base*255);
+    img.data[i4+1]=Math.round((valor(1,u*1.7+0.3,v*1.7+0.6)*0.6+valor(2,u,v)*0.4)*255);
+    img.data[i4+2]=Math.round(valor(3,u*1.3,v*1.3)*255);
+    img.data[i4+3]=255;
+  }
+  x.putImageData(img,0,0);
+  return c;
+}
+
+function iniciaGL(){
+  let gl=null;
+  try{
+    gl=cv.getContext("webgl",{alpha:true,premultipliedAlpha:false,antialias:true,preserveDrawingBuffer:true})
+      ||cv.getContext("experimental-webgl",{alpha:true,premultipliedAlpha:false,preserveDrawingBuffer:true});
+  }catch(e){ gl=null; }
+  if(!gl) return false;
+  try{
+    const pr=gl.createProgram();
+    gl.attachShader(pr,compila(gl,gl.VERTEX_SHADER,VERT));
+    gl.attachShader(pr,compila(gl,gl.FRAGMENT_SHADER,FRAG));
+    gl.linkProgram(pr);
+    if(!gl.getProgramParameter(pr,gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(pr));
+    gl.useProgram(pr);
+
+    const buf=gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER,buf);
+    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,3,-1,-1,3]),gl.STATIC_DRAW);
+    const loc=gl.getAttribLocation(pr,"pos");
+    gl.enableVertexAttribArray(loc);
+    gl.vertexAttribPointer(loc,2,gl.FLOAT,false,0,0);
+
+    texTinta=gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D,texTinta);
+    gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
+
+    texPapel=gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D,texPapel);
+    gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.REPEAT);
+    gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.REPEAT);
+    gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,false);
+    gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,texturaPapel());
+
+    ["uTinta","uPapel","uPasso","uAgua","uEspalha","uBorda","uGranulacao","uTurbulencia","uFlor","uCarga"]
+      .forEach(k=>uni[k]=gl.getUniformLocation(pr,k));
+
+    gl.uniform1i(uni.uTinta,0);
+    gl.uniform1i(uni.uPapel,1);
+    gl.uniform2f(uni.uPasso,1/LADO,1/LADO);
+    gl.enable(gl.BLEND);
+    gl.blendFuncSeparate(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA,gl.ONE,gl.ONE_MINUS_SRC_ALPHA);
+    gl.viewport(0,0,LADO,LADO);
+    GL=gl; prog=pr;
+    return true;
+  }catch(e){
+    console.warn("aquarela em WebGL indisponível:",e.message);
+    return false;
+  }
+}
+
+const TEM_GL=iniciaGL();
+/* sem WebGL, o canvas visível volta a ser 2D e recebe a folha direto */
+const ctx2D = TEM_GL ? null : cv.getContext("2d");
+
+let flor=1;
+function mostraDe(origem,florVal,aqVal){
+  if(!TEM_GL){
+    ctx2D.clearRect(0,0,LADO,LADO);
+    ctx2D.drawImage(origem,0,0);
+    return;
+  }
+  const aq=(aqVal===undefined)?PINCEL.aquarela:aqVal;
+  const folha=origem, flor=florVal;
+  GL.clearColor(0,0,0,0);
+  GL.clear(GL.COLOR_BUFFER_BIT);
+  GL.activeTexture(GL.TEXTURE0);
+  GL.bindTexture(GL.TEXTURE_2D,texTinta);
+  GL.texImage2D(GL.TEXTURE_2D,0,GL.RGBA,GL.RGBA,GL.UNSIGNED_BYTE,folha);
+  GL.activeTexture(GL.TEXTURE1);
+  GL.bindTexture(GL.TEXTURE_2D,texPapel);
+  GL.uniform1f(uni.uAgua,0.20+0.70*aq);
+  GL.uniform1f(uni.uEspalha,1.5+13.0*aq);
+  GL.uniform1f(uni.uBorda,1.0+3.0*aq);
+  GL.uniform1f(uni.uCarga,1.0-0.30*aq);
+  GL.uniform1f(uni.uGranulacao,0.07+0.20*aq);
+  GL.uniform1f(uni.uTurbulencia,0.0022+0.0135*aq);
+  GL.uniform1f(uni.uFlor,flor);
+  GL.drawArrays(GL.TRIANGLES,0,3);
+}
+function mostra(){ mostraDe(folha,flor); }
+
+/* copia o resultado do shader para outro canvas, sem perturbar a folha atual */
+function aquarelaPara(destino,origem,cfg,recorte){
+  if(TEM_GL){
+    mostraDe(origem,1,cfg.aquarela);
+    const r=recorte||[0,0,LADO,LADO];
+    destino.ctx.clearRect(0,0,destino.w,destino.h);
+    destino.ctx.drawImage(cv,r[0],r[1],r[2],r[3],0,0,destino.w,destino.h);
+    mostra();
+  } else {
+    const r=recorte||[0,0,LADO,LADO];
+    destino.ctx.clearRect(0,0,destino.w,destino.h);
+    destino.ctx.drawImage(origem,r[0],r[1],r[2],r[3],0,0,destino.w,destino.h);
+  }
+}
+
+function limpaFolha(){ ctx.clearRect(0,0,LADO,LADO); if(typeof mostra==="function") mostra(); }
+
+function suaviza(pts){
+  if(pts.length<3) return pts.slice();
+  const out=[];
+  for(let i=0;i<pts.length;i++){
+    let sx=0,sy=0,c=0;
+    for(let k=-2;k<=2;k++){ const j=i+k; if(j>=0&&j<pts.length){sx+=pts[j].x;sy+=pts[j].y;c++;} }
+    out.push({x:sx/c,y:sy/c,t:pts[i].t});
+  }
+  return out;
+}
+
+/* espessura pela velocidade: rápido afina, lento engrossa */
+function larguras(pts,base){
+  const w=[];
+  for(let i=0;i<pts.length;i++){
+    const a=pts[Math.max(0,i-1)], b=pts[i];
+    const dt=Math.max(8,(b.t-a.t)||16);
+    const v=Math.hypot(b.x-a.x,b.y-a.y)/dt;
+    w.push(base*(1-0.42*Math.min(1,v/1.6)));
+  }
+  const s=w.slice();
+  for(let i=0;i<w.length;i++){
+    let acc=0,c=0;
+    for(let k=-4;k<=4;k++){ const j=i+k; if(j>=0&&j<w.length){acc+=w[j];c++;} }
+    s[i]=acc/c;
+  }
+  const n=s.length;
+  const entrada=Math.max(2,Math.round(n*0.05)), saida=Math.max(3,Math.round(n*0.18));
+  for(let i=0;i<entrada;i++) s[i]*=0.55+0.45*(i/entrada);
+  for(let i=0;i<saida;i++){ const j=n-1-i; if(j>=0) s[j]*=0.34+0.66*(i/saida); }
+  return s;
+}
+
+/* ruído estável: o mesmo traço redesenha sempre igual */
+function ruido(i,k,semente){
+  const x=Math.sin(i*12.9898+k*78.233+semente*37.719)*43758.5453;
+  return x-Math.floor(x);
+}
+
+/* ruído suave: varia devagar ao longo do traço, como a mão e o papel variam */
+function onda(k,periodo,ch,sem){
+  const f=k/periodo, i=Math.floor(f), t=f-i;
+  const a=ruido(i,ch,sem), b=ruido(i+1,ch,sem);
+  const e=t*t*(3-2*t);
+  return a+(b-a)*e;
+}
+
+const TAU=Math.PI*2;
+function rgba(c,a){ return "rgba("+c[0]+","+c[1]+","+c[2]+","+(a<0?0:a).toFixed(4)+")"; }
+
+/* uma pincelada é feita de centenas de gotas sobrepostas, como cerdas tocando o papel */
+function gota(alvo,cx,cy,r,cor,alpha,dureza){
+  if(r<0.35||alpha<=0.0015) return;
+  const g=alvo.createRadialGradient(cx,cy,0,cx,cy,r);
+  g.addColorStop(0,rgba(cor,alpha));
+  g.addColorStop(Math.max(0.02,Math.min(0.94,dureza)),rgba(cor,alpha));
+  g.addColorStop(1,rgba(cor,0));
+  alvo.fillStyle=g;
+  alvo.beginPath(); alvo.arc(cx,cy,r,0,TAU); alvo.fill();
+}
+
+/* orla molhada: a água empurra o pigmento para a borda e ele acumula lá */
+function orla(alvo,cx,cy,r,cor,alpha){
+  if(r<1||alpha<=0.0015) return;
+  const g=alvo.createRadialGradient(cx,cy,0,cx,cy,r);
+  g.addColorStop(0,rgba(cor,0));
+  g.addColorStop(0.58,rgba(cor,0));
+  g.addColorStop(0.82,rgba(cor,alpha));
+  g.addColorStop(0.94,rgba(cor,alpha*0.45));
+  g.addColorStop(1,rgba(cor,0));
+  alvo.fillStyle=g;
+  alvo.beginPath(); alvo.arc(cx,cy,r,0,TAU); alvo.fill();
+}
+
+/* converte o caminho em gotas igualmente espaçadas, com a largura interpolada */
+function gotasDoTraco(pts,espessura){
+  const p=suaviza(pts), w=larguras(p,espessura);
+  const out=[];
+  let resto=0;
+  for(let i=1;i<p.length;i++){
+    const a=p[i-1], b=p[i];
+    const d=Math.hypot(b.x-a.x,b.y-a.y);
+    if(d<1e-6) continue;
+    const dx=(b.x-a.x)/d, dy=(b.y-a.y)/d;
+    let s=resto;
+    while(s<d){
+      const t=s/d;
+      const wl=w[i-1]+(w[i]-w[i-1])*t;
+      out.push({
+        x:a.x+(b.x-a.x)*t, y:a.y+(b.y-a.y)*t,
+        w:wl, dx:dx, dy:dy,
+        u:(i-1+t)/Math.max(1,p.length-1)
+      });
+      /* o passo acompanha a largura local: a cauda fina não vira anéis soltos */
+      s+=Math.max(0.8,wl*0.085);
+    }
+    resto=s-d;
+  }
+  return out;
+}
+
+/* aplica uma camada de gotas ao longo do traço */
+function carimba(alvo,gotas,escala,op){
+  const sem=op.semente, ch=op.chave;
+  const salto=op.salto||1;
+  const per=op.periodo||14;
+  const compensa=Math.sqrt(salto);
+  for(let k=0;k<gotas.length;k+=salto){
+    const d=gotas[k];
+    const desvio=(onda(k,per,ch,sem)-0.5)*d.w*op.tremor;
+    const cx=(d.x-d.dy*desvio)*escala;
+    const cy=(d.y+d.dx*desvio)*escala;
+    const r=d.w*op.raio*(1-op.varRaio/2+op.varRaio*onda(k,per*0.75,ch+1,sem))*escala/2;
+    let a=op.alpha*(1-op.varAlpha+op.varAlpha*onda(k,per*1.6,ch+2,sem));
+    if(op.granulado) a*=0.55+0.45*ruido(k,ch+3,sem);
+    a*=compensa;
+    if(op.anel) orla(alvo,cx,cy,r,op.cor,a);
+    else gota(alvo,cx,cy,r,op.cor,a,op.dureza);
+  }
+}
+
+const TINTA_CORPO=[20,16,13];
+const TINTA_AGUA=[58,50,41];
+
+/* desenha o traço. modo 'vivo' é leve, modo 'final' traz toda a difusão */
+function desenhaTinta(alvo,pts,escala,cfg,modo){
+  if(!pts||pts.length<2) return;
+  const aq=cfg.aquarela!==undefined?cfg.aquarela:0.6;
+  const sem=cfg.semente||1;
+  const final=(modo==="final");
+  const gotas=gotasDoTraco(pts,cfg.espessura);
+  if(!gotas.length) return;
+  const cCorpo=cfg.cor||TINTA_CORPO, cAgua=cfg.corAgua||TINTA_AGUA;
+
+  alvo.save();
+  alvo.globalCompositeOperation="source-over";
+
+  /* 1. lavagem: a mancha de água que se adianta ao pigmento */
+  if(final && aq>0.05){
+    carimba(alvo,gotas,escala,{cor:cAgua,raio:1.55+1.15*aq,alpha:0.016+0.030*aq,
+      dureza:0.04,tremor:0.22+0.55*aq,varRaio:0.90,varAlpha:0.95,periodo:34,salto:3,
+      semente:sem,chave:101});
+    carimba(alvo,gotas,escala,{cor:cAgua,raio:1.26+0.72*aq,alpha:0.026+0.042*aq,
+      dureza:0.08,tremor:0.16+0.38*aq,varRaio:0.75,varAlpha:0.88,periodo:21,salto:2,
+      semente:sem,chave:211});
+  }
+
+  /* 2. difusão junto à borda */
+  carimba(alvo,gotas,escala,{cor:cAgua,raio:1.18+0.95*aq,
+    alpha:final?(0.026+0.034*aq):(0.030+0.030*aq),
+    dureza:0.10+0.16*(1-aq),tremor:0.10+0.30*aq,varRaio:0.50,varAlpha:0.70,
+    periodo:13,salto:2,semente:sem,chave:307});
+
+  /* 3. corpo do traço */
+  carimba(alvo,gotas,escala,{cor:cCorpo,raio:1.0,
+    alpha:0.36-0.09*aq,
+    dureza:0.88-0.36*aq,
+    tremor:0.02+0.09*aq,varRaio:0.07+0.13*aq,varAlpha:0.08+0.20*aq,
+    periodo:20,granulado:true,semente:sem,chave:401});
+
+  /* 4. orla molhada, marca registrada da aquarela */
+  if(final && aq>0.22){
+    carimba(alvo,gotas,escala,{cor:cAgua,raio:1.20+0.55*aq,alpha:0.020+0.045*aq,
+      anel:true,tremor:0.08+0.24*aq,varRaio:0.38,varAlpha:0.75,periodo:15,salto:2,
+      semente:sem,chave:509});
+  }
+
+  /* 5. granulação: manchas alongadas no sentido do traço, não pontos redondos */
+  if(final && aq>0.05){
+    const marcas=Math.round(gotas.length*(0.16+0.34*aq));
+    for(let k=0;k<marcas;k++){
+      const base=Math.floor(ruido(k,601,sem)*(gotas.length-1));
+      const d=gotas[base];
+      const t=(ruido(k,602,sem)-0.5)*d.w*0.94;
+      const r=d.w*(0.035+0.10*ruido(k,603,sem))*escala;
+      const claro=ruido(k,604,sem)<0.58;
+      const a=(claro?0.075:0.060)*(0.35+0.65*aq)*(0.35+0.65*ruido(k,605,sem));
+      const comp=2+Math.floor(ruido(k,606,sem)*4);
+      alvo.globalCompositeOperation=claro?"destination-out":"source-over";
+      for(let m=0;m<comp;m++){
+        const g=gotas[Math.min(gotas.length-1,base+m*2)];
+        const ondul=t+(ruido(k*7+m,607,sem)-0.5)*d.w*0.16;
+        gota(alvo,(g.x-g.dy*ondul)*escala,(g.y+g.dx*ondul)*escala,r,cCorpo,a,0.06);
+      }
+    }
+    alvo.globalCompositeOperation="source-over";
+  }
+
+  /* 6. poças onde o pincel andou devagar e a tinta se acumulou */
+  if(final){
+    const wMed=gotas.reduce((a,g)=>a+g.w,0)/gotas.length;
+    for(let k=0;k<gotas.length;k+=4){
+      const d=gotas[k];
+      if(d.w<wMed*1.10) continue;
+      if(ruido(k,701,sem)>0.5) continue;
+      gota(alvo,d.x*escala,d.y*escala,d.w*0.34*escala,cCorpo,0.055+0.035*(1-aq),0.10);
+    }
+  }
+
+  alvo.restore();
+}
+
+/* ---------------- ajustes do pincel ---------------- */
+const PINCEL={espessura:84, aquarela:0.55};
+let semente=Math.random()*1000;
+function cfgAtual(){
+  return {espessura:PINCEL.espessura, aquarela:PINCEL.aquarela, semente:semente};
+}
+
+/* largura instantânea, calculada durante o gesto */
+function larguraLocal(a,b,base){
+  const dt=Math.max(8,(b.t-a.t)||16);
+  const v=Math.hypot(b.x-a.x,b.y-a.y)/dt;
+  return base*(1-0.42*Math.min(1,v/1.6));
+}
+
+/* durante o gesto a tinta é carimbada só no trecho novo, nunca redesenhada inteira */
+let iEstampado=0, restoVivo=0, wVivo=0, kVivo=0;
+function zeraEstampa(){ iEstampado=0; restoVivo=0; wVivo=0; kVivo=0; }
+
+function estampaVivo(){
+  const cfg=cfgAtual(), aq=cfg.aquarela, sem=cfg.semente;
+  const varR=0.07+0.13*aq;
+  for(let i=Math.max(1,iEstampado); i<tracos.length; i++){
+    const a=tracos[i-1], b=tracos[i];
+    const d=Math.hypot(b.x-a.x,b.y-a.y);
+    if(d<1e-6) continue;
+    const dx=(b.x-a.x)/d, dy=(b.y-a.y)/d;
+    const destino=larguraLocal(a,b,cfg.espessura);
+    let s=restoVivo;
+    while(s<d){
+      const t=s/d;
+      wVivo = wVivo ? wVivo+(destino-wVivo)*0.25 : destino*0.6;
+      const x=a.x+(b.x-a.x)*t, y=a.y+(b.y-a.y)*t;
+      const desvio=(onda(kVivo,20,401,sem)-0.5)*wVivo*(0.02+0.09*aq);
+      const cx=x-dy*desvio, cy=y+dx*desvio;
+      gota(ctx,cx,cy,wVivo*(1.18+0.95*aq)/2,TINTA_AGUA,0.016+0.018*aq,0.10+0.16*(1-aq));
+      const r=wVivo*(1-varR/2+varR*onda(kVivo,15,402,sem))/2;
+      gota(ctx,cx,cy,r,TINTA_CORPO,(0.36-0.09*aq)*(0.86+0.14*ruido(kVivo,403,sem)),0.88-0.36*aq);
+      kVivo++;
+      s+=Math.max(0.8,wVivo*0.085);
+    }
+    restoVivo=s-d;
+  }
+  iEstampado=tracos.length;
+  mostra();
+}
+
+/* redesenho completo, usado ao limpar a folha ou ao mexer nos ajustes */
+function repinta(){
+  limpaFolha();
+  zeraEstampa();
+  if(tracos.length>1){ desenhaTinta(ctx,tracos,1,cfgAtual(),"vivo"); iEstampado=tracos.length; }
+  mostra();
+}
+
+/* amostra: um traço de exemplo com os ajustes correntes, já com o passe de aquarela */
+const amostra=document.getElementById("amostra");
+const actx=amostra.getContext("2d");
+const folhaAmostra=document.createElement("canvas");
+folhaAmostra.width=LADO; folhaAmostra.height=LADO;
+const ctxAmostra=folhaAmostra.getContext("2d");
+const PTS_AMOSTRA=(function(){
+  const p=[], n=110;
+  let t=0;
+  for(let i=0;i<n;i++){
+    const u=i/(n-1);
+    p.push({x:80+u*720, y:200+Math.sin(u*Math.PI*1.15)*96, t:t});
+    t+=14+30*Math.abs(Math.sin(u*Math.PI*1.6));
+  }
+  return p;
+})();
+let quadroAmostra=null;
+function pintaAmostra(){
+  if(quadroAmostra) return;
+  quadroAmostra=requestAnimationFrame(()=>{
+    quadroAmostra=null;
+    const cfg=cfgAtual();
+    ctxAmostra.clearRect(0,0,LADO,LADO);
+    desenhaTinta(ctxAmostra,PTS_AMOSTRA,1,cfg,"final");
+    aquarelaPara({ctx:actx,w:amostra.width,h:amostra.height},folhaAmostra,cfg,[40,45,800,310]);
+  });
+}
+
+/* barra de progresso: uma pincelada de verdade, revelada conforme o tempo passa */
+const cronometro=document.getElementById("cronometro");
+const cctx=cronometro.getContext("2d");
+const CRONO_L=cronometro.width, CRONO_A=cronometro.height;
+const PTS_CRONO=(function(){
+  const p=[], n=120;
+  let t=0;
+  for(let i=0;i<n;i++){
+    const u=i/(n-1);
+    p.push({x:26+u*(CRONO_L-52), y:26+Math.sin(u*Math.PI)*22, t:t});
+    t+=11+20*Math.abs(Math.sin(u*Math.PI*1.3));
+  }
+  return p;
+})();
+function folhaCrono(cor){
+  const c=document.createElement("canvas");
+  c.width=CRONO_L; c.height=CRONO_A;
+  desenhaTinta(c.getContext("2d"),PTS_CRONO,1,
+    {espessura:15,aquarela:0.42,semente:314,cor:cor,corAgua:cor.map(v=>Math.min(255,v+58))},
+    "final");
+  return c;
+}
+let cronoPreto=null, cronoVermelho=null;
+function pintaCrono(k,pronto){
+  if(!cronoPreto){ cronoPreto=folhaCrono([22,18,15]); cronoVermelho=folhaCrono([166,54,38]); }
+  cctx.clearRect(0,0,CRONO_L,CRONO_A);
+  const origem = pronto ? cronoVermelho : cronoPreto;
+  if(pronto){ cctx.drawImage(origem,0,0); return; }
+  const larg=Math.max(1,CRONO_L*k);
+  cctx.drawImage(origem,0,0,larg,CRONO_A,0,0,larg,CRONO_A);
+  /* a ponta que avança fica esfumada, como tinta ainda correndo */
+  const pena=Math.min(46,larg);
+  const g=cctx.createLinearGradient(larg-pena,0,larg,0);
+  g.addColorStop(0,"rgba(0,0,0,0)");
+  g.addColorStop(1,"rgba(0,0,0,1)");
+  cctx.save();
+  cctx.globalCompositeOperation="destination-out";
+  cctx.fillStyle=g;
+  cctx.fillRect(larg-pena,0,pena+2,CRONO_A);
+  cctx.restore();
+}
+
+function ligaControle(id,fn){
+  const el=document.getElementById(id);
+  el.addEventListener("input",()=>{
+    fn(parseInt(el.value,10));
+    pintaAmostra();
+    if(tracos.length>1 && !ocupado) repinta();
+  });
+}
+ligaControle("fEspessura",v=>PINCEL.espessura=v);
+ligaControle("fAquarela",v=>PINCEL.aquarela=v/100);
+
+function pontoDaFolha(e){
+  const r=cv.getBoundingClientRect();
+  return {
+    x:(e.clientX-r.left)*(LADO/r.width),
+    y:(e.clientY-r.top)*(LADO/r.height),
+    t:performance.now()
+  };
+}
+
+/* ---------------- avaliação do círculo ---------------- */
+function avaliaCirculo(bruto){
+  if(!bruto || bruto.length<24) return {ok:false,motivo:"o traço foi curto demais"};
+  const pts=suaviza(suaviza(bruto));
+
+  const cx=pts.reduce((a,p)=>a+p.x,0)/pts.length;
+  const cy=pts.reduce((a,p)=>a+p.y,0)/pts.length;
+  const raios=pts.map(p=>Math.hypot(p.x-cx,p.y-cy));
+  const rm=raios.reduce((a,b)=>a+b,0)/raios.length;
+  if(rm<LADO*0.11) return {ok:false,motivo:"o círculo ficou pequeno demais"};
+
+  // a volta precisa ser dada, e num sentido só
+  let giro=0, absoluto=0;
+  for(let i=1;i<pts.length;i++){
+    const a1=Math.atan2(pts[i-1].y-cy,pts[i-1].x-cx);
+    const a2=Math.atan2(pts[i].y-cy,pts[i].x-cx);
+    let d=a2-a1;
+    while(d>Math.PI) d-=2*Math.PI;
+    while(d<-Math.PI) d+=2*Math.PI;
+    giro+=d; absoluto+=Math.abs(d);
+  }
+  if(Math.abs(giro)<Math.PI*2*0.78) return {ok:false,motivo:"o círculo não deu a volta inteira"};
+  if(absoluto>Math.abs(giro)*1.45) return {ok:false,motivo:"o traço voltou sobre si mesmo"};
+
+  // quociente isoperimétrico: 1 é o círculo perfeito, polígonos ficam bem abaixo
+  let area=0, perim=0;
+  for(let i=0;i<pts.length;i++){
+    const a=pts[i], b=pts[(i+1)%pts.length];
+    area+=a.x*b.y-b.x*a.y;
+    perim+=Math.hypot(b.x-a.x,b.y-a.y);
+  }
+  area=Math.abs(area)/2;
+  const q=perim>0 ? 4*Math.PI*area/(perim*perim) : 0;
+  if(q<0.86) return {ok:false,motivo:"a forma não é um círculo"};
+
+  const dp=Math.sqrt(raios.reduce((a,r)=>a+(r-rm)*(r-rm),0)/raios.length);
+  if(dp/rm>0.30) return {ok:false,motivo:"o círculo saiu torto demais"};
+
+  const vao=Math.hypot(bruto[0].x-bruto[bruto.length-1].x, bruto[0].y-bruto[bruto.length-1].y);
+  return {ok:true, fechado: vao < rm*0.38};
+}
+
+/* ---------------- gesto ---------------- */
+cv.addEventListener("pointerdown",e=>{
+  if(ocupado) return;
+  e.preventDefault();
+  cv.setPointerCapture(e.pointerId);
+  desenhando=true;
+  tracos=[pontoDaFolha(e)];
+  limpaFolha(); zeraEstampa();
+  flor=0.18;
+  tocaTigela();
+  pincelLiga();
+  tInicio=performance.now();
+  cronometro.classList.add("ativo");
+  contaTempo();
+  const g=document.getElementById("veuGuia");
+  g.classList.remove("aviso");
+});
+cv.addEventListener("pointermove",e=>{
+  if(!desenhando) return;
+  e.preventDefault();
+  const p=pontoDaFolha(e), u=tracos[tracos.length-1];
+  const avanco=Math.hypot(p.x-u.x,p.y-u.y);
+  pincelVelocidade(avanco/Math.max(8,(p.t-u.t)||16));
+  if(avanco<2.5) return;
+  tracos.push(p);
+  if(!quadro) quadro=requestAnimationFrame(()=>{ quadro=null; estampaVivo(); });
+});
+/* a tinta assenta: o pigmento completo entra e a água se espalha */
+function florescer(cfg){
+  limpaFolha();
+  desenhaTinta(ctx,tracos,1,cfg,"final");
+  const rapido = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if(rapido){ flor=1; mostra(); return; }
+  const t0=performance.now(), dur=1000;
+  (function passo(agora){
+    const k=Math.min(1,(agora-t0)/dur);
+    flor=0.18+0.82*(1-Math.pow(1-k,3));
+    mostra();
+    if(k<1) requestAnimationFrame(passo);
+    else { flor=1; mostra(); }
+  })(t0);
+}
+
+/* o traço precisa durar: o tempo é parte do rito, não um obstáculo técnico */
+let tInicio=0, relogio=null;
+function contaTempo(){
+  if(!desenhando){ relogio=null; return; }
+  const passado=performance.now()-tInicio;
+  const k=Math.min(1,passado/TEMPO_MINIMO);
+  const pronto=k>=1;
+
+  pintaCrono(k,pronto);
+
+  const marcador=document.getElementById("marcador");
+  document.getElementById("arco").style.strokeDashoffset=(122.52*(1-k)).toFixed(2);
+  marcador.classList.add("correndo");
+  const g=document.getElementById("veuGuia");
+  if(!pronto){
+    marcador.classList.remove("pronto");
+    const faltam=Math.ceil((TEMPO_MINIMO-passado)/1000);
+    document.getElementById("marcadorNum").textContent=faltam;
+    g.innerHTML="continue traçando por mais <b>"+faltam+(faltam===1?" segundo":" segundos")+"</b>";
+    g.classList.remove("aviso");
+  } else if(!marcador.classList.contains("pronto")){
+    marcador.classList.add("pronto");
+    document.getElementById("marcadorNum").textContent="";
+    g.innerHTML="<b>pode fechar o círculo quando quiser</b>";
+  }
+  relogio=requestAnimationFrame(contaTempo);
+}
+
+function encerrarGesto(){
+  if(!desenhando) return;
+  desenhando=false;
+  pincelDesliga();
+  estampaVivo();
+  const duracao=performance.now()-tInicio;
+  cronometro.classList.remove("ativo");
+  if(duracao<TEMPO_MINIMO){
+    const g=document.getElementById("veuGuia");
+    g.innerHTML="o traço durou "+(duracao/1000).toFixed(1)+"s, o mínimo é <b>"+(TEMPO_MINIMO/1000)+" segundos</b>";
+    g.classList.add("aviso");
+    recusas++;
+    if(recusas>=3) document.getElementById("btnDispensa").style.display="inline-block";
+    setTimeout(()=>{ if(!desenhando && !ocupado){ tracos=[]; repinta(); } }, 900);
+    return;
+  }
+  const juizo=avaliaCirculo(tracos);
+  const g=document.getElementById("veuGuia");
+  if(juizo.ok){
+    g.textContent = juizo.fechado ? "círculo fechado" : "círculo aberto";
+    g.classList.remove("aviso");
+    const cfg=cfgAtual();
+    florescer(cfg);
+    document.getElementById("marcaSelo").classList.add("posto");
+    circulos.push({pts:tracos.slice(), fechado:juizo.fechado, cfg:cfg});
+    ocupado=true;
+    setTimeout(()=>{ fecharFolha(); lancarMoedas(); }, 1450);
+  } else {
+    g.textContent=juizo.motivo+", recomece";
+    g.classList.add("aviso");
+    recusas++;
+    if(recusas>=3) document.getElementById("btnDispensa").style.display="inline-block";
+    setTimeout(()=>{ if(!desenhando && !ocupado){ tracos=[]; repinta(); } }, 750);
+  }
+}
+cv.addEventListener("pointerup",encerrarGesto);
+cv.addEventListener("pointercancel",encerrarGesto);
+
+function abrirFolha(){
+  if(ocupado||valores.length>=6) return;
+  tracos=[]; desenhando=false; limpaFolha();
+  semente=Math.random()*1000;
+  document.getElementById("veuTitulo").textContent=TITULOS[valores.length];
+  const g=document.getElementById("veuGuia");
+  g.innerHTML="um só movimento, sem levantar, <b>por ao menos "+(TEMPO_MINIMO/1000)+" segundos</b>";
+  g.classList.remove("aviso");
+  document.getElementById("marcaSelo").classList.remove("posto");
+  zeraCronometro();
+  document.getElementById("veu").classList.add("aberto");
+}
+function zeraCronometro(){
+  cronometro.classList.remove("ativo");
+  pintaCrono(0,false);
+  const m=document.getElementById("marcador");
+  m.classList.remove("correndo","pronto");
+  document.getElementById("arco").style.strokeDashoffset="122.52";
+  document.getElementById("marcadorNum").textContent=(TEMPO_MINIMO/1000);
+}
+
+function fecharFolha(){ document.getElementById("veu").classList.remove("aberto"); }
+function dispensarTraco(){
+  if(ocupado) return;
+  circulos.push({pts:[], fechado:null, cfg:cfgAtual()});
+  ocupado=true;
+  fecharFolha(); lancarMoedas();
+}
+
+/* ---------------- moedas ---------------- */
+function lancarMoedas(){
+  ocupado=true;
+  const btn=document.getElementById("btnFolha");
+  btn.disabled=true;
+  document.getElementById("dito").textContent="As moedas estão no ar.";
+
+  const res=[0,1,2].map(()=>Math.random()<0.5?3:2);
+  const caixa=document.getElementById("moedas");
+  [0,1,2].forEach(i=>{
+    document.getElementById("d"+i).classList.remove("face");
+    document.getElementById("r"+i).textContent="";
+  });
+  caixa.classList.remove("lancando");
+  void caixa.offsetWidth;
+  caixa.classList.add("lancando");
+
+  const rapido = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const pouso = rapido?260:1290;
+  tocaMoedas(rapido?0.2:1.3, rapido?0.03:0.10);
+
+  [0,1,2].forEach(i=>{
+    setTimeout(()=>{
+      if(res[i]===3) document.getElementById("d"+i).classList.add("face");
+      document.getElementById("r"+i).textContent = (res[i]===3?"face · 3":"verso · 2");
+    }, pouso + i*(rapido?30:100));
+  });
+
+  setTimeout(()=>{
+    caixa.classList.remove("lancando");
+    const soma=res[0]+res[1]+res[2];
+    valores.push(soma);
+    desenhaParcial(); atualizaConta();
+    const o=ORDINAIS[valores.length-1];
+    document.getElementById("dito").textContent =
+      o.charAt(0).toUpperCase()+o.slice(1)+" linha, soma "+soma+": "+nomeValor(soma)+".";
+    ocupado=false;
+    if(valores.length<6){
+      btn.disabled=false; btn.textContent="Desenhe um ensō para gerar uma linha";
+      btn.classList.add("chamada"); btn.onclick=abrirFolha;
+    } else {
+      btn.disabled=false; btn.textContent="Ver a resposta";
+      btn.classList.remove("chamada"); btn.onclick=montarResultado;
+    }
+  }, pouso + (rapido?140:460));
+}
+function nomeValor(v){
+  if(v===6) return "yin em mutação";
+  if(v===7) return "yang estável";
+  if(v===8) return "yin estável";
+  return "yang em mutação";
+}
+
+
+/* ---------------- som ---------------- */
+/* tudo sintetizado na hora: nenhum arquivo, nada a carregar.
+   o contexto só nasce depois de um gesto do usuário, como os navegadores exigem */
+let AC=null, mestre=null, somLigado=true, bufRuido=null;
+
+function audio(){
+  if(!somLigado) return null;
+  if(!AC){
+    const Ctx=window.AudioContext||window.webkitAudioContext;
+    if(!Ctx) return null;
+    try{ AC=new Ctx(); }catch(e){ return null; }
+    const comp=AC.createDynamicsCompressor();
+    comp.threshold.value=-14; comp.knee.value=22; comp.ratio.value=5;
+    comp.attack.value=0.004; comp.release.value=0.22;
+    mestre=AC.createGain();
+    mestre.gain.value=0.85;
+    mestre.connect(comp); comp.connect(AC.destination);
+  }
+  if(AC.state==="suspended"){ AC.resume().catch(()=>{}); }
+  return AC;
+}
+
+function ruidoBranco(a){
+  if(bufRuido && bufRuido.sampleRate===a.sampleRate) return bufRuido;
+  const n=Math.floor(a.sampleRate*2);
+  const b=a.createBuffer(1,n,a.sampleRate);
+  const d=b.getChannelData(0);
+  for(let i=0;i<n;i++) d[i]=Math.random()*2-1;
+  bufRuido=b;
+  return b;
+}
+
+/* tigela tibetana, tocada sempre que o traço começa: parciais inarmônicos,
+   cada um com seu tempo de decaimento, em pares levemente desafinados para
+   produzir o batimento característico */
+function tocaTigela(){
+  const a=audio(); if(!a) return;
+  const t=a.currentTime+0.02;
+  const saida=a.createGain();
+  saida.gain.value=0.30;
+  saida.connect(mestre);
+
+  const f0=196;
+  const parciais=[
+    [1.00, 1.00, 11.0],
+    [2.74, 0.44, 6.0],
+    [5.41, 0.23, 3.8],
+    [8.93, 0.12, 2.4],
+    [13.34,0.055,1.5]
+  ];
+  parciais.forEach(([razao,amp,dec],i)=>{
+    const bat=0.0040+0.0022*i;              // batimento cresce nos parciais altos
+    [-1,1].forEach(lado=>{
+      const o=a.createOscillator();
+      o.type="sine";
+      o.frequency.value=f0*razao*(1+lado*bat);
+      const g=a.createGain();
+      g.gain.setValueAtTime(0.0001,t);
+      g.gain.exponentialRampToValueAtTime(Math.max(0.0002,amp*0.5),t+0.014+0.012*i);
+      g.gain.exponentialRampToValueAtTime(0.0001,t+dec);
+      o.connect(g); g.connect(saida);
+      o.start(t); o.stop(t+dec+0.1);
+    });
+  });
+
+  /* o toque do malho na borda */
+  const nb=a.createBufferSource(); nb.buffer=ruidoBranco(a);
+  const bp=a.createBiquadFilter(); bp.type="bandpass";
+  bp.frequency.value=2300; bp.Q.value=1.1;
+  const gt=a.createGain();
+  gt.gain.setValueAtTime(0.22,t);
+  gt.gain.exponentialRampToValueAtTime(0.0001,t+0.18);
+  nb.connect(bp); bp.connect(gt); gt.connect(saida);
+  nb.start(t); nb.stop(t+0.25);
+}
+
+/* pincel no papel: ruído filtrado cujo brilho e volume seguem a velocidade do gesto */
+let pincelNo=null;
+function pincelLiga(){
+  const a=audio(); if(!a || pincelNo) return;
+  const src=a.createBufferSource();
+  src.buffer=ruidoBranco(a); src.loop=true;
+  const hp=a.createBiquadFilter(); hp.type="highpass"; hp.frequency.value=700;
+  const bp=a.createBiquadFilter(); bp.type="bandpass"; bp.frequency.value=1800; bp.Q.value=0.6;
+  const g=a.createGain(); g.gain.value=0.0001;
+  src.connect(hp); hp.connect(bp); bp.connect(g); g.connect(mestre);
+  src.start();
+  pincelNo={a:a,src:src,bp:bp,g:g};
+}
+function pincelVelocidade(v){
+  if(!pincelNo) return;
+  const t=pincelNo.a.currentTime;
+  const k=Math.min(1,v/1.5);
+  pincelNo.g.gain.setTargetAtTime(0.012+0.105*Math.pow(k,0.7),t,0.045);
+  pincelNo.bp.frequency.setTargetAtTime(1400+3600*k,t,0.06);
+}
+function pincelDesliga(){
+  if(!pincelNo) return;
+  const {a,src,g}=pincelNo;
+  const t=a.currentTime;
+  g.gain.setTargetAtTime(0.0001,t,0.035);
+  try{ src.stop(t+0.35); }catch(e){}
+  pincelNo=null;
+}
+
+/* moeda batendo: ruído curto por filtros ressonantes em frequências inarmônicas */
+function impactoMoeda(a,t,dest,forca){
+  const freqs=[1180,2470,3860,5510,7300];
+  freqs.forEach((f,i)=>{
+    const nb=a.createBufferSource(); nb.buffer=ruidoBranco(a);
+    nb.playbackRate.value=0.8+Math.random()*0.5;
+    const bp=a.createBiquadFilter(); bp.type="bandpass";
+    bp.frequency.value=f*(0.93+Math.random()*0.15);
+    bp.Q.value=16+i*7;
+    const g=a.createGain();
+    const dec=Math.max(0.05,(0.44-i*0.055)*forca);
+    const pico=Math.max(0.0002,forca*(0.42-i*0.062));
+    g.gain.setValueAtTime(0.0001,t);
+    g.gain.linearRampToValueAtTime(pico,t+0.0025);
+    g.gain.exponentialRampToValueAtTime(0.0001,t+dec);
+    nb.connect(bp); bp.connect(g); g.connect(dest);
+    nb.start(t); nb.stop(t+dec+0.05);
+  });
+  /* a batida seca contra a superfície */
+  const nb=a.createBufferSource(); nb.buffer=ruidoBranco(a);
+  const lp=a.createBiquadFilter(); lp.type="lowpass"; lp.frequency.value=700;
+  const g=a.createGain();
+  g.gain.setValueAtTime(Math.max(0.0002,0.16*forca),t);
+  g.gain.exponentialRampToValueAtTime(0.0001,t+0.05);
+  nb.connect(lp); lp.connect(g); g.connect(dest);
+  nb.start(t); nb.stop(t+0.08);
+}
+
+/* três moedas, cada uma com quique, sincronizadas com a animação da queda */
+function tocaMoedas(duracao,intervalo){
+  const a=audio(); if(!a) return;
+  const t0=a.currentTime;
+  const saida=a.createGain();
+  saida.gain.value=0.42;
+  saida.connect(mestre);
+  /* o tilintar do arremesso */
+  for(let i=0;i<3;i++) impactoMoeda(a,t0+0.015+i*0.028,saida,0.20);
+  /* as quedas */
+  /* os instantes vêm dos keyframes de "voo": toca o chão em 78%,
+     sobe no quique e volta em 96%, assentando logo depois */
+  for(let i=0;i<3;i++){
+    const atraso=t0+i*intervalo;
+    impactoMoeda(a,atraso+duracao*0.78,saida,1.0);
+    impactoMoeda(a,atraso+duracao*0.96,saida,0.34);
+    impactoMoeda(a,atraso+duracao*1.03,saida,0.12);
+  }
+}
+
+function alternaSom(){
+  somLigado=!somLigado;
+  const b=document.getElementById("btnSom");
+  b.classList.toggle("mudo",!somLigado);
+  b.setAttribute("aria-pressed",somLigado?"true":"false");
+  b.textContent=somLigado?"som":"som desligado";
+  if(!somLigado){
+    pincelDesliga();
+    if(mestre) mestre.gain.setTargetAtTime(0.0001,AC.currentTime,0.02);
+  } else {
+    const a=audio();
+    if(a && mestre) mestre.gain.setTargetAtTime(0.85,a.currentTime,0.02);
+  }
+}
+
+/* ---------------- resultado ---------------- */
+function blocoHTML(hx,moveis,rot,classe,somas){
+  return '<div class="bloco '+classe+'">'
+    +'<p class="rot">'+rot+'</p>'
+    +'<div class="cabeca">'+hexHTML(hx.b,moveis,somas)
+    +'<div><div class="cifra">'+String(hx.n).padStart(2,"0")+'</div>'
+    +'<h2>'+hx.nome+'</h2></div></div>'
+    +'<div class="links">'
+    +'<a class="botlink" href="'+urlHex(hx)+'" target="_blank" rel="noopener">Ler o hexagrama '+hx.n+'</a>'
+    +'</div></div>';
+}
+
+function montarResultado(){
+  const bits=valores.map(v=>ehYang(v)?"1":"0").join("");
+  const moveis=[]; valores.forEach((v,i)=>{ if(ehMovel(v)) moveis.push(i); });
+  const atual=PORBITS[bits];
+  let html=blocoHTML(atual,moveis,"hexagrama presente","",valores);
+  html+='<p class="mutacoes legenda">À esquerda de cada traço está o número da linha, de 1 a 6, contadas de baixo para cima. À direita, a soma das três moedas daquele lançamento. As linhas em vermelho são as que estão em mutação.</p>';
+
+  if(moveis.length){
+    const lista=moveis.map(i=>"<b>"+ORDINAIS[i]+"</b>").join(", ");
+    const novos=bits.split("").map((b,i)=>moveis.includes(i)?(b==="1"?"0":"1"):b).join("");
+    html+='<p class="mutacoes">Linhas em mutação: '+lista
+      +'. Cada uma tem texto próprio na página do hexagrama '+atual.n+'.</p>';
+    html+=blocoHTML(PORBITS[novos],[],"hexagrama derivado · para onde a situação tende","derivado");
+    html+='<p class="mutacoes">Leia o primeiro como retrato do momento e o segundo como a direção que se desenha.</p>';
+  } else {
+    html+='<p class="mutacoes">Nenhuma linha em mutação. A situação está estável e não há hexagrama derivado.</p>';
+  }
+
+  html+='<div class="bloco"><p class="rot">os seis círculos desta consulta</p><div class="rolo" id="rolo"></div></div>';
+  document.getElementById("saida").innerHTML=html;
+
+  const rolo=document.getElementById("rolo");
+  circulos.forEach((c,i)=>{
+    const fig=document.createElement("figure");
+    const mini=document.createElement("canvas");
+    mini.width=280; mini.height=280;
+    fig.appendChild(mini);
+    const cap=document.createElement("figcaption");
+    cap.textContent=ORDINAIS[i]+"\n"+(c.pts.length ? (c.fechado?"fechado":"aberto") : "dispensado");
+    fig.appendChild(cap);
+    rolo.appendChild(fig);
+    if(c.pts.length){
+      ctxAmostra.clearRect(0,0,LADO,LADO);
+      desenhaTinta(ctxAmostra,c.pts,1,c.cfg,"final");
+      aquarelaPara({ctx:mini.getContext("2d"),w:280,h:280},folhaAmostra,c.cfg);
+    }
+  });
+
+  tela("tela3");
+}
+
+/* voltar ao início. se já houver linhas traçadas, pede confirmação no próprio
+   botão, para não descartar a consulta por um toque errado */
+let confirmandoVolta=null;
+function voltarInicio(){
+  const b=document.getElementById("btnVoltar");
+  if(valores.length>0 && !confirmandoVolta){
+    b.textContent="descartar esta consulta?";
+    b.classList.add("alerta");
+    confirmandoVolta=setTimeout(()=>{
+      confirmandoVolta=null;
+      b.textContent="fazer outra consulta";
+      b.classList.remove("alerta");
+    },4000);
+    return;
+  }
+  if(confirmandoVolta){ clearTimeout(confirmandoVolta); confirmandoVolta=null; }
+  b.textContent="fazer outra consulta";
+  b.classList.remove("alerta");
+  pincelDesliga();
+  ocupado=false;
+  valores=[]; circulos=[]; recusas=0;
+  fecharFolha();
+  reiniciar();
+}
+
+function reiniciar(){
+  document.getElementById("q").value="";
+  document.getElementById("erro1").textContent="";
+  tela("tela1");
+}
+
+document.body.classList.add("capa-ativa");
+desenhaParcial(); atualizaConta();
+</script>
+</body>
+</html>
